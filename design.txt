@@ -1,0 +1,43 @@
+Concept
+
+We need a game engine capable of supporting a customizable "plants vs. zombies"
+style game.
+
+Some Requirements
+
+Fundamentals
+  Display
+    - Minimum resolution
+    - Fixed resolution scaled up with available window size
+  Screens
+    - Have associated Objects drawn on them
+    - Can be shown or hidden
+  Objects
+    - Drawn on screen with x,y,z
+    - Can respond to clicks, even when visible behind another object
+    - Can display animations regardless of frame rate
+    - Can move at a fixed rate regardless of frame rate
+  Event Manager
+    - Register for events
+  Sound
+    - Background music
+    - Forground character, attack, and damage sound effects
+
+Overlayed Menu
+  - Display text options, example
+    - Play Game
+    - Quit
+  - Highlight on mouse over
+  - Click to select with mouse
+
+Main Game Screen
+  - Lanes that need to be defended
+  - Menu for selecting and placing defenders
+  - The ability to place defenders in a spot, the ability to
+  - An overlay with pertinent information
+  - Stationary defenders that detect enemies and launch defensive attacks
+  - Mobile attackers that detect defenders and launch attacks
+  - Ability to collect rewards that are used to purchase new defenders
+  - Character animations for moving, resting, attacking, being damaged, dying
+
+
