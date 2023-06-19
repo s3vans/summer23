@@ -41,7 +41,7 @@ let levels = [{
         "hp": 200,
       }],
     "attackers": [{
-        uid: "evee",
+        "uid": "evee",
         "name": "Evee",
         "img": "assets/evee.png",
         "hp": 150,
@@ -68,7 +68,6 @@ function _updateScaleFactor() {
   let xFactor = Math.max(windowWidth / XRESOLUTION, MIN_SCALE_FACTOR);
   return Math.min(MAX_SCALE_FACTOR, Math.min(yFactor, xFactor));
 }
-
 
 function preload() {
   _loadImagesFromLevels();
