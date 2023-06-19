@@ -52,7 +52,6 @@ let uids = new Map();
 let err_duplicate_uid = "";
 function _isUidUnique(uid) {
   if (uids.has(uid)) {
-    console.error("Encountered duplicate id: " + uid);
     err_duplicate_uid = uid;
     return false;
   }
@@ -84,6 +83,7 @@ function _updateScaleFactor() {
 }
 
 function _displayError(err) {
+  console.err(err);
   background(255);
   fill(255, 0, 0);
   textSize(20);
