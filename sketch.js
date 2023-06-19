@@ -4,7 +4,8 @@ const MIN_SCALE_FACTOR = .5;
 const MAX_SCALE_FACTOR = 3;
 
 class Defender {
-  constuctor(name, img, xp_cost, hp) {
+  constructor(uid, name, img, xp_cost, hp) {
+    this.uid = uid;
     this.name = name;
     this.img = img;
     this.xp = xp_cost;
@@ -13,7 +14,8 @@ class Defender {
 }
 
 class Attacker {
-  constuctor(name, img, hp) {
+  constructor(uid, name, img, hp) {
+    this.uid = uid;
     this.name = name;
     this.img = img;
     this.hp = hp;
