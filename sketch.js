@@ -1,3 +1,7 @@
+const XRESOLUTION = 800;
+const YRESOLUTION = 600;
+const MIN_SCALE_FACTOR = .5;
+const MAX_SCALE_FACTOR = 3;
 
 class Defender {
   constuctor(name, img, xp_cost, hp) {
@@ -46,7 +50,7 @@ let levels = [{
 
 // TODO: Detect reused uids!
 let images = new Map();
-function loadImagesFromLevels() {
+function _loadImagesFromLevels() {
   for (level of levels) {
     images.set(level.uid, loadImage(level.img));
     for (defender of level.defenders) {
@@ -58,27 +62,22 @@ function loadImagesFromLevels() {
   }
 }
 
-function preload() {
-  loadImagesFromLevels();
-}
-
-const XRESOLUTION = 800;
-const YRESOLUTION = 600;
-const MIN_SCALE_FACTOR = .5;
-const MAX_SCALE_FACTOR = 3;
-
 let scaleFactor = 1;
-function updateScaleFactor() {
+function _updateScaleFactor() {
   let yFactor = Math.max(windowHeight / YRESOLUTION, MIN_SCALE_FACTOR);
   let xFactor = Math.max(windowWidth / XRESOLUTION, MIN_SCALE_FACTOR);
   return Math.min(MAX_SCALE_FACTOR, Math.min(yFactor, xFactor));
 }
 
 
+function preload() {
+  _loadImagesFromLevels();
+}
+
 function setup() {
   level = levels[0];
   createCanvas(windowWidth, windowHeight);
-  updateScaleFactor();
+  _updateScaleFactor();
 }
 
 function draw() {
@@ -89,5 +88,5 @@ function draw() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  updateScaleFactor();
+  _updateScaleFactor();
 }
