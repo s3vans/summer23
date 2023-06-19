@@ -60,18 +60,16 @@ function _isUidUnique(uid) {
 }
 
 let images = new Map();
-function _loadImagesFromLevels() {
-  for (level of levels) {
-    _isUidUnique(level.uid);
-    images.set(level.uid, loadImage(level.img));
-    for (defender of level.defenders) {
-      _isUidUnique(defender.uid);
-      images.set(defender.uid, loadImage(defender.img));
-    }
-    for (attacker of level.attackers) {
-      _isUidUnique(attacker.uid);
-      images.set(attacker.uid, loadImage(attacker.img));
-    }
+function _loadImagesFromLevel(level) {
+  _isUidUnique(level.uid);
+  images.set(level.uid, loadImage(level.img));
+  for (defender of level.defenders) {
+    _isUidUnique(defender.uid);
+    images.set(defender.uid, loadImage(defender.img));
+  }
+  for (attacker of level.attackers) {
+    _isUidUnique(attacker.uid);
+    images.set(attacker.uid, loadImage(attacker.img));
   }
 }
 
@@ -91,11 +89,11 @@ function _displayError(err) {
 }
 
 function preload() {
-  _loadImagesFromLevels();
+  level = levels[0];
+  _loadImagesFromLevel(level);
 }
 
 function setup() {
-  level = levels[0];
   createCanvas(windowWidth, windowHeight);
   _updateScaleFactor();
 }
