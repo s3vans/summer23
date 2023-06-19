@@ -35,20 +35,20 @@ let levels = [{
     "uid": "level1",
     "name": "Level 1",
     "img": "assets/level1.png",
-    "defenders": [ {
+    "defenders": [{
         "uid": "pikachu",
         "name": "Pikachu",
         "img": "assets/pikachu.png",
         "xp_cost": 150,
         "hp": 200,
-      }],
+    }],
     "attackers": [{
         "uid": "evee",
         "name": "Evee",
         "img": "assets/evee.png",
         "hp": 150,
-      }],
-    }];
+    }],
+  }];
 
 let uids = new Map();
 let err_duplicate_uid = "";
