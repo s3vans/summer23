@@ -75,6 +75,23 @@ function _loadImagesFromLevel(level) {
   }
 }
 
+let defenders = new Map();
+function _loadDefendersFromLevel(level) {
+  for (let defender of level.defenders) {
+    let defenderObj = new Defender(defender.uid, defender.name, defender.img,
+                                   defender.xp_cost, defender.hp);
+    defenders.set(defender.uid, defenderObj);
+  }
+}
+
+let attackers = new Map();
+function _loadAttackersFromLevel(level) {
+  for (let attacker of level.attackers) {
+    let attackerObj = new Attacker(attacker.uid, attacker.name, attacker.hp);
+    attackers.set(attacker.uid, attackerObj);
+  }
+}
+
 let scaleFactor = 1;
 function _updateScaleFactor() {
   let yFactor = Math.max(windowHeight / YRESOLUTION, MIN_SCALE_FACTOR);
@@ -90,9 +107,32 @@ function _displayError(err) {
   text(err, 10, 20);
 }
 
+function _drawBackground() {
+  background(0);
+  image(images.get(level.uid), 0, 0);
+}
+
+function _drawPokestore() {
+  let x = 100;
+  let y = 20;
+  for (let i = 0; i < 5; i++) {
+     rect(x+(100*i), y, 100, 100);
+  }
+  for (let defender of defenders.values()) {
+     image(images.get(defender.uid), x, y, 80, 80);
+     textSize(10);
+     text(defender.name, x+10, y+85);
+     text('HP:' + defender.hp, x+50, y+85);
+     text('XP:' + defender.xp, x+50, y+95);
+     x += 100;
+  }
+}
+
 function preload() {
   level = levels[0];
   _loadImagesFromLevel(level);
+  _loadDefendersFromLevel(level);
+  _loadAttackersFromLevel(level);
 }
 
 function setup() {
@@ -102,13 +142,13 @@ function setup() {
 
 function draw() {
   scale(scaleFactor);
-  background(0);
   if (err_duplicate_uid != "") {
     _displayError("Duplicate uid detected: " + err_duplicate_uid);
     noLoop();
     return;
   }
-  image(images.get(level.uid), 0, 0);
+  _drawBackground();
+  _drawPokestore();
 }
 
 function windowResized() {
