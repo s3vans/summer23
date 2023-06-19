@@ -41,6 +41,16 @@ let evee;
 
 const XRESOLUTION = 800;
 const YRESOLUTION = 600;
+const MIN_SCALE_FACTOR = .5;
+const MAX_SCALE_FACTOR = 3;
+
+let scaleFactor = 1;
+
+function updateScaleFactor() {
+  let yFactor = Math.max(windowHeight / YRESOLUTION, MIN_SCALE_FACTOR);
+  let xFactor = Math.max(windowWidth / XRESOLUTION, MIN_SCALE_FACTOR);
+  return Math.min(MAX_SCALE_FACTOR, Math.min(yFactor, xFactor));
+}
 
 function setup() {
   pikachu = new Defender("Pikachu", pikachu_img, /*xp_cost=*/150, /*hp=*/200);
@@ -48,13 +58,16 @@ function setup() {
   level1 = new Level(level1_img, [pikachu], [], 5);
 
   createCanvas(windowWidth, windowHeight);
+  updatetScaleFactor();
 }
 
 function draw() {
+  scale(scaleFactor);
   background(0);
   image(level1_img, 0, 0);
 }
 
-/*function windowResized() {
+function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-}*/
+  updateScaleFactor();
+}
