@@ -8,6 +8,15 @@ Kieran wants to customize it with a Pokemon theme.
 
 Finn wants to customize it with an Among Us theme.
 
+## Road to MVP
+
+1. Display a rudimentary background in the standard resolution.
+   600x800, 6 rows of 100px, with 5 rows used for attacks.
+2. Display a rudimentary defender in the purchase menu.
+3. Allow the user to select and place a defender in the grid.
+4. Add scaling up and down to maximize use of window size.
+5. Dispatch a rudimentary attacker at some interval.
+
 ## Key Features
 
 A **level** consists of:
