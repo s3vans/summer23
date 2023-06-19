@@ -1,43 +1,70 @@
-Concept
+# Summer 2023 Game Dev
 
-We need a game engine capable of supporting a customizable "plants vs. zombies"
-style game.
+## Goals
 
-Some Requirements
+Shayne wants a customizable "plants vs. zombies" style game.
 
-Fundamentals
-  Display
-    - Minimum resolution
-    - Fixed resolution scaled up with available window size
-  Screens
-    - Have associated Objects drawn on them
-    - Can be shown or hidden
-  Objects
-    - Drawn on screen with x,y,z
-    - Can respond to clicks, even when visible behind another object
-    - Can display animations regardless of frame rate
-    - Can move at a fixed rate regardless of frame rate
-  Event Manager
-    - Register for events
-  Sound
-    - Background music
-    - Forground character, attack, and damage sound effects
+Kieran wants to customize it with a Pokemon theme.  
 
-Overlayed Menu
-  - Display text options, example
-    - Play Game
-    - Quit
-  - Highlight on mouse over
-  - Click to select with mouse
+Finn wants to customize it with an Among Us theme.
 
-Main Game Screen
-  - Lanes that need to be defended
-  - Menu for selecting and placing defenders
-  - The ability to place defenders in a spot, the ability to
-  - An overlay with pertinent information
-  - Stationary defenders that detect enemies and launch defensive attacks
-  - Mobile attackers that detect defenders and launch attacks
-  - Ability to collect rewards that are used to purchase new defenders
-  - Character animations for moving, resting, attacking, being damaged, dying
+## Key Features
 
+A **level** consists of:
+  * A timer
+  * A background image
+  * A background music track
+  * A starting amount of XP used by the player to purchase defenders
+  * A set of defenders
+  * A set of attackers
+  * A distribution or timing sequence for attackers to arrive
+  * A menu to purchase and place defenders
+  * A frequency of XP rewards that drop
+  * A timed sequence of events, such as announcing the next wave
 
+The **layout** of a level incudes:
+  * A dedicated area to display game info, such as:
+      * XP collected
+      * Time elapsed / level-progress
+  * A dedicated area to display the available defenders for purchase
+  * The main area with:
+      * A defensive position on the left -- if enemies enter, they win
+      * Rows to be defended from attackers approaching from the right
+      * A grid of spots in which defenders can be placed
+
+Character details:
+  * Each defender has:
+      * XP cost
+      * HP health
+      * A speed or cadance for defensive attacks
+      * Attack strenghs and defensive weaknesses
+      * Animations for idle, attacking, taking damage, dying
+      * Most defenders launch projectile attacks
+  * Each attacker has:
+      * HP health
+      * Attack strengths and defensive weaknesses
+      * A speed or cadence for moving + attacks
+      * Animations for walking, idle attacking, taking damage, dying
+      * Most attackers attack when they are next to the defender
+
+Graphics considerations:
+  * Fixed resolution, but it can be scaled up or down to fit in
+    the available window size
+  * Fixed size rows and grid spaces dictate character size
+  * Fixed size purchase menu grids dictate shopping display
+  * Overlayed animations and sounds may be played for effect
+  * The background remains behind everything
+  * Characters added later should appear in front of earlier
+  * Projectiles should appear in front of characters
+  * Overlayed animations appear in front of everything, except..
+  * The game screen can be suspended and a menu screen overlayed
+
+Interaction considerations:
+  * The user can click to select a defender then click to place in an available
+    grid slot
+  * The user can click on rewards as they fall or when they have landed to
+    collect XP, but only on the non-transparent pixels
+  * In rare cases, the user can click on a defender to launch a special attack
+  * The main game can be suspended for other menu screens or cut scenes
+
+   
