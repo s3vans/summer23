@@ -65,11 +65,11 @@ let images = new Map();
 function _loadImagesFromLevel(level) {
   _isUidUnique(level.uid);
   images.set(level.uid, loadImage(level.img));
-  for (defender of level.defenders) {
+  for (let defender of level.defenders) {
     _isUidUnique(defender.uid);
     images.set(defender.uid, loadImage(defender.img));
   }
-  for (attacker of level.attackers) {
+  for (let attacker of level.attackers) {
     _isUidUnique(attacker.uid);
     images.set(attacker.uid, loadImage(attacker.img));
   }
