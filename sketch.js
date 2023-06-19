@@ -48,15 +48,29 @@ let levels = [{
       }],
     }];
 
-// TODO: Detect reused uids!
+let uids = new Map();
+let err_duplicate_uid = "";
+function _isUidUnique(uid) {
+  if (uids.has(uid)) {
+    console.error("Encountered duplicate id: " + uid);
+    err_duplicate_uid = uid;
+    return false;
+  }
+  uids.set(uid, true);
+  return true;
+}
+
 let images = new Map();
 function _loadImagesFromLevels() {
   for (level of levels) {
+    _isUidUnique(level.uid);
     images.set(level.uid, loadImage(level.img));
     for (defender of level.defenders) {
+      _isUidUnique(defender.uid);
       images.set(defender.uid, loadImage(defender.img));
     }
     for (attacker of level.attackers) {
+      _isUidUnique(attacker.uid);
       images.set(attacker.uid, loadImage(attacker.img));
     }
   }
@@ -67,6 +81,13 @@ function _updateScaleFactor() {
   let yFactor = Math.max(windowHeight / YRESOLUTION, MIN_SCALE_FACTOR);
   let xFactor = Math.max(windowWidth / XRESOLUTION, MIN_SCALE_FACTOR);
   return Math.min(MAX_SCALE_FACTOR, Math.min(yFactor, xFactor));
+}
+
+function _displayError(err) {
+  background(255);
+  fill(255, 0, 0);
+  textSize(20);
+  text(err, 10, 20);
 }
 
 function preload() {
@@ -82,6 +103,11 @@ function setup() {
 function draw() {
   scale(scaleFactor);
   background(0);
+  if (err_duplicate_uid != "") {
+    _displayError("Duplicate uid detected: " + err_duplicate_uid);
+    noLoop();
+    return;
+  }
   image(images.get(level.uid), 0, 0);
 }
 
