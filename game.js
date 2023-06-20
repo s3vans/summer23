@@ -330,9 +330,10 @@ class Game {
         if (row == -1) {
           return;
         }
-        if (!this.map_state[row][col]) {
-          this.map_state[row][col] = true;
+        if (this.map_state[row][col]) {
+          return;
         }
+        this.map_state[row][col] = true;
         this.levelXp -= this.store[this.selected].xp;
         this.state = "NORMAL";
         this.selected = -1;
