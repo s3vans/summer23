@@ -59,6 +59,7 @@ class Game {
     this.defenderConfigs = new Map();
     this.scaleFactor = 1;
     this.state = "NORMAL";
+    this.store = [];
     this.selected = -1;
   }
 
@@ -122,6 +123,7 @@ class Game {
                                            loadImage(defender.img),
                                            defender.xp_cost, defender.hp);
       this.defenderConfigs.set(defender.uid, defenderObj);
+      this.store.push(defenderObj);
     }
   }
 
@@ -289,11 +291,19 @@ class Game {
   mouseClicked() {
     if (this.state == "NORMAL") {
       let idx = this._getSelectedStoreItemIdx();
-      if (idx != -1) {
+      if (idx == -1) {
+        return;
+      }
+      if (this.levelXp > this.store[idx].xp) {
         this.state = "SELECTED";
         this.selected = idx;
       }
-      setInterval(() => { this.state = "NORMAL"; this.selected = -1; }, 10000);
+      setInterval(() => { this.state = "NORMAL"; this.selected = -1; }, 15000);
+    }
+    else if (this.state == "SELECTED") {
+        this.levelXp -= this.store[this.selected].xp;
+        this.state = "NORMAL";
+        this.selected = -1;
     }
   }
 
