@@ -22,21 +22,12 @@ class Attacker {
   }
 }
 
-class Level {
-  constructor(img, defenders, attackers, attack_delay_secs) {
-    this.img = img;
-    this.defenders = defenders;
-    this.attackers = attackers;
-    this.attack_delay_secs = attack_delay_secs;
-  }
-}
-
 class GameState {
   constructor() {
     this.level = undefined;
+    this.levelImg = undefined;
     this.uids = new Map();
     this.err_duplicate_uid = "";
-    this.images = new Map();
     this.attackers = new Map();
     this.defenders = new Map();
     this.scaleFactor = 1;
@@ -72,43 +63,47 @@ class GameState {
   }
 
   loadLevelFromLevelConfig(level) {
-    this.level = level;
-    this._loadImagesFromLevel(level);
+    this._loadLevel(level);
     this._loadDefendersFromLevel(level);
     this._loadAttackersFromLevel(level);
   }
 
-  _loadImagesFromLevel(level) {
+  _loadLevel(level) {
+    this.level = level;
+    this.levelImg = loadImage(level.img);
+    this._checkUidsFromLevel(level);
+  }
+
+  _checkUidsFromLevel(level) {
     this._isUidUnique(this.level.uid);
-    this.images.set(this.level.uid, loadImage(this.level.img));
     for (let defender of this.level.defenders) {
       this._isUidUnique(defender.uid);
-      this.images.set(defender.uid, loadImage(defender.img));
     }
     for (let attacker of this.level.attackers) {
       this._isUidUnique(attacker.uid);
-      this.images.set(attacker.uid, loadImage(attacker.img));
     }
   }
 
   _loadDefendersFromLevel(level) {
     for (let defender of this.level.defenders) {
-      let defenderObj = new Defender(defender.uid, defender.name, defender.img,
-                                     defender.xp_cost, defender.hp);
+      let defenderObj = new Defender(defender.uid, defender.name,
+                                     loadImage(defender.img), defender.xp_cost,
+                                     defender.hp);
       this.defenders.set(defender.uid, defenderObj);
     }
   }
 
   _loadAttackersFromLevel(level) {
     for (let attacker of this.level.attackers) {
-      let attackerObj = new Attacker(attacker.uid, attacker.name, attacker.hp);
+      let attackerObj = new Attacker(attacker.uid, attacker.name,
+                                     loadImage(attacker.img), attacker.hp);
       this.attackers.set(attacker.uid, attackerObj);
     }
   }
 
   drawBackground() {
     background(0);
-    image(this.images.get(this.level.uid), 0, 0);
+    image(this.levelImg, 0, 0);
   }
 
   drawPokestore() {
@@ -118,7 +113,7 @@ class GameState {
        rect(x+(100*i), y, 100, 100);
     }
     for (let defender of this.defenders.values()) {
-       image(this.images.get(defender.uid), x, y, 80, 80);
+       image(defender.img, x, y, 80, 80);
        textSize(10);
        text(defender.name, x+10, y+85);
        text('HP:' + defender.hp, x+50, y+85);
