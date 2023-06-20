@@ -3,6 +3,10 @@
 // TODO: Draw the defenders.
 // TODO: Allow them to detect attackers in their row.
 // TODO: Allow them to launch projectile attacks.
+// TODO: Add rudimentary system for sending attack waves.
+// TODO: Add collectibles to restore XP.
+// TODO: Support drawing character animations (at rest).
+// TODO: Refactor Game state for maintainability.
 
 const XRESOLUTION = 800;
 const YRESOLUTION = 600;
