@@ -11,6 +11,9 @@ const STORE_ITEM_HEIGHT = 100;
 const STORE_ITEM_IMG_WIDTH = 80;
 const STORE_ITEM_IMG_HEIGHT = 80;
 
+const OVERLAY_X = 720;
+const OVERLAY_Y = 90;
+
 // A template that defines an available defender in a game level.
 // Note that this doesn't currently represent an active character in the game.
 class DefenderConfig {
@@ -40,6 +43,7 @@ class Game {
     this.canvas = undefined;
     this.levelConfig = undefined;
     this.levelImg = undefined;
+    this.levelXp = 0;
     this.uids = new Map();
     this.err_duplicate_uid = "";
     this.attackerConfigs = new Map();
@@ -86,7 +90,10 @@ class Game {
 
   _loadLevel(levelConfig) {
     this.levelConfig = levelConfig;
+    this.levelUid = levelConfig.uid;
+    this.levelName = levelConfig.name;
     this.levelImg = loadImage(levelConfig.img);
+    this.levelXp = levelConfig.levelXp;
     this._checkUidsFromLevel(levelConfig);
   }
 
@@ -163,7 +170,7 @@ class Game {
     for (let defender of this.defenderConfigs.values()) {
        image(defender.img, x, 0, STORE_ITEM_IMG_WIDTH, STORE_ITEM_IMG_HEIGHT);
        push();
-       strokeWeight(1); noStroke(); fill(0); textSize(10);
+       noStroke(); fill(0); textSize(10);
        text(defender.name, x+10, 85);
        text('HP:' + defender.hp, x+60, 85);
        text('XP:' + defender.xp, x+60, 95);
@@ -210,8 +217,14 @@ class Game {
     pop();
   }
 
-  // TODO: This draws all of the overlayed game info, such as XP.
+  // This draws all of the overlayed game info, such as XP.
   _drawOverlay() {
+    push();
+    translate(OVERLAY_X, OVERLAY_Y);
+    fill(0); strokeWeight(1); stroke(0); textSize(16);
+    text(this.levelName, 0, 0);
+    text("XP: " + this.levelXp, 0, 24);
+    pop();
   }
 
   _getSelectedStoreItemIdx() {

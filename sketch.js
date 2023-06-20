@@ -2,6 +2,7 @@ let levels = [{
     "uid": "level1",
     "name": "Level 1",
     "img": "assets/pokemon/levels/level1.png",
+    "levelXp": 500,
     "defenderConfigs": [{
         "uid": "pikachu",
         "name": "Pikachu",
