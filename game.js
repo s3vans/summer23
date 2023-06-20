@@ -196,23 +196,40 @@ class Game {
   _drawEffects() {
   }
 
+  _mouseInRectangle(x, y, width, height) {
+    if (mouseX < x || mouseX > x+width) {
+      return false;
+    }
+    if (mouseY < y || mouseY > y+height) {
+      return false;
+    }
+    return true;
+  }
+
+  _highlightRectangle(x, y, width, height, color, transparency) {
+    push();
+    fill(color);
+    rect(x, y, width, height);
+    pop();
+  }
+
   _drawCursor() {
     push();
-    let x = 100;
-    let y = 20;
     if (this.state == "NORMAL") {
-      for (let i = 0; i < 5; i++) {
-        if (mouseX >= x+(100*i) && mouseX <= x+(100*(i+1))) {
-          if (mouseY >= y && mouseY <= 120) {
-            fill(255, 255, 0, 100);
-            rect(x+(100*i), y, 100, 100);
-          }
+      let x = STORE_X;
+      let y = STORE_Y;
+      for (let i = 0; i < STORE_ITEM_COUNT; i++) {
+        if (this._mouseInRectangle(x, y, STORE_ITEM_WIDTH, STORE_ITEM_HEIGHT)) {
+          this._highlightRectangle(x, y, STORE_ITEM_WIDTH, STORE_ITEM_HEIGHT,
+                                   color(255, 255, 0, 100));
         }
+        x = x + STORE_ITEM_WIDTH;
       }
     }
     else if (this.state == "SELECTED") {
-      fill(0, 255, 255, 100);
-      rect(x+(100*this.selected), y, 100, 100);
+      this._highlightRectangle(STORE_X+(STORE_ITEM_WIDTH*this.selected), STORE_Y,
+                               STORE_ITEM_WIDTH, STORE_ITEM_HEIGHT,
+                               color(0, 255, 255, 100));
     }
     pop();
   }
