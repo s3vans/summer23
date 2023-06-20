@@ -127,6 +127,12 @@ class Game {
     }
     this._drawBackground();
     this._drawStore();
+    this._drawCharacters();
+    this._drawProjectiles();
+    this._drawCollectibles();
+    this._drawEffects();
+    this._drawCursor();
+    this._drawOverlay();
   }
 
   _drawBackground() {
@@ -152,10 +158,25 @@ class Game {
        x += 100;
     }
     pop();
-    this._drawCursorOverStore();
   }
 
-  _drawCursorOverStore() {
+  // TODO: This draws all of the characters.
+  _drawCharacters() {
+  }
+
+  // TODO: This draws all of the projectiles.
+  _drawProjectiles() {
+  }
+
+  // TODO: This draws all of the collectibles.
+  _drawCollectibles() {
+  }
+
+  // TODO: This draws all of the overlayed effects.
+  _drawEffects() {
+  }
+
+  _drawCursor() {
     push();
     let x = 100;
     let y = 20;
@@ -174,6 +195,10 @@ class Game {
       rect(x+(100*this.selected), y, 100, 100);
     }
     pop();
+  }
+
+  // TODO: This draws all of the overlayed game info, such as XP.
+  _drawOverlay() {
   }
 
   _getSelectedStoreItemIdx() {
