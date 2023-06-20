@@ -56,7 +56,7 @@ class Game {
   _updateScaleFactor() {
     let yFactor = Math.max(windowHeight / YRESOLUTION, MIN_SCALE_FACTOR);
     let xFactor = Math.max(windowWidth / XRESOLUTION, MIN_SCALE_FACTOR);
-    this.scaleFactor = Math.min(MAX_SCALE_FACTOR, Math.min(yFactor, xFactor));
+    //this.scaleFactor = Math.min(MAX_SCALE_FACTOR, Math.min(yFactor, xFactor));
   }
 
   _displayError(err) {
