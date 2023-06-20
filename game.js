@@ -61,6 +61,13 @@ class Game {
     this.state = "NORMAL";
     this.store = [];
     this.selected = -1;
+    this.map_state = [];
+    for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
+      this.map_state[row] = [];
+      for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
+        this.map_state[row][col] = false;
+      }
+    }
   }
 
   _updateScaleFactor() {
@@ -236,8 +243,7 @@ class Game {
         }
         x = x + STORE_ITEM_WIDTH;
       }
-    }
-    else if (this.state == "SELECTED") {
+    } else if (this.state == "SELECTED") {
       this._highlightRectangle(STORE_X+(STORE_ITEM_WIDTH*this.selected), STORE_Y,
                                STORE_ITEM_WIDTH, STORE_ITEM_HEIGHT,
                                color(0, 255, 255, 100));
@@ -246,8 +252,13 @@ class Game {
         let x = MAP_X;
         for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
           if (this._mouseInRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT)) {
-            this._highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
-                                     color(255, 255, 0, 100));
+            if (this.map_state[row][col] == false) {
+              this._highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
+                                       color(255, 255, 0, 100));
+            } else {
+              this._highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
+                                       color(255, 0, 0, 100));
+            }
           }
           x = x + MAP_CELL_WIDTH;
         }
@@ -288,6 +299,21 @@ class Game {
     return -1;
   }
 
+  _getSelectedMapRowCol() {
+      let y = MAP_Y;
+      for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
+        let x = MAP_X;
+        for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
+          if (this._mouseInRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT)) {
+            return [row, col]
+          }
+          x = x + MAP_CELL_WIDTH;
+        }
+        y = y + MAP_CELL_HEIGHT;
+      }
+      return [-1, -1];
+  }
+
   mouseClicked() {
     if (this.state == "NORMAL") {
       let idx = this._getSelectedStoreItemIdx();
@@ -299,8 +325,14 @@ class Game {
         this.selected = idx;
       }
       setInterval(() => { this.state = "NORMAL"; this.selected = -1; }, 15000);
-    }
-    else if (this.state == "SELECTED") {
+    } else if (this.state == "SELECTED") {
+        let [row, col] = this._getSelectedMapRowCol();
+        if (row == -1) {
+          return;
+        }
+        if (!this.map_state[row][col]) {
+          this.map_state[row][col] = true;
+        }
         this.levelXp -= this.store[this.selected].xp;
         this.state = "NORMAL";
         this.selected = -1;
