@@ -72,6 +72,7 @@ class Game {
     this.store = [];
     this.selected = -1;
     this.map_state = [];
+    // Populate 2D array.
     for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
       this.map_state[row] = [];
       for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
@@ -325,6 +326,7 @@ class Game {
   }
 
   mouseClicked() {
+    // TODO: Handle collecting Collectibles first.
     if (this.state == "NORMAL") {
       let idx = this._getSelectedStoreItemIdx();
       if (idx == -1) {
@@ -361,6 +363,7 @@ class Game {
   }
 
   windowResized() { 
+    // TODO: Is there a resize for this.canvas?
     resizeCanvas(windowWidth, windowHeight);
     this._updateScaleFactor();
   }
