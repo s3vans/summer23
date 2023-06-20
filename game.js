@@ -146,7 +146,7 @@ class Game {
   _drawBackground() {
     push();
     background(0);
-    image(this.levelImg, 0, 0);
+    image(this.levelImg, 0, 0, XRESOLUTION, YRESOLUTION);
     pop();
   }
 
