@@ -29,7 +29,7 @@ class AttackerConfig {
 // All of the game config, state, and logic lives here.
 class Game {
   constructor() {
-    this.level = undefined;
+    this.levelConfig = undefined;
     this.levelImg = undefined;
     this.uids = new Map();
     this.err_duplicate_uid = "";
@@ -37,6 +37,7 @@ class Game {
     this.defenderConfigs = new Map();
     this.scaleFactor = 1;
     this.state = "NORMAL";
+    this.selected = -1;
   }
 
   _updateScaleFactor() {
@@ -68,16 +69,16 @@ class Game {
     return this.err_duplicate_uid;
   }
 
-  loadLevel(level) {
-    this._loadLevel(level);
-    this._loadDefenderConfigForLevel(level);
-    this._loadAttackerConfigForLevel(level);
+  loadLevel(levelConfig) {
+    this._loadLevel(levelConfig);
+    this._loadDefenderConfigForLevel(levelConfig);
+    this._loadAttackerConfigForLevel(levelConfig);
   }
 
-  _loadLevel(level) {
-    this.level = level;
-    this.levelImg = loadImage(level.img);
-    this._checkUidsFromLevel(level);
+  _loadLevel(levelConfig) {
+    this.levelConfig = levelConfig;
+    this.levelImg = loadImage(levelConfig.img);
+    this._checkUidsFromLevel(levelConfig);
   }
 
   _checkUidsFromLevel(level) {
@@ -90,8 +91,8 @@ class Game {
     }
   }
 
-  _loadDefenderConfigForLevel(level) {
-    for (let defender of this.level.defenderConfigs) {
+  _loadDefenderConfigForLevel(levelConfig) {
+    for (let defender of levelConfig.defenderConfigs) {
       let defenderObj = new DefenderConfig(defender.uid, defender.name,
                                            loadImage(defender.img),
                                            defender.xp_cost, defender.hp);
@@ -99,8 +100,8 @@ class Game {
     }
   }
 
-  _loadAttackerConfigForLevel(level) {
-    for (let attacker of this.level.attackerConfigs) {
+  _loadAttackerConfigForLevel(levelConfig) {
+    for (let attacker of levelConfig.attackerConfigs) {
       let attackerObj = new AttackerConfig(attacker.uid, attacker.name,
                                            loadImage(attacker.img),
                                            attacker.hp);
@@ -119,8 +120,8 @@ class Game {
 
   draw() {
     scale(this.scaleFactor);
-    if (game.getDuplicateUid() != "") {
-      game._displayError("Duplicate uid detected: " + err_duplicate_uid);
+    if (this.getDuplicateUid() != "") {
+      this._displayError("Duplicate uid detected: " + err_duplicate_uid);
       noLoop();
       return;
     }
