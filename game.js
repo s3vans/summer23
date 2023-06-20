@@ -4,15 +4,24 @@ const MIN_SCALE_FACTOR = .5;
 const MAX_SCALE_FACTOR = 3;
 
 const STORE_X = 100;
-const STORE_Y = 20;
+const STORE_Y = 0;
 const STORE_ITEM_COUNT = 6;
 const STORE_ITEM_WIDTH = 100;
 const STORE_ITEM_HEIGHT = 100;
 const STORE_ITEM_IMG_WIDTH = 80;
 const STORE_ITEM_IMG_HEIGHT = 80;
 
-const OVERLAY_X = 720;
-const OVERLAY_Y = 90;
+const MAP_X = 100;
+const MAP_Y = 100;
+const MAP_CELL_COL_COUNT = 7;
+const MAP_CELL_ROW_COUNT = 5;
+const MAP_CELL_WIDTH = 100;
+const MAP_CELL_HEIGHT = 100;
+
+const OVERLAY_X = 700;
+const OVERLAY_Y = 0;
+const OVERLAY_WIDTH = 100;
+const OVERLAY_HEIGHT = 100;
 
 // A template that defines an available defender in a game level.
 // Note that this doesn't currently represent an active character in the game.
@@ -230,6 +239,18 @@ class Game {
       this._highlightRectangle(STORE_X+(STORE_ITEM_WIDTH*this.selected), STORE_Y,
                                STORE_ITEM_WIDTH, STORE_ITEM_HEIGHT,
                                color(0, 255, 255, 100));
+      let y = MAP_Y;
+      for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
+        let x = MAP_X;
+        for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
+          if (this._mouseInRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT)) {
+            this._highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
+                                     color(255, 255, 0, 100));
+          }
+          x = x + MAP_CELL_WIDTH;
+        }
+        y = y + MAP_CELL_HEIGHT;
+      }
     }
     pop();
   }
@@ -238,7 +259,12 @@ class Game {
   _drawOverlay() {
     push();
     translate(OVERLAY_X, OVERLAY_Y);
-    fill(0); strokeWeight(1); stroke(0); textSize(16);
+    fill(0, 0, 0, 100);
+    rect(0, 0, OVERLAY_WIDTH, OVERLAY_HEIGHT);
+    pop();
+    push();
+    translate(OVERLAY_X+20, OVERLAY_Y+30);
+    fill(255); strokeWeight(1); stroke(255); textSize(16);
     text(this.levelName, 0, 0);
     text("XP: " + this.levelXp, 0, 24);
     pop();
@@ -250,7 +276,10 @@ class Game {
     for (let i = 0; i < 5; i++) {
       if (mouseX >= x+(100*i) && mouseX <= x+(100*(i+1))) {
         if (mouseY >= y && mouseY <= 120) {
-          return i;
+          if (i < this.defenderConfigs.size) {
+            return i;
+          }
+          return -1;
         }
       }
     }
@@ -264,7 +293,7 @@ class Game {
         this.state = "SELECTED";
         this.selected = idx;
       }
-      setInterval(() => { this.state = "NORMAL"; this.selected = -1; }, 2000);
+      setInterval(() => { this.state = "NORMAL"; this.selected = -1; }, 10000);
     }
   }
 
