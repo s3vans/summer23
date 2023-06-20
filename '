@@ -152,22 +152,20 @@ class Game {
 
   _drawStore() {
     push();
+    // strokeWeight(), stroke(), noStroke(), fill(), noFill()
     translate(STORE_X, STORE_Y);
     for (let i = 0; i < STORE_ITEM_COUNT; i++) {
-       push();
-       strokeWeight(1); stroke(0); fill(255);
        rect(STORE_ITEM_WIDTH*i, 0, STORE_ITEM_WIDTH, STORE_ITEM_HEIGHT);
-       pop();
     }
-    let x = 0;
+    let x = STORE_X;
     for (let defender of this.defenderConfigs.values()) {
        image(defender.img, x, 0, STORE_ITEM_IMG_WIDTH, STORE_ITEM_IMG_HEIGHT);
-       push();
-       strokeWeight(1); noStroke(); fill(0); textSize(10);
+       //strokeWeight(1);
+       stroke(0);
+       textSize(10);
        text(defender.name, x+10, 85);
-       text('HP:' + defender.hp, x+60, 85);
-       text('XP:' + defender.xp, x+60, 95);
-       pop();
+       text('HP:' + defender.hp, x+50, 85);
+       text('XP:' + defender.xp, x+50, 95);
        x += STORE_ITEM_WIDTH;
     }
     pop();
