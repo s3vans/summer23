@@ -33,13 +33,13 @@ class GameState {
     this.scaleFactor = 1;
   }
 
-  updateScaleFactor() {
+  _updateScaleFactor() {
     let yFactor = Math.max(windowHeight / YRESOLUTION, MIN_SCALE_FACTOR);
     let xFactor = Math.max(windowWidth / XRESOLUTION, MIN_SCALE_FACTOR);
     this.scaleFactor = Math.min(MAX_SCALE_FACTOR, Math.min(yFactor, xFactor));
   }
 
-  displayError(err) {
+  _displayError(err) {
     console.err(err);
     background(255);
     fill(255, 0, 0);
@@ -101,12 +101,32 @@ class GameState {
     }
   }
 
-  drawBackground() {
+  // TODO: Make canvas local to game.
+  setup() {
+    createCanvas(windowWidth, windowHeight);
+    this._updateScaleFactor();
+  }
+
+  update() {
+  }
+
+  draw() {
+    scale(this.scaleFactor);
+    if (game.getDuplicateUid() != "") {
+      game._displayError("Duplicate uid detected: " + err_duplicate_uid);
+      noLoop();
+      return;
+    }
+    this._drawBackground();
+    this._drawPokestore();
+  }
+
+  _drawBackground() {
     background(0);
     image(this.levelImg, 0, 0);
   }
 
-  drawPokestore() {
+  _drawPokestore() {
     let x = 100;
     let y = 20;
     for (let i = 0; i < 5; i++) {
@@ -120,6 +140,11 @@ class GameState {
        text('XP:' + defender.xp, x+50, y+95);
        x += 100;
     }
+  }
+
+  windowResized() { 
+    resizeCanvas(windowWidth, windowHeight);
+    this._updateScaleFactor();
   }
 }
 
@@ -149,22 +174,14 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  game.updateScaleFactor();
+  game.setup();
 }
 
 function draw() {
-  scale(game.scaleFactor);
-  if (game.getDuplicateUid() != "") {
-    game.displayError("Duplicate uid detected: " + err_duplicate_uid);
-    noLoop();
-    return;
-  }
-  game.drawBackground();
-  game.drawPokestore();
+  game.update();
+  game.draw();
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
-  game.updateScaleFactor();
+  game.windowResized();
 }
