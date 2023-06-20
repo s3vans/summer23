@@ -37,6 +37,7 @@ class AttackerConfig {
 // All of the game config, state, and logic lives here.
 class Game {
   constructor() {
+    this.canvas = undefined;
     this.levelConfig = undefined;
     this.levelImg = undefined;
     this.uids = new Map();
@@ -117,9 +118,8 @@ class Game {
     }
   }
 
-  // TODO: Make canvas local to game.
   setup() {
-    createCanvas(windowWidth, windowHeight);
+    this.canvas = createCanvas(windowWidth, windowHeight);
     this._updateScaleFactor();
   }
 
