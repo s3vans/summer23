@@ -5,7 +5,7 @@ const MAX_SCALE_FACTOR = 3;
 
 const STORE_X = 100;
 const STORE_Y = 20;
-const STORE_ITEM_COUNT = 5;
+const STORE_ITEM_COUNT = 6;
 const STORE_ITEM_WIDTH = 100;
 const STORE_ITEM_HEIGHT = 100;
 const STORE_ITEM_IMG_WIDTH = 80;
