@@ -32,6 +32,10 @@ function draw() {
   game.draw();
 }
 
+function mouseClicked() {
+  game.mouseClicked();
+}
+
 function windowResized() {
   game.windowResized();
 }

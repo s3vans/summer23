@@ -36,6 +36,7 @@ class Game {
     this.attackerConfigs = new Map();
     this.defenderConfigs = new Map();
     this.scaleFactor = 1;
+    this.state = "NORMAL";
   }
 
   _updateScaleFactor() {
@@ -124,15 +125,18 @@ class Game {
       return;
     }
     this._drawBackground();
-    this._drawPokestore();
+    this._drawStore();
   }
 
   _drawBackground() {
+    push();
     background(0);
     image(this.levelImg, 0, 0);
+    pop();
   }
 
-  _drawPokestore() {
+  _drawStore() {
+    push();
     let x = 100;
     let y = 20;
     for (let i = 0; i < 5; i++) {
@@ -145,6 +149,53 @@ class Game {
        text('HP:' + defender.hp, x+50, y+85);
        text('XP:' + defender.xp, x+50, y+95);
        x += 100;
+    }
+    pop();
+    this._drawCursorOverStore();
+  }
+
+  _drawCursorOverStore() {
+    push();
+    let x = 100;
+    let y = 20;
+    if (this.state == "NORMAL") {
+      for (let i = 0; i < 5; i++) {
+        if (mouseX >= x+(100*i) && mouseX <= x+(100*(i+1))) {
+          if (mouseY >= y && mouseY <= 120) {
+            fill(255, 255, 0, 100);
+            rect(x+(100*i), y, 100, 100);
+          }
+        }
+      }
+    }
+    else if (this.state == "SELECTED") {
+      fill(0, 255, 255, 100);
+      rect(x+(100*this.selected), y, 100, 100);
+    }
+    pop();
+  }
+
+  _getSelectedStoreItemIdx() {
+    let x = 100;
+    let y = 20;
+    for (let i = 0; i < 5; i++) {
+      if (mouseX >= x+(100*i) && mouseX <= x+(100*(i+1))) {
+        if (mouseY >= y && mouseY <= 120) {
+          return i;
+        }
+      }
+    }
+    return -1;
+  }
+
+  mouseClicked() {
+    if (this.state == "NORMAL") {
+      let idx = this._getSelectedStoreItemIdx();
+      if (idx != -1) {
+        this.state = "SELECTED";
+        this.selected = idx;
+      }
+      setInterval(() => { this.state = "NORMAL"; this.selected = -1; }, 2000);
     }
   }
 
