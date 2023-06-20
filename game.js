@@ -326,7 +326,7 @@ class Game {
       if (idx == -1) {
         return;
       }
-      if (this.levelXp > this.store[idx].xp) {
+      if (this.levelXp >= this.store[idx].xp) {
         this.state = "SELECTED";
         this.selected = idx;
       }
@@ -335,7 +335,7 @@ class Game {
         // Handle changing selection.
         let idx = this._getSelectedStoreItemIdx();
         if (idx != -1) {
-          if (this.levelXp > this.store[idx].xp) {
+          if (this.levelXp >= this.store[idx].xp) {
             this.state = "SELECTED";
             this.selected = idx;
           }
