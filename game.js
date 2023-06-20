@@ -1,3 +1,9 @@
+// TODO: Fix scaleFactor to work with mouse position.
+// TODO: Instantiate defenders in a spot.
+// TODO: Draw the defenders.
+// TODO: Allow them to detect attackers in their row.
+// TODO: Allow them to launch projectile attacks.
+
 const XRESOLUTION = 800;
 const YRESOLUTION = 600;
 const MIN_SCALE_FACTOR = .5;
@@ -186,7 +192,7 @@ class Game {
     }
     let x = 0;
     for (let defender of this.defenderConfigs.values()) {
-       image(defender.img, x, 0, STORE_ITEM_IMG_WIDTH, STORE_ITEM_IMG_HEIGHT);
+       image(defender.img, x+10, 0, STORE_ITEM_IMG_WIDTH, STORE_ITEM_IMG_HEIGHT);
        push();
        noStroke(); fill(0); textSize(10);
        text(defender.name, x+10, 85);
@@ -326,6 +332,16 @@ class Game {
       }
       setInterval(() => { this.state = "NORMAL"; this.selected = -1; }, 15000);
     } else if (this.state == "SELECTED") {
+        // Handle changing selection.
+        let idx = this._getSelectedStoreItemIdx();
+        if (idx != -1) {
+          if (this.levelXp > this.store[idx].xp) {
+            this.state = "SELECTED";
+            this.selected = idx;
+          }
+        }
+
+        // Handle placing on map.
         let [row, col] = this._getSelectedMapRowCol();
         if (row == -1) {
           return;

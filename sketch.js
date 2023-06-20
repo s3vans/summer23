@@ -9,6 +9,18 @@ let levels = [{
         "img": "assets/pokemon/defenders/pikachu.png",
         "xp_cost": 150,
         "hp": 200,
+      }, {
+        "uid": "pika2",
+        "name": "Pikachu2",
+        "img": "assets/pokemon/attackers/evee.png",
+        "xp_cost": 50,
+        "hp": 300,
+      }, {
+        "uid": "pika3",
+        "name": "Pikachu3",
+        "img": "assets/pokemon/defenders/pikachu.png",
+        "xp_cost": 75,
+        "hp": 300,
     }],
     "attackerConfigs": [{
         "uid": "evee",
