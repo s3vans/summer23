@@ -4,7 +4,6 @@
 // TODO: Add collectibles to restore XP.
 // TODO: Support drawing character animations (at rest).
 
-
 const XRESOLUTION = 800;
 const YRESOLUTION = 600;
 const MIN_SCALE_FACTOR = .5;
@@ -82,11 +81,12 @@ class Game {
     this.levelXp = 0;
     this.uids = new Map();
     this.err_duplicate_uid = "";
-    this.attackerConfigs = new Map();
-    this.defenderConfigs = new Map();
+    this.attackerConfigMap = new Map();
+    this.attackerConfigs = [];
+    this.defenderConfigMap = new Map();
+    this.defenderConfigs = [];
     this.scaleFactor = 1;
     this.state = "NORMAL";
-    this.store = [];
     this.selected = -1;
     this.map_state = [];
     // Populate 2D array.
@@ -144,36 +144,37 @@ class Game {
 
   _checkUidsFromLevel(level) {
     this._isUidUnique(level.uid);
-    for (let defender of level.defenderConfigs) {
+    for (let defender of level.defenderConfigMap) {
       this._isUidUnique(defender.uid);
     }
-    for (let attacker of level.attackerConfigs) {
+    for (let attacker of level.attackerConfigMap) {
       this._isUidUnique(attacker.uid);
     }
   }
 
   _loadDefenderConfigForLevel(levelConfig) {
-    for (let defender of levelConfig.defenderConfigs) {
+    for (let defender of levelConfig.defenderConfigMap) {
       let defenderObj = new DefenderConfig(defender.uid, defender.name,
                                            loadImage(defender.img),
                                            defender.xp_cost, defender.hp);
-      this.defenderConfigs.set(defender.uid, defenderObj);
-      this.store.push(defenderObj);
+      this.defenderConfigMap.set(defender.uid, defenderObj);
+      this.defenderConfigs.push(defenderObj);
     }
   }
 
   _loadAttackerConfigForLevel(levelConfig) {
-    for (let attacker of levelConfig.attackerConfigs) {
+    for (let attacker of levelConfig.attackerConfigMap) {
       let attackerObj = new AttackerConfig(attacker.uid, attacker.name,
                                            loadImage(attacker.img),
                                            attacker.hp);
-      this.attackerConfigs.set(attacker.uid, attackerObj);
+      this.attackerConfigMap.set(attacker.uid, attackerObj);
+      this.attackerConfigs.push(attackerObj);
     }
   }
 
   _sendAttacker() {
     let row = Math.floor(Math.random() * MAP_CELL_ROW_COUNT);
-    let num = Math.floor(Math.random() * this.attackerConfigs.size);
+    let num = Math.floor(Math.random() * this.attackerConfigMap.size);
     console.log("Sending attacker... row: " + row + ", attacker number: " + num);
   }
 
@@ -224,7 +225,7 @@ class Game {
        pop();
     }
     let x = 0;
-    for (let defender of this.defenderConfigs.values()) {
+    for (let defender of this.defenderConfigMap.values()) {
        image(defender.img, x+10, 0, STORE_ITEM_IMG_WIDTH, STORE_ITEM_IMG_HEIGHT);
        push();
        noStroke(); fill(0); textSize(10);
@@ -346,7 +347,7 @@ class Game {
     for (let i = 0; i < STORE_ITEM_COUNT; i++) {
       if (mX >= x+(STORE_ITEM_WIDTH*i) && mX < x+(STORE_ITEM_WIDTH*(i+1))) {
         if (mY >= y && mY <= 120) {
-          if (i < this.defenderConfigs.size) {
+          if (i < this.defenderConfigMap.size) {
             return i;
           }
           return -1;
@@ -378,7 +379,7 @@ class Game {
       if (idx == -1) {
         return;
       }
-      if (this.levelXp >= this.store[idx].xp) {
+      if (this.levelXp >= this.defenderConfigs[idx].xp) {
         this.state = "SELECTED";
         this.selected = idx;
       }
@@ -387,7 +388,7 @@ class Game {
         // Handle changing selection.
         let idx = this._getSelectedStoreItemIdx();
         if (idx != -1) {
-          if (this.levelXp >= this.store[idx].xp) {
+          if (this.levelXp >= this.defenderConfigs[idx].xp) {
             this.state = "SELECTED";
             this.selected = idx;
           }
@@ -400,9 +401,9 @@ class Game {
           if (this.map_state[row][col] != undefined) {
             return;
           }
-          let defenderConfig = this.store[this.selected];
+          let defenderConfig = this.defenderConfigs[this.selected];
           this.map_state[row][col] = new Defender(defenderConfig.img, defenderConfig.hp);
-          this.levelXp -= this.store[this.selected].xp;
+          this.levelXp -= this.defenderConfigs[this.selected].xp;
           this.state = "NORMAL";
           this.selected = -1;
       }
