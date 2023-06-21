@@ -1,4 +1,3 @@
-// TODO: Fix scaleFactor to work with mouse position.
 // TODO: Instantiate defenders in a spot.
 // TODO: Draw the defenders.
 // TODO: Allow them to detect attackers in their row.
@@ -84,7 +83,7 @@ class Game {
   _updateScaleFactor() {
     let yFactor = Math.max(windowHeight / YRESOLUTION, MIN_SCALE_FACTOR);
     let xFactor = Math.max(windowWidth / XRESOLUTION, MIN_SCALE_FACTOR);
-    //this.scaleFactor = Math.min(MAX_SCALE_FACTOR, Math.min(yFactor, xFactor));
+    this.scaleFactor = Math.min(MAX_SCALE_FACTOR, Math.min(yFactor, xFactor));
   }
 
   _displayError(err) {
@@ -179,6 +178,10 @@ class Game {
     this._drawOverlay();
   }
 
+  _scaleMouse(pos) {
+    return pos / this.scaleFactor;
+  }
+
   _drawBackground() {
     push();
     background(0);
@@ -226,10 +229,12 @@ class Game {
   }
 
   _mouseInRectangle(x, y, width, height) {
-    if (mouseX < x || mouseX > x+width) {
+    let mX = this._scaleMouse(mouseX);
+    let mY = this._scaleMouse(mouseY);
+    if (mX < x || mX > x+width) {
       return false;
     }
-    if (mouseY < y || mouseY > y+height) {
+    if (mY < y || mY > y+height) {
       return false;
     }
     return true;
@@ -295,11 +300,13 @@ class Game {
   }
 
   _getSelectedStoreItemIdx() {
+    let mX = this._scaleMouse(mouseX);
+    let mY = this._scaleMouse(mouseY);
     let x = 100;
     let y = 20;
     for (let i = 0; i < 5; i++) {
-      if (mouseX >= x+(100*i) && mouseX <= x+(100*(i+1))) {
-        if (mouseY >= y && mouseY <= 120) {
+      if (mX >= x+(100*i) && mX <= x+(100*(i+1))) {
+        if (mY >= y && mY <= 120) {
           if (i < this.defenderConfigs.size) {
             return i;
           }
