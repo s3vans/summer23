@@ -41,11 +41,12 @@ class Defender {
 
 // Rudimentary attacker instance.
 class Attacker {
-  constructor(img, hp) {
+  constructor(img, hp, row) {
     this.img = img;
     this.hp = hp;
     this.x_pos = XRESOLUTION + MAP_CELL_IMG_WIDTH;
-    this.speed = 5;
+    this.y_pos = MAP_Y + row * MAP_CELL_HEIGHT;
+    this.speed = 1;
   }
 }
 
@@ -175,18 +176,25 @@ class Game {
   }
 
   _sendAttacker() {
+    // TODO: Validate that there is at least one attacker in the levelConfig.
     let row = Math.floor(Math.random() * MAP_CELL_ROW_COUNT);
     let num = Math.floor(Math.random() * this.attackerConfigMap.size);
     console.log("Sending attacker... row: " + row + ", attacker number: " + num);
+    let attackerConfig = this.attackerConfigs[num];
+    let attacker = new Attacker(attackerConfig.img, attackerConfig.hp, row);
+    this.activeAttackers.push(attacker);
   }
 
   setup() {
     this.canvas = createCanvas(windowWidth, windowHeight);
     this._updateScaleFactor();
-    setInterval(() => { this._sendAttacker(); }, 10000); 
+    setInterval(() => { this._sendAttacker(); }, 5000); 
   }
 
   update() {
+    for (let attacker of this.activeAttackers) {
+      attacker.x_pos -= attacker.speed;
+    }
   }
 
   draw() {
@@ -255,6 +263,12 @@ class Game {
         x = x + MAP_CELL_WIDTH;
       }
       y = y + MAP_CELL_HEIGHT;
+    }
+
+    // FIXME: Here's another hack for drawing the attackers.
+    for (let attacker of this.activeAttackers) {
+      image(attacker.img, attacker.x_pos, attacker.y_pos, MAP_CELL_IMG_WIDTH,
+            MAP_CELL_IMG_HEIGHT);
     }
   }
 
