@@ -161,9 +161,14 @@ class Game {
     }
   }
 
+  _sendAttacker() {
+    console.log("Sending attacker");
+  }
+
   setup() {
     this.canvas = createCanvas(windowWidth, windowHeight);
     this._updateScaleFactor();
+    setInterval(() => { this._sendAttacker(); }, 10000); 
   }
 
   update() {
