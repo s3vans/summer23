@@ -178,16 +178,15 @@ class Game {
 
   _sendAttacker() {
     // TODO: Validate that there is at least one attacker in the levelConfig.
+    if (attackerCnt++ > 100) {
+      return;
+    }
     let row = Math.floor(Math.random() * MAP_CELL_ROW_COUNT);
     let num = Math.floor(Math.random() * this.attackerConfigMap.size);
     console.log("Sending attacker... row: " + row + ", attacker number: " + num);
     let attackerConfig = this.attackerConfigs[num];
     let attacker = new Attacker(attackerConfig.img, attackerConfig.hp, row);
     this.activeAttackers.push(attacker);
-    if (attackerCnt++ > 100) {
-      return;
-    }
-    setInterval(() => { this._sendAttacker(); }, 5000); 
   }
 
   setup() {
