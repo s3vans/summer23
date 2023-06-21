@@ -83,8 +83,10 @@ class Game {
     this.err_duplicate_uid = "";
     this.attackerConfigMap = new Map();
     this.attackerConfigs = [];
+    this.activeAttackers = [];
     this.defenderConfigMap = new Map();
     this.defenderConfigs = [];
+    this.activeDefenders = [];
     this.scaleFactor = 1;
     this.state = "NORMAL";
     this.selected = -1;
@@ -402,7 +404,9 @@ class Game {
             return;
           }
           let defenderConfig = this.defenderConfigs[this.selected];
-          this.map_state[row][col] = new Defender(defenderConfig.img, defenderConfig.hp);
+          let defender = new Defender(defenderConfig.img, defenderConfig.hp);
+          this.map_state[row][col] = defender
+          this.activeDefenders.push(defender);
           this.levelXp -= this.defenderConfigs[this.selected].xp;
           this.state = "NORMAL";
           this.selected = -1;
