@@ -3,7 +3,7 @@
 // TODO: Add rudimentary system for sending attack waves.
 // TODO: Add collectibles to restore XP.
 // TODO: Support drawing character animations (at rest).
-// TODO: Refactor Game state for maintainability.
+
 
 const XRESOLUTION = 800;
 const YRESOLUTION = 600;
@@ -37,6 +37,16 @@ class Defender {
   constructor(img, hp) {
     this.img = img;
     this.hp = hp;
+  }
+}
+
+// Rudimentary attacker instance.
+class Attacker {
+  constructor(img, hp) {
+    this.img = img;
+    this.hp = hp;
+    this.x_pos = XRESOLUTION + MAP_CELL_IMG_WIDTH;
+    this.speed = 5;
   }
 }
 
@@ -162,7 +172,9 @@ class Game {
   }
 
   _sendAttacker() {
-    console.log("Sending attacker");
+    let row = Math.floor(Math.random() * MAP_CELL_ROW_COUNT);
+    let num = Math.floor(Math.random() * this.attackerConfigs.size);
+    console.log("Sending attacker... row: " + row + ", attacker number: " + num);
   }
 
   setup() {
