@@ -3,6 +3,8 @@
 // TODO: Add collectibles to restore XP.
 // TODO: Support drawing character animations (at rest).
 
+let attackerCnt = 0;
+
 const XRESOLUTION = 800;
 const YRESOLUTION = 600;
 const MIN_SCALE_FACTOR = .5;
@@ -182,6 +184,10 @@ class Game {
     let attackerConfig = this.attackerConfigs[num];
     let attacker = new Attacker(attackerConfig.img, attackerConfig.hp, row);
     this.activeAttackers.push(attacker);
+    if (attackerCnt++ > 100) {
+      return;
+    }
+    setInterval(() => { this._sendAttacker(); }, 5000); 
   }
 
   setup() {
