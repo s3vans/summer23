@@ -142,18 +142,18 @@ class Game {
     this._checkUidsFromLevel(levelConfig);
   }
 
-  _checkUidsFromLevel(level) {
-    this._isUidUnique(level.uid);
-    for (let defender of level.defenderConfigMap) {
+  _checkUidsFromLevel(levelConfig) {
+    this._isUidUnique(levelConfig.uid);
+    for (let defender of levelConfig.defenderConfigs) {
       this._isUidUnique(defender.uid);
     }
-    for (let attacker of level.attackerConfigMap) {
+    for (let attacker of levelConfig.attackerConfigs) {
       this._isUidUnique(attacker.uid);
     }
   }
 
   _loadDefenderConfigForLevel(levelConfig) {
-    for (let defender of levelConfig.defenderConfigMap) {
+    for (let defender of levelConfig.defenderConfigs) {
       let defenderObj = new DefenderConfig(defender.uid, defender.name,
                                            loadImage(defender.img),
                                            defender.xp_cost, defender.hp);
@@ -163,7 +163,7 @@ class Game {
   }
 
   _loadAttackerConfigForLevel(levelConfig) {
-    for (let attacker of levelConfig.attackerConfigMap) {
+    for (let attacker of levelConfig.attackerConfigs) {
       let attackerObj = new AttackerConfig(attacker.uid, attacker.name,
                                            loadImage(attacker.img),
                                            attacker.hp);
