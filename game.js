@@ -1,5 +1,3 @@
-// TODO: Instantiate defenders in a spot.
-// TODO: Draw the defenders.
 // TODO: Allow them to detect attackers in their row.
 // TODO: Allow them to launch projectile attacks.
 // TODO: Add rudimentary system for sending attack waves.
@@ -31,6 +29,14 @@ const OVERLAY_X = 700;
 const OVERLAY_Y = 0;
 const OVERLAY_WIDTH = 100;
 const OVERLAY_HEIGHT = 100;
+
+// Rudimentary defender instance.
+class Defender {
+  constructor(img, hp) {
+    this.img = img;
+    this.hp = hp;
+  }
+}
 
 // A template that defines an available defender in a game level.
 // Note that this doesn't currently represent an active character in the game.
@@ -75,7 +81,7 @@ class Game {
     for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
       this.map_state[row] = [];
       for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
-        this.map_state[row][col] = false;
+        this.map_state[row][col] = undefined;
       }
     }
   }
@@ -212,8 +218,22 @@ class Game {
     pop();
   }
 
-  // TODO: This draws all of the characters.
+  // Draws all of the characters.
   _drawCharacters() {
+    // FIXME: This is hacked together for drawing defenders. Attackers move and
+    // aren't aligned with the grids.
+    let y = MAP_Y;
+    for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
+      let x = MAP_X;
+      for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
+        let defender = this.map_state[row][col];
+        if (defender != undefined) {
+          image(defender.img, x, y, 100, 100); // TODO: Fix constants.
+        }
+        x = x + MAP_CELL_WIDTH;
+      }
+      y = y + MAP_CELL_HEIGHT;
+    }
   }
 
   // TODO: This draws all of the projectiles.
@@ -268,7 +288,7 @@ class Game {
         let x = MAP_X;
         for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
           if (this._mouseInRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT)) {
-            if (this.map_state[row][col] == false) {
+            if (this.map_state[row][col] == undefined) {
               this._highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
                                        color(255, 255, 0, 100));
             } else {
@@ -352,20 +372,21 @@ class Game {
             this.state = "SELECTED";
             this.selected = idx;
           }
-        }
-
-        // Handle placing on map.
-        let [row, col] = this._getSelectedMapRowCol();
-        if (row == -1) {
-          return;
-        }
-        if (this.map_state[row][col]) {
-          return;
-        }
-        this.map_state[row][col] = true;
-        this.levelXp -= this.store[this.selected].xp;
-        this.state = "NORMAL";
-        this.selected = -1;
+        } else {
+          // Handle placing on map.
+          let [row, col] = this._getSelectedMapRowCol();
+          if (row == -1) {
+            return;
+          }
+          if (this.map_state[row][col] != undefined) {
+            return;
+          }
+          let defenderConfig = this.store[this.selected];
+          this.map_state[row][col] = new Defender(defenderConfig.img, defenderConfig.hp);
+          this.levelXp -= this.store[this.selected].xp;
+          this.state = "NORMAL";
+          this.selected = -1;
+      }
     }
   }
 
