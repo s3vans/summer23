@@ -302,10 +302,10 @@ class Game {
   _getSelectedStoreItemIdx() {
     let mX = this._scaleMouse(mouseX);
     let mY = this._scaleMouse(mouseY);
-    let x = 100;
-    let y = 20;
-    for (let i = 0; i < 5; i++) {
-      if (mX >= x+(100*i) && mX <= x+(100*(i+1))) {
+    let x = STORE_X;
+    let y = STORE_Y;
+    for (let i = 0; i < STORE_ITEM_COUNT; i++) {
+      if (mX >= x+(100*i) && mX < x+(100*(i+1))) {
         if (mY >= y && mY <= 120) {
           if (i < this.defenderConfigs.size) {
             return i;
