@@ -12,13 +12,19 @@ let levels = [{
       }, {
         "uid": "pika2",
         "name": "Pikachu2",
-        "img": "assets/pokemon/attackers/evee.png",
+        "img": "assets/pokemon/defenders/pikachu2.png",
         "xp_cost": 50,
         "hp": 300,
       }, {
-        "uid": "pika3",
-        "name": "Pikachu3",
-        "img": "assets/pokemon/defenders/pikachu.png",
+        "uid": "bulbasaur",
+        "name": "Bulbasaur",
+        "img": "assets/pokemon/defenders/bulbasaur.png",
+        "xp_cost": 50,
+        "hp": 300,
+      }, {
+        "uid": "evee2",
+        "name": "Evee",
+        "img": "assets/pokemon/attackers/evee2.png",
         "xp_cost": 75,
         "hp": 300,
     }],
