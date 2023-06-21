@@ -1,6 +1,5 @@
-// TODO: Allow them to detect attackers in their row.
-// TODO: Allow them to launch projectile attacks.
-// TODO: Add rudimentary system for sending attack waves.
+// TODO: Allow defenders to detect attackers in their row.
+// TODO: Allow defenders to launch projectile attacks.
 // TODO: Add collectibles to restore XP.
 // TODO: Support drawing character animations (at rest).
 
