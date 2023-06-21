@@ -24,6 +24,8 @@ const MAP_CELL_COL_COUNT = 7;
 const MAP_CELL_ROW_COUNT = 5;
 const MAP_CELL_WIDTH = 100;
 const MAP_CELL_HEIGHT = 100;
+const MAP_CELL_IMG_WIDTH = 100;
+const MAP_CELL_IMG_HEIGHT = 100;
 
 const OVERLAY_X = 700;
 const OVERLAY_Y = 0;
@@ -228,7 +230,7 @@ class Game {
       for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
         let defender = this.map_state[row][col];
         if (defender != undefined) {
-          image(defender.img, x, y, 100, 100); // TODO: Fix constants.
+          image(defender.img, x, y, MAP_CELL_IMG_WIDTH, MAP_CELL_IMG_HEIGHT);
         }
         x = x + MAP_CELL_WIDTH;
       }
@@ -325,7 +327,7 @@ class Game {
     let x = STORE_X;
     let y = STORE_Y;
     for (let i = 0; i < STORE_ITEM_COUNT; i++) {
-      if (mX >= x+(100*i) && mX < x+(100*(i+1))) {
+      if (mX >= x+(STORE_ITEM_WIDTH*i) && mX < x+(STORE_ITEM_WIDTH*(i+1))) {
         if (mY >= y && mY <= 120) {
           if (i < this.defenderConfigs.size) {
             return i;
