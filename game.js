@@ -34,7 +34,9 @@ const OVERLAY_HEIGHT = 100;
 
 // Rudimentary defender instance.
 class Defender {
-  constructor(img, hp) {
+  constructor(row, col, img, hp) {
+    this.row = row;
+    this.col = col;
     this.img = img;
     this.hp = hp;
   }
@@ -42,7 +44,8 @@ class Defender {
 
 // Rudimentary attacker instance.
 class Attacker {
-  constructor(img, hp, row) {
+  constructor(row, img, hp) {
+    this.row = row;
     this.img = img;
     this.hp = hp;
     this.x_pos = XRESOLUTION + MAP_CELL_IMG_WIDTH;
@@ -189,9 +192,8 @@ class Game {
     }
     let row = Math.floor(Math.random() * MAP_CELL_ROW_COUNT);
     let num = Math.floor(Math.random() * this.attackerConfigMap.size);
-    console.log("Sending attacker... row: " + row + ", attacker number: " + num);
     let attackerConfig = this.attackerConfigs[num];
-    let attacker = new Attacker(attackerConfig.img, attackerConfig.hp, row);
+    let attacker = new Attacker(row, attackerConfig.img, attackerConfig.hp);
     this.activeAttackers.push(attacker);
   }
 
@@ -428,7 +430,8 @@ class Game {
             return;
           }
           let defenderConfig = this.defenderConfigs[this.selected];
-          let defender = new Defender(defenderConfig.img, defenderConfig.hp);
+          let defender = new Defender(row, col, defenderConfig.img,
+                                      defenderConfig.hp);
           this.map_state[row][col] = defender
           this.activeDefenders.push(defender);
           this.levelXp -= this.defenderConfigs[this.selected].xp;
