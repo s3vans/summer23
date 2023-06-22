@@ -1,7 +1,10 @@
+// TODO: Store attackers/defenders by row.
+// TODO: Call update() functions on attackers/defenders to produce movement, etc.
 // TODO: Allow defenders to detect attackers in their row.
 // TODO: Allow defenders to launch projectile attacks.
 // TODO: Add collectibles to restore XP.
 // TODO: Support drawing character animations (at rest).
+// FIXME: Attackers show on far right of screen.
 
 let attackerCnt = 0;
 
