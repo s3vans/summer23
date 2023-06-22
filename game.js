@@ -77,23 +77,29 @@ class AttackerConfig {
 // All of the game config, state, and logic lives here.
 class Game {
   constructor() {
+    // General state
     this.canvas = undefined;
+    this.uids = new Map();
+    this.err_duplicate_uid = "";
+    this.scaleFactor = 1;
+
+    // Level State
     this.levelConfig = undefined;
     this.levelImg = undefined;
     this.levelXp = 0;
-    this.uids = new Map();
-    this.err_duplicate_uid = "";
     this.attackerConfigMap = new Map();
     this.attackerConfigs = [];
-    this.activeAttackers = [];
     this.defenderConfigMap = new Map();
+
+    // Store State
     this.defenderConfigs = [];
-    this.activeDefenders = [];
-    this.scaleFactor = 1;
-    this.state = "NORMAL";
     this.selected = -1;
+
+    // Active Game + Map State
+    this.activeAttackers = [];
+    this.activeDefenders = [];
+    this.state = "NORMAL";
     this.map_state = [];
-    // Populate 2D array.
     for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
       this.map_state[row] = [];
       for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
