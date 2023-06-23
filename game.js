@@ -238,7 +238,7 @@ class Game {
   update() {
     for (let attacker of this.activeAttackers) {
       // Check for WIN condition.
-      if (attacker.x_pox < MAP_X - (MAP_CELL_IMG_WIDTH / 2)) {
+      if (attacker.x_pos < MAP_X - (MAP_CELL_WIDTH / 2)) {
         console.log("GAME OVER");
         noLoop();
         return;
