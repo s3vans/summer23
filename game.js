@@ -42,6 +42,13 @@ class Defender {
     this.col = col;
     this.img = img;
     this.hp = hp;
+    this.x_pos = MAP_X + (MAP_CELL_WIDTH * col);
+    this.y_pos = MAP_Y + (MAP_CELL_HEIGHT * row);
+  }
+
+  hit() {
+    this.hp -= 1;
+    console.log("HIT");
   }
 }
 
@@ -57,7 +64,6 @@ class Attacker {
   }
 
   update() {
-    this.x_pos -= this.speed;
   }
 }
 
@@ -101,12 +107,12 @@ class Game {
     this.attackerConfigs = [];
     this.attackersByRow = [];
     for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
-      attackersByRow[row] = [];
+      this.attackersByRow[row] = [];
     }
     this.defenderConfigMap = new Map();
     this.defendersByRow = [];
     for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
-      defendersByRow[row] = [];
+      this.defendersByRow[row] = [];
     }
 
     // Store State
@@ -197,7 +203,6 @@ class Game {
                                            attacker.hp);
       this.attackerConfigMap.set(attacker.uid, attackerObj);
       this.attackerConfigs.push(attackerObj);
-      this.attackersByRow[row].push(attackerObj);
     }
   }
 
@@ -211,6 +216,17 @@ class Game {
     let attackerConfig = this.attackerConfigs[num];
     let attacker = new Attacker(row, attackerConfig.img, attackerConfig.hp);
     this.activeAttackers.push(attacker);
+    this.attackersByRow[row].push(attacker);
+  }
+
+  _nextToDefender(row, x_pos) {
+    for (let defender of this.defendersByRow[row]) {
+      if ((defender.x_pos + MAP_CELL_IMG_WIDTH >= x_pos) &&
+          (defender.x_pos <= x_pos)) {
+        return defender;
+      }
+    }
+    return undefined;
   }
 
   setup() {
@@ -221,7 +237,22 @@ class Game {
 
   update() {
     for (let attacker of this.activeAttackers) {
-      attacker->update();
+      // Check for WIN condition.
+      if (attacker.x_pox < MAP_X - (MAP_CELL_IMG_WIDTH / 2)) {
+        console.log("GAME OVER");
+        noLoop();
+        return;
+      }
+
+      // Check for attack condition.
+      let defender = this._nextToDefender(attacker.row, attacker.x_pos)
+      if (defender != undefined) {
+        defender.hit();
+        continue;
+      }
+
+      // Move left at speed.
+      attacker.x_pos -= attacker.speed;
     }
   }
 
@@ -449,7 +480,7 @@ class Game {
                                       defenderConfig.hp);
           this.map_state[row][col] = defender
           this.activeDefenders.push(defender);
-          this.defendersByRow[row].push(defenderObj);
+          this.defendersByRow[row].push(defender);
           this.levelXp -= this.defenderConfigs[this.selected].xp;
           this.state = "NORMAL";
           this.selected = -1;
