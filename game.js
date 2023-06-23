@@ -414,7 +414,6 @@ class Game {
         this.state = "SELECTED";
         this.selected = idx;
       }
-      //setInterval(() => { this.state = "NORMAL"; this.selected = -1; }, 15000);
     } else if (this.state == "SELECTED") {
         // Handle changing selection.
         let idx = this._getSelectedStoreItemIdx();
