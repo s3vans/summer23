@@ -55,6 +55,10 @@ class Attacker {
     this.y_pos = MAP_Y + row * MAP_CELL_HEIGHT;
     this.speed = 1;
   }
+
+  update() {
+    this.x_pos -= this.speed;
+  }
 }
 
 // A template that defines an available defender in a game level.
@@ -95,7 +99,15 @@ class Game {
     this.levelXp = 0;
     this.attackerConfigMap = new Map();
     this.attackerConfigs = [];
+    this.attackersByRow = [];
+    for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
+      attackersByRow[row] = [];
+    }
     this.defenderConfigMap = new Map();
+    this.defendersByRow = [];
+    for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
+      defendersByRow[row] = [];
+    }
 
     // Store State
     this.defenderConfigs = [];
@@ -185,6 +197,7 @@ class Game {
                                            attacker.hp);
       this.attackerConfigMap.set(attacker.uid, attackerObj);
       this.attackerConfigs.push(attackerObj);
+      this.attackersByRow[row].push(attackerObj);
     }
   }
 
@@ -208,7 +221,7 @@ class Game {
 
   update() {
     for (let attacker of this.activeAttackers) {
-      attacker.x_pos -= attacker.speed;
+      attacker->update();
     }
   }
 
@@ -436,6 +449,7 @@ class Game {
                                       defenderConfig.hp);
           this.map_state[row][col] = defender
           this.activeDefenders.push(defender);
+          this.defendersByRow[row].push(defenderObj);
           this.levelXp -= this.defenderConfigs[this.selected].xp;
           this.state = "NORMAL";
           this.selected = -1;
