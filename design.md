@@ -21,13 +21,13 @@ Finn wants to customize it with an Among Us theme.
 
 A **level** consists of:
   * A timer
-  * A background image
+  * ~~A background image~~
   * A background music track
-  * A starting amount of XP used by the player to purchase defenders
-  * A set of defenders
-  * A set of attackers
+  * ~~A starting amount of XP used by the player to purchase defenders~~
+  * ~~A set of defenders~~
+  * ~~A set of attackers~~
   * A distribution or timing sequence for attackers to arrive
-  * A menu to purchase and place defenders
+  * ~~A menu to purchase and place defenders~~
   * A frequency of XP rewards that drop
   * A timed sequence of events, such as announcing the next wave
 
