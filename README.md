@@ -1,9 +1,15 @@
-To start a local webserver on port 8000, run:
+The latest version of the game is hosted at: 
+
+https://s3vans.github.io/summer23/
+
+Or to play it locally at https://localhost:8000...
 
 ```
-# python2.7
-python -m SimpleHTTPWebserver
+git clone https://github.com/s3vans/summer23.git
+cd summer23
 
-# python3
-python -m http.server
+# Start a webserver with either:
+python -m SimpleHTTPWebserver   # python2.7
+# OR:
+python -m http.server           # python3
 ```
