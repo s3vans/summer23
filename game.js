@@ -317,6 +317,10 @@ class Game {
         let defender = this.map_state[row][col];
         if (defender != undefined) {
           image(defender.img, x, y, MAP_CELL_IMG_WIDTH, MAP_CELL_IMG_HEIGHT);
+          push();
+          noStroke(); fill(255); textSize(10);
+          text('HP:' + defender.hp, x+50, y+100);
+          pop();
         }
         x = x + MAP_CELL_WIDTH;
       }
@@ -327,6 +331,10 @@ class Game {
     for (let attacker of this.activeAttackers) {
       image(attacker.img, attacker.x_pos, attacker.y_pos, MAP_CELL_IMG_WIDTH,
             MAP_CELL_IMG_HEIGHT);
+      push();
+      noStroke(); fill(255); textSize(10);
+      text('HP:' + attacker.hp, attacker.x_pos+50, attacker.y_pos+100);
+      pop();
     }
   }
 
