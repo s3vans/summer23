@@ -28,6 +28,7 @@ const MAP_CELL_WIDTH = 100;
 const MAP_CELL_HEIGHT = 100;
 const MAP_CELL_IMG_WIDTH = 100;
 const MAP_CELL_IMG_HEIGHT = 100;
+const MAP_ENEMY_QUEUE_OFFSET = 50;
 const MAP_HP_XOFFSET = 50;
 const MAP_HP_YOFFSET = 100;
 
@@ -230,6 +231,20 @@ class Game {
     return undefined;
   }
 
+  _nextToAttacker(row, x_pos) {
+    for (let attacker of this.attackersByRow[row]) {
+      // HACK TO AVOID BEING NEXT TO ONE'S SELF
+      if (attacker.x_pos == x_pos) {
+        return undefined;
+      }
+      if ((attacker.x_pos + MAP_ENEMY_QUEUE_OFFSET >= x_pos) &&
+          (attacker.x_pos <= x_pos)) {
+        return attacker;
+      }
+    }
+    return undefined;
+  }
+
   setup() {
     this.canvas = createCanvas(windowWidth, windowHeight);
     this._updateScaleFactor();
@@ -243,6 +258,13 @@ class Game {
         console.log("GAME OVER");
         noLoop();
         return;
+      }
+
+      // Stand back if next to another attacker.
+      let other_attacker = this._nextToAttacker(attacker.row,
+                                                attacker.x_pos);
+      if (other_attacker != undefined) {
+        continue;
       }
 
       // Check for attack condition.
