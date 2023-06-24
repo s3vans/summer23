@@ -1,8 +1,15 @@
-// TODO: Call update() function on attackers/defenders to produce movement, etc.
+// TODO: Unify common character/object traits into parent class.
+// TODO: Implement deaths and expirations.
+// TODO: Call update() function on attackers/defenders to produce movement.
 // TODO: Allow defenders to detect attackers in their row.
 // TODO: Allow defenders to launch projectile attacks.
 // TODO: Add collectibles to restore XP.
+// TODO: Implement character states.
+// TODO: Implement visual Effects.
+// TODO: Add sounds.
 // TODO: Support drawing character animations (at rest).
+// TODO: Allow attackers to be scheduled via config.
+// TODO: Replace many hard coded vals with default vals overriden by config.
 
 let attackerCnt = 0;
 
