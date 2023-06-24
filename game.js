@@ -3,7 +3,6 @@
 // TODO: Allow defenders to launch projectile attacks.
 // TODO: Add collectibles to restore XP.
 // TODO: Support drawing character animations (at rest).
-// FIXME: Attackers show on far right of screen.
 
 let attackerCnt = 0;
 
@@ -272,8 +271,9 @@ class Game {
   }
 
   setup() {
-    this.canvas = createCanvas(windowWidth, windowHeight);
     this._updateScaleFactor();
+    this.canvas = createCanvas(XRESOLUTION*this.scaleFactor,
+                               YRESOLUTION*this.scaleFactor);
     setInterval(() => { this._sendAttacker(); }, 5000);
     setInterval(() => { this._sendCollectible(); }, 6000);
   }
@@ -584,7 +584,7 @@ class Game {
 
   windowResized() {
     // TODO: Is there a resize for this.canvas?
-    resizeCanvas(windowWidth, windowHeight);
     this._updateScaleFactor();
+    resizeCanvas(XRESOLUTION*this.scaleFactor, YRESOLUTION*this.scaleFactor);
   }
 }
