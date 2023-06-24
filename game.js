@@ -50,7 +50,6 @@ class Defender {
 
   hit() {
     this.hp -= 1;
-    console.log("HIT");
   }
 }
 
@@ -221,25 +220,24 @@ class Game {
     this.attackersByRow[row].push(attacker);
   }
 
-  _nextToDefender(row, x_pos) {
-    for (let defender of this.defendersByRow[row]) {
-      if ((defender.x_pos + MAP_CELL_IMG_WIDTH >= x_pos) &&
-          (defender.x_pos <= x_pos)) {
-        return defender;
+  // Return an other character that |character| is next to, from the
+  // |characters| container, excluding itself.  A character "is next to"
+  // another if, while moving left, its x_pos is <= the other character's
+  // x_pos + buffer. Or if, while moving right, it's x_pos + buffer >=
+  // the other characters x_pos. Else return undefined.
+  _nextTo(character, characters, movingLeft, buffer) {
+    for (let other_character of characters) {
+      if (other_character == character) {
+        continue;
       }
-    }
-    return undefined;
-  }
-
-  _nextToAttacker(row, x_pos) {
-    for (let attacker of this.attackersByRow[row]) {
-      // HACK TO AVOID BEING NEXT TO ONE'S SELF
-      if (attacker.x_pos == x_pos) {
-        return undefined;
-      }
-      if ((attacker.x_pos + MAP_ENEMY_QUEUE_OFFSET >= x_pos) &&
-          (attacker.x_pos <= x_pos)) {
-        return attacker;
+      if (movingLeft) {
+        if (character.x_pos <= other_character.x_pos + buffer) {
+          return other_character;
+        }
+      } else {
+        if (character.x_pos + buffer >= other_character.x_pos) {
+          return other_character;
+        }
       }
     }
     return undefined;
@@ -261,14 +259,21 @@ class Game {
       }
 
       // Stand back if next to another attacker.
-      let other_attacker = this._nextToAttacker(attacker.row,
-                                                attacker.x_pos);
+      let other_attacker = this._nextTo(attacker,
+					this.attackersByRow[attacker.row],
+                                        /*movingLeft=*/true,
+                                        MAP_ENEMY_QUEUE_OFFSET);
+
       if (other_attacker != undefined) {
         continue;
       }
 
       // Check for attack condition.
-      let defender = this._nextToDefender(attacker.row, attacker.x_pos)
+      //let defender = this._nextToDefender(attacker.row, attacker.x_pos)
+      let defender = this._nextTo(attacker,
+                                  this.defendersByRow[attacker.row],
+                                  /*movingLeft=*/true,
+                                  MAP_CELL_WIDTH);
       if (defender != undefined) {
         defender.hit();
         continue;
