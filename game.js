@@ -70,6 +70,30 @@ class Attacker {
   }
 }
 
+class Collectible {
+  constructor(row, col) {
+    this.height = MAP_CELL_HEIGHT / 2;
+    this.width = MAP_CELL_WIDTH / 2;
+    this.x_pos = MAP_X + (col * MAP_CELL_WIDTH) + (MAP_CELL_WIDTH / 2);
+    this.y_pos = 0 - MAP_CELL_HEIGHT;
+    this.target_y_pos = MAP_Y + (row * MAP_CELL_HEIGHT) + (MAP_CELL_HEIGHT / 2);
+    this.speed = 1;
+  }
+
+  draw() {
+    push();
+    fill(255, 255, 0);
+    circle(this.x_pos, this.y_pos, this.width);
+    pop();
+  }
+
+  update() {
+    if (this.y_pos < this.target_y_pos) {
+      this.y_pos += this.speed;
+    }
+  }
+}
+
 // A template that defines an available defender in a game level.
 // Note that this doesn't currently represent an active character in the game.
 class DefenderConfig {
@@ -125,6 +149,7 @@ class Game {
     // Active Game + Map State
     this.activeAttackers = [];
     this.activeDefenders = [];
+    this.activeCollectibles = [];
     this.state = "NORMAL";
     this.map_state = [];
     for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
@@ -222,6 +247,12 @@ class Game {
     this.attackersByRow[row].push(attacker);
   }
 
+  _sendCollectible() {
+    let row = Math.floor(Math.random() * MAP_CELL_ROW_COUNT);
+    let col = Math.floor(Math.random() * MAP_CELL_COL_COUNT);
+    this.activeCollectibles.push(new Collectible(row, col));
+  }
+
   // Return |other_character| from |characters| if |character| is within
   // |distance| as measured between their centers, else return undefined.
   //
@@ -244,6 +275,7 @@ class Game {
     this.canvas = createCanvas(windowWidth, windowHeight);
     this._updateScaleFactor();
     setInterval(() => { this._sendAttacker(); }, 5000);
+    setInterval(() => { this._sendCollectible(); }, 6000);
   }
 
   update() {
@@ -275,6 +307,10 @@ class Game {
       // Move left at speed.
       attacker.x_pos -= attacker.speed;
     }
+
+    for (let collectible of this.activeCollectibles) {
+      collectible.update();
+    }
   }
 
   draw() {
@@ -304,11 +340,11 @@ class Game {
       return;
     }
     this._drawBackground();
-    this._drawStore();
     this._drawCharacters();
     this._drawProjectiles();
     this._drawCollectibles();
     this._drawEffects();
+    this._drawStore();
     this._drawCursor();
     this._drawOverlay();
   }
@@ -384,8 +420,11 @@ class Game {
   _drawProjectiles() {
   }
 
-  // TODO: This draws all of the collectibles.
+  // This draws all of the collectibles.
   _drawCollectibles() {
+    for (let collectible of this.activeCollectibles) {
+      collectible.draw();
+    }
   }
 
   // TODO: This draws all of the overlayed effects.
@@ -498,6 +537,12 @@ class Game {
 
   mouseClicked() {
     // TODO: Handle collecting Collectibles first.
+    //for (let collectible of this.activeCollectibles) {
+    //  let mX = this._scaleMouse(mouseX);
+    //  let mY = this._scaleMouse(mouseY);
+    //  if ((mY < STORE_Y+STORE_ITEM_HEIGHT) || (mX < STORE_X)) {
+    //  }
+    //}
     if (this.state == "NORMAL") {
       let idx = this._getSelectedStoreItemIdx();
       if (idx == -1) {
