@@ -46,6 +46,7 @@ class Defender {
     this.hp = hp;
     this.x_pos = MAP_X + (MAP_CELL_WIDTH * col);
     this.y_pos = MAP_Y + (MAP_CELL_HEIGHT * row);
+    this.width = MAP_CELL_WIDTH;
   }
 
   hit() {
@@ -59,9 +60,10 @@ class Attacker {
     this.row = row;
     this.img = img;
     this.hp = hp;
-    this.x_pos = XRESOLUTION + MAP_CELL_IMG_WIDTH;
+    this.x_pos = XRESOLUTION + MAP_CELL_WIDTH;
     this.y_pos = MAP_Y + row * MAP_CELL_HEIGHT;
     this.speed = 1;
+    this.width = MAP_CELL_WIDTH;
   }
 
   update() {
@@ -220,24 +222,19 @@ class Game {
     this.attackersByRow[row].push(attacker);
   }
 
-  // Return an other character that |character| is next to, from the
-  // |characters| container, excluding itself.  A character "is next to"
-  // another if, while moving left, its x_pos is <= the other character's
-  // x_pos + buffer. Or if, while moving right, it's x_pos + buffer >=
-  // the other characters x_pos. Else return undefined.
-  _nextTo(character, characters, movingLeft, buffer) {
-    for (let other_character of characters) {
-      if (other_character == character) {
+  // Return |other_character| from |characters| if |character| is within
+  // |distance| as measured between their centers, else return undefined.
+  //
+  // We use the center of the characters to avoid dealing with edges.
+  _nextTo(character, characters, distance) {
+    for (let other of characters) {
+      if (other == character) {
         continue;
       }
-      if (movingLeft) {
-        if (character.x_pos <= other_character.x_pos + buffer) {
-          return other_character;
-        }
-      } else {
-        if (character.x_pos + buffer >= other_character.x_pos) {
-          return other_character;
-        }
+      let C = (character.x_pos + (character.x_pos+character.width)) / 2;
+      let CO = (other.x_pos + (other.x_pos+other.width)) / 2;
+      if (Math.abs(C - CO) <= distance) {
+        return other;
       }
     }
     return undefined;
@@ -261,7 +258,6 @@ class Game {
       // Stand back if next to another attacker.
       let other_attacker = this._nextTo(attacker,
                                         this.attackersByRow[attacker.row],
-                                        /*movingLeft=*/true,
                                         MAP_ENEMY_QUEUE_OFFSET);
 
       if (other_attacker != undefined) {
@@ -269,10 +265,8 @@ class Game {
       }
 
       // Check for attack condition.
-      //let defender = this._nextToDefender(attacker.row, attacker.x_pos)
       let defender = this._nextTo(attacker,
                                   this.defendersByRow[attacker.row],
-                                  /*movingLeft=*/true,
                                   MAP_CELL_WIDTH);
       if (defender != undefined) {
         defender.hit();
