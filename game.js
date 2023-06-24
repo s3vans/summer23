@@ -246,7 +246,7 @@ class Game {
   setup() {
     this.canvas = createCanvas(windowWidth, windowHeight);
     this._updateScaleFactor();
-    setInterval(() => { this._sendAttacker(); }, 5000); 
+    setInterval(() => { this._sendAttacker(); }, 5000);
   }
 
   update() {
@@ -260,7 +260,7 @@ class Game {
 
       // Stand back if next to another attacker.
       let other_attacker = this._nextTo(attacker,
-					this.attackersByRow[attacker.row],
+                                        this.attackersByRow[attacker.row],
                                         /*movingLeft=*/true,
                                         MAP_ENEMY_QUEUE_OFFSET);
 
@@ -525,7 +525,7 @@ class Game {
     }
   }
 
-  windowResized() { 
+  windowResized() {
     // TODO: Is there a resize for this.canvas?
     resizeCanvas(windowWidth, windowHeight);
     this._updateScaleFactor();
