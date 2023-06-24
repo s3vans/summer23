@@ -1,3 +1,7 @@
+// FIXME: Attacker stops attacking when a character arrives on the right.
+// FIXME: Attacker attacks good guys on the right, but we don't want that.
+// FIXME: attackerByRow indexed starting from 1, but map_state[][] uses 0.
+//
 // TODO: Unify common character/object traits into parent class.
 // TODO: Implement deaths and expirations.
 // TODO: Call update() function on attackers/defenders to produce movement.
