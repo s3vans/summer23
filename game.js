@@ -1,5 +1,4 @@
-// TODO: Store attackers/defenders by row.
-// TODO: Call update() functions on attackers/defenders to produce movement, etc.
+// TODO: Call update() function on attackers/defenders to produce movement, etc.
 // TODO: Allow defenders to detect attackers in their row.
 // TODO: Allow defenders to launch projectile attacks.
 // TODO: Add collectibles to restore XP.
@@ -237,7 +236,7 @@ class Game {
 
   update() {
     for (let attacker of this.activeAttackers) {
-      // Check for WIN condition.
+      // Check for GAME OVER condition.
       if (attacker.x_pos < MAP_X - (MAP_CELL_WIDTH / 2)) {
         console.log("GAME OVER");
         noLoop();
