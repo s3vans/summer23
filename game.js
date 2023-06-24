@@ -28,6 +28,8 @@ const MAP_CELL_WIDTH = 100;
 const MAP_CELL_HEIGHT = 100;
 const MAP_CELL_IMG_WIDTH = 100;
 const MAP_CELL_IMG_HEIGHT = 100;
+const MAP_HP_XOFFSET = 50;
+const MAP_HP_YOFFSET = 100;
 
 const OVERLAY_X = 700;
 const OVERLAY_Y = 0;
@@ -319,7 +321,7 @@ class Game {
           image(defender.img, x, y, MAP_CELL_IMG_WIDTH, MAP_CELL_IMG_HEIGHT);
           push();
           noStroke(); fill(255); textSize(10);
-          text('HP:' + defender.hp, x+50, y+100);
+          text('HP:' + defender.hp, x+MAP_HP_XOFFSET, y+MAP_HP_YOFFSET);
           pop();
         }
         x = x + MAP_CELL_WIDTH;
@@ -333,7 +335,8 @@ class Game {
             MAP_CELL_IMG_HEIGHT);
       push();
       noStroke(); fill(255); textSize(10);
-      text('HP:' + attacker.hp, attacker.x_pos+50, attacker.y_pos+100);
+      text('HP:' + attacker.hp, attacker.x_pos+MAP_HP_XOFFSET,
+           attacker.y_pos+MAP_HP_YOFFSET);
       pop();
     }
   }
