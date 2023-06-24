@@ -250,8 +250,7 @@ class Game {
     for (let attacker of this.activeAttackers) {
       // Check for GAME OVER condition.
       if (attacker.x_pos < MAP_X - (MAP_CELL_WIDTH / 2)) {
-        console.log("GAME OVER");
-        noLoop();
+        this.state = "GAMEOVER";
         return;
       }
 
@@ -282,6 +281,25 @@ class Game {
     scale(this.scaleFactor);
     if (this.getDuplicateUid() != "") {
       this._displayError("Duplicate uid detected: " + err_duplicate_uid);
+      noLoop();
+      return;
+    }
+    if (this.state == "GAMEOVER") {
+      console.log("GAME OVER");
+      push();
+      translate(XRESOLUTION/2, YRESOLUTION/2);
+      stroke(0); fill(255);
+      rectMode(CENTER);
+      //let goW = 300;
+      //let goH = 70;
+      let goW = 400;
+      let goH = 90;
+      rect(0, 0, goW, goH);
+      rect(0, 0, goW-6, goH-6);
+      strokeWeight(1); stroke(0); fill(0);
+      textSize(24); textAlign(CENTER, CENTER);
+      text("G A M E     O V E R\n(っ◡︵◡ς)", 0, 0);
+      pop();
       noLoop();
       return;
     }
