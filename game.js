@@ -1,9 +1,10 @@
-// TODO: Implement deaths and expirations.
+// TODO: Implement defender deaths.
 // TODO: Call update() function on attackers/defenders to produce movement.
 // TODO: Allow defenders to detect attackers in their row.
 // TODO: Allow defenders to launch projectile attacks.
+// TODO: Implement attacker deaths.
 // TODO: Implement character states.
-// TODO: Implement visual Effects.
+// TODO: Implement visual effects.
 // TODO: Add sounds.
 // TODO: Support drawing character animations (at rest).
 // TODO: Allow attackers to be scheduled via config.
@@ -79,6 +80,7 @@ class Attacker {
 // Rudimentary collectible instance.
 class Collectible {
   constructor(row, col, img, xp, lifespan) {
+    this.state = "FALLING";
     this.height = MAP_CELL_HEIGHT / 2;
     this.width = MAP_CELL_WIDTH / 2;
     this.img = img;
@@ -97,8 +99,19 @@ class Collectible {
   }
 
   update() {
+    if (this.state == "LANDED") {
+      if (this.lifespan > 0) {
+        this.lifespan -= 1;
+      } else {
+        // Remove it.
+        game.activeCollectibles = game.activeCollectibles.filter(x => x != this);
+        // FIXME: filters like this reference the global |game| object.
+      }
+    }
     if (this.y_pos < this.target_y_pos) {
       this.y_pos += this.speed;
+    } else {
+      this.state = "LANDED";
     }
   }
 }

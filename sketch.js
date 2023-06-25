@@ -45,7 +45,7 @@ let levels = [{
         "name": "Raspberries",
         "img": "assets/pokemon/objects/raspberries.png",
         "xp": 50,
-        "lifespan": 10,
+        "lifespan": 250,
     }],
   }];
 
