@@ -1,4 +1,3 @@
-// FIXME: Attacker stops attacking when a character arrives on the right.
 // FIXME: Attacker attacks good guys on the right, but we don't want that.
 // FIXME: attackerByRow indexed starting from 1, but map_state[][] uses 0.
 //
@@ -297,14 +296,8 @@ class Game {
         return;
       }
 
-      // Stand back if next to another attacker.
-      let other_attacker = this._nextTo(attacker,
-                                        this.attackersByRow[attacker.row],
-                                        MAP_ENEMY_QUEUE_OFFSET);
-
-      if (other_attacker != undefined) {
-        continue;
-      }
+      // Order is important here. If we check for attack after we check for
+      // neighboring attacker, then we stop hitting.
 
       // Check for attack condition.
       let defender = this._nextTo(attacker,
@@ -312,6 +305,15 @@ class Game {
                                   MAP_CELL_WIDTH);
       if (defender != undefined) {
         defender.hit();
+        continue;
+      }
+
+      // Stand back if next to another attacker.
+      let other_attacker = this._nextTo(attacker,
+                                        this.attackersByRow[attacker.row],
+                                        MAP_ENEMY_QUEUE_OFFSET);
+
+      if (other_attacker != undefined) {
         continue;
       }
 
