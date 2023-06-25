@@ -22,6 +22,12 @@ let levels = [{
         "xp_cost": 50,
         "hp": 300,
       }, {
+        "uid": "charmander",
+        "name": "Charmander",
+        "img": "assets/pokemon/defenders/charmander.png",
+        "xp_cost": 75,
+        "hp": 120,
+      }, {
         "uid": "evee2",
         "name": "Evee",
         "img": "assets/pokemon/attackers/evee2.png",
