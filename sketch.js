@@ -2,7 +2,6 @@ let levels = [{
     "uid": "level1",
     "name": "Level 1",
     "img": "assets/pokemon/levels/level1.png",
-    "collectibleImg": "assets/pokemon/objects/raspberries.png",
     "levelXp": 500,
     "defenderConfigs": [{
         "uid": "pikachu",
@@ -40,6 +39,13 @@ let levels = [{
         "name": "Evee",
         "img": "assets/pokemon/attackers/evee.png",
         "hp": 150,
+    }],
+    "collectibleConfigs": [{
+        "uid": "raspberries",
+        "name": "Raspberries",
+        "img": "assets/pokemon/objects/raspberries.png",
+        "xp": 50,
+        "lifespan": 10,
     }],
   }];
 

@@ -9,6 +9,7 @@
 // TODO: Allow attackers to be scheduled via config.
 // TODO: Unify common character/object traits into parent class.
 // TODO: Replace many hard coded vals with default vals overriden by config.
+// FIXME: Collectibles fall to top-left of target square.
 
 let attackerCnt = 0;
 
@@ -76,9 +77,8 @@ class Attacker {
 }
 
 // Rudimentary collectible instance.
-// TODO: Make configurable.
 class Collectible {
-  constructor(row, col, img) {
+  constructor(row, col, img, xp, lifespan) {
     this.height = MAP_CELL_HEIGHT / 2;
     this.width = MAP_CELL_WIDTH / 2;
     this.img = img;
@@ -86,8 +86,8 @@ class Collectible {
     this.y_pos = 0 - MAP_CELL_HEIGHT;
     this.target_y_pos = MAP_Y + (row * MAP_CELL_HEIGHT);
     this.speed = 1;
-    this.xp = 50;
-    this.lifespan = 500;  // TODO: Implement
+    this.xp = xp;
+    this.lifespan = lifespan;  // TODO: Implement
   }
 
   draw() {
@@ -126,6 +126,17 @@ class AttackerConfig {
   }
 }
 
+// A template that defines an available collectible in a game level.
+class CollectibleConfig {
+  constructor(uid, name, img, xp, lifespan) {
+    this.uid = uid;
+    this.name = name;
+    this.img = img;
+    this.xp = xp;
+    this.lifespan = lifespan;
+  }
+}
+
 // All of the game config, state, and logic lives here.
 class Game {
   constructor() {
@@ -139,7 +150,6 @@ class Game {
     this.levelConfig = undefined;
     this.levelImg = undefined;
     this.levelXp = 0;
-    this.collectibleImg = undefined;
     this.attackerConfigMap = new Map();
     this.attackerConfigs = [];
     this.attackersByRow = [];
@@ -151,6 +161,8 @@ class Game {
     for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
       this.defendersByRow[row] = [];
     }
+    this.collectibleConfigMap = new Map();
+    this.collectibleConfigs = [];
 
     // Store State
     this.defenderConfigs = [];
@@ -203,6 +215,7 @@ class Game {
     this._loadLevel(levelConfig);
     this._loadDefenderConfigForLevel(levelConfig);
     this._loadAttackerConfigForLevel(levelConfig);
+    this._loadCollectibleConfigForLevel(levelConfig);
   }
 
   _loadLevel(levelConfig) {
@@ -211,7 +224,6 @@ class Game {
     this.levelName = levelConfig.name;
     this.levelImg = loadImage(levelConfig.img);
     this.levelXp = levelConfig.levelXp;
-    this.collectibleImg = loadImage(levelConfig.collectibleImg);
     this._checkUidsFromLevel(levelConfig);
   }
 
@@ -245,6 +257,18 @@ class Game {
     }
   }
 
+  _loadCollectibleConfigForLevel(levelConfig) {
+    for (let collectible of levelConfig.collectibleConfigs) {
+      let collectibleObj = new CollectibleConfig(collectible.uid,
+                                                 collectible.name,
+                                                 loadImage(collectible.img),
+                                                 collectible.xp,
+                                                 collectible.lifespan);
+      this.collectibleConfigMap.set(collectible.uid, collectibleObj);
+      this.collectibleConfigs.push(collectibleObj);
+    }
+  }
+
   _sendAttacker() {
     // TODO: Validate that there is at least one attacker in the levelConfig.
     if (attackerCnt++ > 100) {
@@ -261,8 +285,12 @@ class Game {
   _sendCollectible() {
     let row = Math.floor(Math.random() * MAP_CELL_ROW_COUNT);
     let col = Math.floor(Math.random() * MAP_CELL_COL_COUNT);
+    let num = Math.floor(Math.random() * this.collectibleConfigMap.size);
+    let collectibleConfig = this.collectibleConfigs[num];
     this.activeCollectibles.push(new Collectible(row, col,
-                                                 game.collectibleImg));
+                                                 collectibleConfig.img,
+                                                 collectibleConfig.xp,
+                                                 collectibleConfig.lifespan));
   }
 
   // Return |other_character| from |characters| if |character| is within
