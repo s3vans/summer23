@@ -58,6 +58,12 @@ class Defender {
 
   hit() {
     this.hp -= 1;
+    if (this.hp <= 0) {
+      game.map_state[this.row][this.col] = undefined;
+      game.defendersByRow[this.row] = game.defendersByRow[this.row].filter(x => x != this);
+      game.activeDefenders = game.activeDefenders.filter(x => x != this);
+      // FIXME: filters like this reference the global |game| object.
+    }
   }
 }
 
