@@ -1,14 +1,13 @@
-// TODO: Unify common character/object traits into parent class.
 // TODO: Implement deaths and expirations.
 // TODO: Call update() function on attackers/defenders to produce movement.
 // TODO: Allow defenders to detect attackers in their row.
 // TODO: Allow defenders to launch projectile attacks.
-// TODO: Add collectibles to restore XP.
 // TODO: Implement character states.
 // TODO: Implement visual Effects.
 // TODO: Add sounds.
 // TODO: Support drawing character animations (at rest).
 // TODO: Allow attackers to be scheduled via config.
+// TODO: Unify common character/object traits into parent class.
 // TODO: Replace many hard coded vals with default vals overriden by config.
 
 let attackerCnt = 0;
@@ -76,20 +75,24 @@ class Attacker {
   }
 }
 
+// Rudimentary collectible instance.
+// TODO: Make configurable.
 class Collectible {
-  constructor(row, col) {
+  constructor(row, col, img) {
     this.height = MAP_CELL_HEIGHT / 2;
     this.width = MAP_CELL_WIDTH / 2;
-    this.x_pos = MAP_X + (col * MAP_CELL_WIDTH) + (MAP_CELL_WIDTH / 2);
+    this.img = img;
+    this.x_pos = MAP_X + (col * MAP_CELL_WIDTH);
     this.y_pos = 0 - MAP_CELL_HEIGHT;
-    this.target_y_pos = MAP_Y + (row * MAP_CELL_HEIGHT) + (MAP_CELL_HEIGHT / 2);
+    this.target_y_pos = MAP_Y + (row * MAP_CELL_HEIGHT);
     this.speed = 1;
+    this.xp = 50;
+    this.lifespan = 500;  // TODO: Implement
   }
 
   draw() {
     push();
-    fill(255, 255, 0);
-    circle(this.x_pos, this.y_pos, this.width);
+    image(this.img, this.x_pos, this.y_pos, this.width, this.height);
     pop();
   }
 
@@ -136,6 +139,7 @@ class Game {
     this.levelConfig = undefined;
     this.levelImg = undefined;
     this.levelXp = 0;
+    this.collectibleImg = undefined;
     this.attackerConfigMap = new Map();
     this.attackerConfigs = [];
     this.attackersByRow = [];
@@ -207,6 +211,7 @@ class Game {
     this.levelName = levelConfig.name;
     this.levelImg = loadImage(levelConfig.img);
     this.levelXp = levelConfig.levelXp;
+    this.collectibleImg = loadImage(levelConfig.collectibleImg);
     this._checkUidsFromLevel(levelConfig);
   }
 
@@ -256,7 +261,8 @@ class Game {
   _sendCollectible() {
     let row = Math.floor(Math.random() * MAP_CELL_ROW_COUNT);
     let col = Math.floor(Math.random() * MAP_CELL_COL_COUNT);
-    this.activeCollectibles.push(new Collectible(row, col));
+    this.activeCollectibles.push(new Collectible(row, col,
+                                                 game.collectibleImg));
   }
 
   // Return |other_character| from |characters| if |character| is within
@@ -299,9 +305,7 @@ class Game {
       // Check for attack condition.
       let defendersToTheLeft = this.defendersByRow[attacker.row]
           .filter(a => a.x_pos < attacker.x_pos);
-      let defender = this._nextTo(attacker,
-                                  defendersToTheLeft,
-                                  MAP_CELL_WIDTH);
+      let defender = this._nextTo(attacker, defendersToTheLeft, MAP_CELL_WIDTH);
       if (defender != undefined) {
         defender.hit();
         continue;
@@ -548,13 +552,25 @@ class Game {
   }
 
   mouseClicked() {
-    // TODO: Handle collecting Collectibles first.
-    //for (let collectible of this.activeCollectibles) {
-    //  let mX = this._scaleMouse(mouseX);
-    //  let mY = this._scaleMouse(mouseY);
-    //  if ((mY < STORE_Y+STORE_ITEM_HEIGHT) || (mX < STORE_X)) {
-    //  }
-    //}
+    let mX = this._scaleMouse(mouseX);
+    let mY = this._scaleMouse(mouseY);
+    if ((mY >= STORE_Y+STORE_ITEM_HEIGHT) && (mX >= STORE_X)) {
+      for (let collectible of this.activeCollectibles) {
+        let center_x = collectible.x_pos + (collectible.width / 2);
+        let center_y = collectible.y_pos + (collectible.height / 2);
+        let hit_distance = collectible.width / 2;
+        if ((Math.abs(center_x - mX) <= hit_distance) &&
+            (Math.abs(center_y - mY) <= hit_distance)) {
+        }
+        if ((Math.abs(center_x - mX) <= hit_distance) &&
+            (Math.abs(center_y - mY) <= hit_distance)) {
+          game.levelXp += collectible.xp;
+          game.activeCollectibles =
+              game.activeCollectibles.filter(c => c != collectible);
+          return;
+        }
+      }
+    }
     if (this.state == "NORMAL") {
       let idx = this._getSelectedStoreItemIdx();
       if (idx == -1) {
