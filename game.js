@@ -1,4 +1,3 @@
-// FIXME: Attacker attacks good guys on the right, but we don't want that.
 // FIXME: attackerByRow indexed starting from 1, but map_state[][] uses 0.
 //
 // TODO: Unify common character/object traits into parent class.
@@ -300,8 +299,10 @@ class Game {
       // neighboring attacker, then we stop hitting.
 
       // Check for attack condition.
+      let defendersToTheLeft = this.defendersByRow[attacker.row]
+          .filter(a => a.x_pos < attacker.x_pos);
       let defender = this._nextTo(attacker,
-                                  this.defendersByRow[attacker.row],
+                                  defendersToTheLeft,
                                   MAP_CELL_WIDTH);
       if (defender != undefined) {
         defender.hit();
