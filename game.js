@@ -1,4 +1,3 @@
-// TODO: Implement defender deaths.
 // TODO: Call update() function on attackers/defenders to produce movement.
 // TODO: Allow defenders to detect attackers in their row.
 // TODO: Allow defenders to launch projectile attacks.
