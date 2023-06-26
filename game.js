@@ -358,8 +358,9 @@ class Game {
       }
 
       // Stand back if next to another attacker.
-      let other_attacker = this._nextTo(attacker,
-                                        this.attackersByRow[attacker.row],
+      let attackersToTheLeft = this.attackersByRow[attacker.row]
+          .filter(a => a.x_pos < attacker.x_pos);
+      let other_attacker = this._nextTo(attacker, attackersToTheLeft,
                                         MAP_ENEMY_QUEUE_OFFSET);
 
       if (other_attacker != undefined) {
