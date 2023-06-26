@@ -82,5 +82,5 @@ function touchMoved() {
   return false;
 }
 function touchEnded() {
-  return fase;
+  return false;
 }
