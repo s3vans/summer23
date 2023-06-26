@@ -597,7 +597,7 @@ class Game {
       return [-1, -1];
   }
 
-  mouseClicked() {
+  _handleCollectibleClick() {
     let mX = this._scaleMouse(mouseX);
     let mY = this._scaleMouse(mouseY);
     if ((mY >= STORE_Y+STORE_ITEM_HEIGHT) && (mX >= STORE_X)) {
@@ -610,50 +610,66 @@ class Game {
         }
         if ((Math.abs(center_x - mX) <= hit_distance) &&
             (Math.abs(center_y - mY) <= hit_distance)) {
-          game.levelXp += collectible.xp;
-          game.activeCollectibles =
-              game.activeCollectibles.filter(c => c != collectible);
-          return;
+          this.levelXp += collectible.xp;
+          this.activeCollectibles =
+              this.activeCollectibles.filter(c => c != collectible);
+          return true;
         }
       }
     }
-    if (this.state == "NORMAL") {
-      let idx = this._getSelectedStoreItemIdx();
-      if (idx == -1) {
-        return;
-      }
+    return false;
+  }
+
+  _handleCharacterSelection() {
+    let idx = this._getSelectedStoreItemIdx();
+    if (idx != -1) {
       if (this.levelXp >= this.defenderConfigs[idx].xp) {
         this.state = "SELECTED";
         this.selected = idx;
-      }
-    } else if (this.state == "SELECTED") {
-        // Handle changing selection.
-        let idx = this._getSelectedStoreItemIdx();
-        if (idx != -1) {
-          if (this.levelXp >= this.defenderConfigs[idx].xp) {
-            this.state = "SELECTED";
-            this.selected = idx;
-          }
-        } else {
-          // Handle placing on map.
-          let [row, col] = this._getSelectedMapRowCol();
-          if (row == -1) {
-            return;
-          }
-          if (this.map_state[row][col] != undefined) {
-            return;
-          }
-          let defenderConfig = this.defenderConfigs[this.selected];
-          let defender = new Defender(row, col, defenderConfig.img,
-                                      defenderConfig.hp);
-          this.map_state[row][col] = defender
-          this.activeDefenders.push(defender);
-          this.defendersByRow[row].push(defender);
-          this.levelXp -= this.defenderConfigs[this.selected].xp;
-          this.state = "NORMAL";
-          this.selected = -1;
+        return true;
       }
     }
+    return false;
+  }
+
+  _handleCharacterPlacement() {
+    let [row, col] = this._getSelectedMapRowCol();
+    if (row == -1) {
+      return false;
+    }
+    if (this.map_state[row][col] != undefined) {
+      return false;
+    }
+    let defenderConfig = this.defenderConfigs[this.selected];
+    let defender = new Defender(row, col, defenderConfig.img,
+                                defenderConfig.hp);
+    this.map_state[row][col] = defender
+    this.activeDefenders.push(defender);
+    this.defendersByRow[row].push(defender);
+    this.levelXp -= this.defenderConfigs[this.selected].xp;
+    this.state = "NORMAL";
+    this.selected = -1;
+    return true;
+  }
+
+  // In NORMAL and SELECTED states, we always handle collectible clicks,
+  // followed by character selection changes. Only in SELECTED do we handle
+  // placing a character on the map.
+  mouseClicked() {
+    if ((this.state == "NORMAL") || (this.state == "SELECTED")) {
+      if (this._handleCollectibleClick()) {
+        return;
+      }
+      if (this._handleCharacterSelection()) {
+        return;
+      }
+    }
+    if (this.state == "SELECTED") {
+      if (this._handleCharacterPlacement()) {
+        return;
+      }
+    }
+    return;
   }
 
   windowResized() {
