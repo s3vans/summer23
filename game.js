@@ -2,6 +2,7 @@
 // TODO: Allow defenders to detect attackers in their row.
 // TODO: Allow defenders to launch projectile attacks.
 // TODO: Implement attacker deaths.
+// TODO: Make timing frame independent.
 // TODO: Implement character states.
 // TODO: Implement visual effects.
 // TODO: Add sounds.

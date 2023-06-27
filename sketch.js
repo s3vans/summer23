@@ -72,9 +72,10 @@ function windowResized() {
   game.windowResized();
 }
 
-// onMouseClicked() wasn't working in Safari on our iPad. Adding these to
-// prevent the mobile browser from processing some default touch events. Based
-// on the workaround at: https://github.com/processing/p5.js/issues/5358
+// onMouseClicked() wasn't working in Safari on our iPad. This code was
+// suggested at: https://github.com/processing/p5.js/issues/5358
+// It should prevent the browser from processing some default touch events.
+document.addEventListener('touchstart', {}); // <-- mysterious HACK.
 function touchStarted() {
   return false;
 }
