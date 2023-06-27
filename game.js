@@ -95,7 +95,7 @@ class Collectible {
     this.target_y_pos = MAP_Y + (row * MAP_CELL_HEIGHT);
     this.speed = 1;
     this.xp = xp;
-    this.lifespan = lifespan;  // TODO: Implement
+    this.lifespan = lifespan;
   }
 
   draw() {
@@ -119,6 +119,38 @@ class Collectible {
     } else {
       this.state = "LANDED";
     }
+  }
+}
+
+class Projectile {
+  constructor(row, col, img, hp, speed) {
+    this.state = "FLYING";
+    this.height = MAP_CELL_HEIGHT / 2;
+    this.width = MAP_CELL_WIDTH / 2;
+    this.img = img;
+    this.x_pos = MAP_X + (col * MAP_CELL_WIDTH);
+    this.y_pos = MAP_Y + (row * MAP_CELL_HEIGHT);
+    this.speed = speed;
+    this.hp = hp;
+  }
+
+  draw() {
+    push();
+    image(this.img, this.x_pos, this.y_pos, this.width, this.height);
+    pop();
+  }
+
+  update() {
+    if (this.state == "FLYING") {
+      if (this.x_pos > XRESOLUTION) {
+        this.x_pos += this.speed;
+      } else {
+        // Remove it.
+        game.activeProjectiles = game.activeProjectiles.filter(x => x != this);
+        // FIXME: filters like this reference the global |game| object.
+      }
+    }
+    // TODO: Add hit logic.
   }
 }
 
@@ -487,8 +519,11 @@ class Game {
     }
   }
 
-  // TODO: This draws all of the projectiles.
+  // This draws all of the projectiles.
   _drawProjectiles() {
+    for (let projectile of this.activeProjectiles) {
+      projectile.draw();
+    }
   }
 
   // This draws all of the collectibles.
