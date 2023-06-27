@@ -125,12 +125,16 @@ class Collectible {
 // A template that defines an available defender in a game level.
 // Note that this doesn't currently represent an active character in the game.
 class DefenderConfig {
-  constructor(uid, name, img, xp_cost, hp) {
+  constructor(uid, name, img, xp_cost, hp, projectile_img, projectile_hp) {
     this.uid = uid;
     this.name = name;
     this.img = img;
     this.xp = xp_cost;
     this.hp = hp;
+    this.projectile_img = projectile_img;
+    this.projectile_hp = projectile_hp;
+    this.projectile_recharge = 150;
+    this.projectile_speed = 1;
   }
 }
 
@@ -191,6 +195,7 @@ class Game {
     this.activeAttackers = [];
     this.activeDefenders = [];
     this.activeCollectibles = [];
+    this.activeProjectiles = [];
     this.state = "NORMAL";
     this.map_state = [];
     for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
@@ -260,7 +265,9 @@ class Game {
     for (let defender of levelConfig.defenderConfigs) {
       let defenderObj = new DefenderConfig(defender.uid, defender.name,
                                            loadImage(defender.img),
-                                           defender.xp_cost, defender.hp);
+                                           defender.xp_cost, defender.hp,
+                                           loadImage(defender.projectile_img),
+                                           defender.projectile_hp);
       this.defenderConfigMap.set(defender.uid, defenderObj);
       this.defenderConfigs.push(defenderObj);
     }
