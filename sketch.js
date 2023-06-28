@@ -87,6 +87,7 @@ function windowResized() {
 // It should prevent the browser from processing some default touch events.
 document.addEventListener('touchstart', {}); // <-- mysterious HACK.
 function touchStarted() {
+  mouseClicked();
   return false;
 }
 function touchMoved() {
