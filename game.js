@@ -158,6 +158,9 @@ class Projectile {
       let attacker = this._nextTo(attacker, attackersToTheRight, MAP_CELL_WIDTH);
       if (attacker != undefined) {
         attacker.hit();
+        // No need for it now. Remove.
+        game.activeProjectiles = game.activeProjectiles.filter(x => x != this);
+        // FIXME: filters like this reference the global |game| object.
         return;
       }
       if (this.x_pos < XRESOLUTION + MAP_CELL_WIDTH) {
@@ -344,6 +347,16 @@ class Game {
     }
   }
 
+  _sendProjectile() {
+    let num = Math.floor(Math.random() * this.activeDefenders.size);
+    let defender = this.activeDefenders[num];
+    let defenderConfig = this.defenderConfigMap.get(defender.uid);
+    let projectile = new Projectile(defender.row, defender.col,
+                                    defenderConfig.projectile_img,
+                                    defenderConfig.projectile_hp, 1);
+    this.activeProjectiles.push_back(projectile);
+  }
+
   _sendAttacker() {
     // TODO: Validate that there is at least one attacker in the levelConfig.
     if (attackerCnt++ > 100) {
@@ -390,6 +403,7 @@ class Game {
     this._updateScaleFactor();
     this.canvas = createCanvas(XRESOLUTION*this.scaleFactor,
                                YRESOLUTION*this.scaleFactor);
+    setInterval(() => { this._sendProjectile(); }, 1000);
     setInterval(() => { this._sendAttacker(); }, 5000);
     setInterval(() => { this._sendCollectible(); }, 6000);
   }
@@ -430,6 +444,10 @@ class Game {
 
     for (let collectible of this.activeCollectibles) {
       collectible.update();
+    }
+
+    for (let projectile of this.activeProjectiles) {
+      projectile.draw();
     }
   }
 
