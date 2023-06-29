@@ -79,6 +79,16 @@ class Attacker {
     this.width = MAP_CELL_WIDTH;
   }
 
+  hit() {
+    this.hp -= 100;
+    if (this.hp <= 0) {
+      game.map_state[this.row][this.col] = undefined;
+      game.defendersByRow[this.row] = game.attackersByRow[this.row].filter(x => x != this);
+      game.activeAttackers = game.activeAttackers.filter(x => x != this);
+      // FIXME: filters like this reference the global |game| object.
+    }
+  }
+
   update() {
   }
 }
@@ -142,15 +152,22 @@ class Projectile {
 
   update() {
     if (this.state == "FLYING") {
-      if (this.x_pos > XRESOLUTION) {
+      // Handle hits first.
+      let attackersToTheRight = this.attackersByRow[attacker.row]
+          .filter(a => a.x_pos > attacker.x_pos);
+      let attacker = this._nextTo(attacker, attackersToTheRight, MAP_CELL_WIDTH);
+      if (attacker != undefined) {
+        attacker.hit();
+        return;
+      }
+      if (this.x_pos < XRESOLUTION + MAP_CELL_WIDTH) {
         this.x_pos += this.speed;
       } else {
-        // Remove it.
+        // Remove it once offscreen.
         game.activeProjectiles = game.activeProjectiles.filter(x => x != this);
         // FIXME: filters like this reference the global |game| object.
       }
     }
-    // TODO: Add hit logic.
   }
 }
 
