@@ -46,9 +46,10 @@ const OVERLAY_HEIGHT = 100;
 
 // Rudimentary defender instance.
 class Defender {
-  constructor(row, col, img, hp) {
+  constructor(row, col, uid, img, hp) {
     this.row = row;
     this.col = col;
+    this.uid = uid;
     this.img = img;
     this.hp = hp;
     this.x_pos = MAP_X + (MAP_CELL_WIDTH * col);
@@ -83,7 +84,7 @@ class Attacker {
     this.hp -= 100;
     if (this.hp <= 0) {
       game.map_state[this.row][this.col] = undefined;
-      game.defendersByRow[this.row] = game.attackersByRow[this.row].filter(x => x != this);
+      game.attackersByRow[this.row] = game.attackersByRow[this.row].filter(x => x != this);
       game.activeAttackers = game.activeAttackers.filter(x => x != this);
       // FIXME: filters like this reference the global |game| object.
     }
@@ -135,6 +136,8 @@ class Collectible {
 class Projectile {
   constructor(row, col, img, hp, speed) {
     this.state = "FLYING";
+    this.row = row;
+    this.col = col;
     this.height = MAP_CELL_HEIGHT / 2;
     this.width = MAP_CELL_WIDTH / 2;
     this.img = img;
@@ -153,9 +156,9 @@ class Projectile {
   update() {
     if (this.state == "FLYING") {
       // Handle hits first.
-      let attackersToTheRight = this.attackersByRow[attacker.row]
-          .filter(a => a.x_pos > attacker.x_pos);
-      let attacker = this._nextTo(attacker, attackersToTheRight, MAP_CELL_WIDTH);
+      let attackersToTheRight = game.attackersByRow[this.row]
+          .filter(a => a.x_pos > this.x_pos);
+      let attacker = game._nextTo(this, attackersToTheRight, MAP_CELL_WIDTH);
       if (attacker != undefined) {
         attacker.hit();
         // No need for it now. Remove.
@@ -348,13 +351,16 @@ class Game {
   }
 
   _sendProjectile() {
-    let num = Math.floor(Math.random() * this.activeDefenders.size);
+    if (this.activeDefenders.length <= 0) {
+      return;
+    }
+    let num = Math.floor(Math.random() * this.activeDefenders.length);
     let defender = this.activeDefenders[num];
     let defenderConfig = this.defenderConfigMap.get(defender.uid);
     let projectile = new Projectile(defender.row, defender.col,
                                     defenderConfig.projectile_img,
-                                    defenderConfig.projectile_hp, 1);
-    this.activeProjectiles.push_back(projectile);
+                                    defenderConfig.projectile_hp, 10);
+    this.activeProjectiles.push(projectile);
   }
 
   _sendAttacker() {
@@ -403,7 +409,7 @@ class Game {
     this._updateScaleFactor();
     this.canvas = createCanvas(XRESOLUTION*this.scaleFactor,
                                YRESOLUTION*this.scaleFactor);
-    setInterval(() => { this._sendProjectile(); }, 1000);
+    setInterval(() => { this._sendProjectile(); }, 2000);
     setInterval(() => { this._sendAttacker(); }, 5000);
     setInterval(() => { this._sendCollectible(); }, 6000);
   }
@@ -447,7 +453,7 @@ class Game {
     }
 
     for (let projectile of this.activeProjectiles) {
-      projectile.draw();
+      projectile.update();
     }
   }
 
@@ -720,7 +726,7 @@ class Game {
       return false;
     }
     let defenderConfig = this.defenderConfigs[this.selected];
-    let defender = new Defender(row, col, defenderConfig.img,
+    let defender = new Defender(row, col, defenderConfig.uid, defenderConfig.img,
                                 defenderConfig.hp);
     this.map_state[row][col] = defender
     this.activeDefenders.push(defender);
