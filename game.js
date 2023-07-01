@@ -44,6 +44,32 @@ const OVERLAY_Y = 0;
 const OVERLAY_WIDTH = 100;
 const OVERLAY_HEIGHT = 100;
 
+class Character {
+  constructor(characterConfig, state, row, col, x_pos, y_pos, health) {
+    // Static config:
+    // name, uid, img, width, height
+    this.config = config;
+    // Instance config:
+    this.state = state;
+    this.row = row;
+    this.col = col;
+    this.x_pos = x_pos;
+    this.y_pos = y_pos;
+    this.health = health;
+  }
+}
+
+class DefenderCharacter extends Character {
+  constructor(defenderConfig, row, col) {
+    super(
+        defenderConfig,
+        /*state=*/"IDLE", row, col,
+        /*x_pos=*/MAP_X + (MAP_CELL_WIDTH * col),
+        /*y_pos=*/MAP_Y + (MAP_CELL_HEIGHT * row),
+        defenderConfig.health);
+  }
+}
+
 // Rudimentary defender instance.
 class Defender {
   constructor(row, col, uid, img, hp) {
