@@ -29,13 +29,27 @@ What state is shared between attackers/defenders:
  *  Width + Height
 
 What state is specific to Attacker:
- *  Speed
+ *  Speed != 0
  *  Effect maybe?
+ *  States: MOVE, IDLE, ATTACK, TAKE DAMAGE, DIE
 
 What state is specific to Defender:
  *  Projectile img, damage (HP)
  *  Projectile speed
  *  Projectile recharge time
+ *  States: IDLE, ATTACK, TAKE DAMAGE, DIE
+
+ATTACKER STATE MACHINE
+MOVE + next to defender = ATTACK
+MOVE + next to attacker = IDLE
+MOVE + not next to any = MOVE
+IDLE + next to attacker = IDLE
+IDLE + next to defender = ATTACK (can't happen though)
+IDLE + not next to any = MOVE
+ATTACK + next to defender = ATTACK (recharge? handle with a sep timer, not state)
+ATTACK + next to attacker = IDLE
+ATTACK + not next to any = MOVE
+  *  +  get hit = TAKE DAMAGE
 
 What behaviors are shared:
  *  _nextTo: Given an item and a curated array of items in the same row,
