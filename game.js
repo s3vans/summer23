@@ -47,7 +47,7 @@ const OVERLAY_HEIGHT = 100;
 class Character {
   constructor(characterConfig, state, row, col, x_pos, y_pos, health) {
     // Static config:
-    // name, uid, img, width, height
+    // name, uid, img, width, height, speed
     this.config = config;
     // Instance config:
     this.state = state;
