@@ -72,7 +72,8 @@ class DefenderCharacter extends Character {
 
 // Rudimentary defender instance.
 class Defender {
-  constructor(row, col, uid, img, hp) {
+  constructor(game, row, col, uid, img, hp) {
+    this.game = game;
     this.row = row;
     this.col = col;
     this.uid = uid;
@@ -86,17 +87,19 @@ class Defender {
   hit() {
     this.hp -= 1;
     if (this.hp <= 0) {
-      game.map_state[this.row][this.col] = undefined;
-      game.defendersByRow[this.row] = game.defendersByRow[this.row].filter(x => x != this);
-      game.activeDefenders = game.activeDefenders.filter(x => x != this);
-      // FIXME: filters like this reference the global |game| object.
+      this.game.map_state[this.row][this.col] = undefined;
+      this.game.defendersByRow[this.row] =
+          this.game.defendersByRow[this.row].filter(x => x != this);
+      this.game.activeDefenders =
+          this.game.activeDefenders.filter(x => x != this);
     }
   }
 }
 
 // Rudimentary attacker instance.
 class Attacker {
-  constructor(row, img, hp) {
+  constructor(game, row, img, hp) {
+    this.game = game;
     this.row = row;
     this.img = img;
     this.hp = hp;
@@ -109,10 +112,11 @@ class Attacker {
   hit() {
     this.hp -= 100;
     if (this.hp <= 0) {
-      game.map_state[this.row][this.col] = undefined;
-      game.attackersByRow[this.row] = game.attackersByRow[this.row].filter(x => x != this);
-      game.activeAttackers = game.activeAttackers.filter(x => x != this);
-      // FIXME: filters like this reference the global |game| object.
+      this.game.map_state[this.row][this.col] = undefined;
+      this.game.attackersByRow[this.row] =
+          this.game.attackersByRow[this.row].filter(x => x != this);
+      this.game.activeAttackers =
+          this.game.activeAttackers.filter(x => x != this);
     }
   }
 
@@ -122,7 +126,8 @@ class Attacker {
 
 // Rudimentary collectible instance.
 class Collectible {
-  constructor(row, col, img, xp, lifespan) {
+  constructor(game, row, col, img, xp, lifespan) {
+    this.game = game;
     this.state = "FALLING";
     this.height = MAP_CELL_HEIGHT / 2;
     this.width = MAP_CELL_WIDTH / 2;
@@ -147,8 +152,8 @@ class Collectible {
         this.lifespan -= 1;
       } else {
         // Remove it.
-        game.activeCollectibles = game.activeCollectibles.filter(x => x != this);
-        // FIXME: filters like this reference the global |game| object.
+        this.game.activeCollectibles =
+            this.game.activeCollectibles.filter(x => x != this);
       }
     }
     if (this.y_pos < this.target_y_pos) {
@@ -160,7 +165,8 @@ class Collectible {
 }
 
 class Projectile {
-  constructor(row, col, img, hp, speed) {
+  constructor(game, row, col, img, hp, speed) {
+    this.game = game;
     this.state = "FLYING";
     this.row = row;
     this.col = col;
@@ -182,22 +188,23 @@ class Projectile {
   update() {
     if (this.state == "FLYING") {
       // Handle hits first.
-      let attackersToTheRight = game.attackersByRow[this.row]
+      let attackersToTheRight = this.game.attackersByRow[this.row]
           .filter(a => a.x_pos > this.x_pos);
-      let attacker = game._nextTo(this, attackersToTheRight, MAP_CELL_WIDTH);
+      let attacker =
+          this.game._nextTo(this, attackersToTheRight, MAP_CELL_WIDTH);
       if (attacker != undefined) {
         attacker.hit();
         // No need for it now. Remove.
-        game.activeProjectiles = game.activeProjectiles.filter(x => x != this);
-        // FIXME: filters like this reference the global |game| object.
+        this.game.activeProjectiles =
+            this.game.activeProjectiles.filter(x => x != this);
         return;
       }
       if (this.x_pos < XRESOLUTION + MAP_CELL_WIDTH) {
         this.x_pos += this.speed;
       } else {
         // Remove it once offscreen.
-        game.activeProjectiles = game.activeProjectiles.filter(x => x != this);
-        // FIXME: filters like this reference the global |game| object.
+        this.game.activeProjectiles =
+            this.game.activeProjectiles.filter(x => x != this);
       }
     }
   }
@@ -383,7 +390,7 @@ class Game {
     let num = Math.floor(Math.random() * this.activeDefenders.length);
     let defender = this.activeDefenders[num];
     let defenderConfig = this.defenderConfigMap.get(defender.uid);
-    let projectile = new Projectile(defender.row, defender.col,
+    let projectile = new Projectile(game, defender.row, defender.col,
                                     defenderConfig.projectile_img,
                                     defenderConfig.projectile_hp, 10);
     this.activeProjectiles.push(projectile);
@@ -397,7 +404,8 @@ class Game {
     let row = Math.floor(Math.random() * MAP_CELL_ROW_COUNT);
     let num = Math.floor(Math.random() * this.attackerConfigMap.size);
     let attackerConfig = this.attackerConfigs[num];
-    let attacker = new Attacker(row, attackerConfig.img, attackerConfig.hp);
+    let attacker =
+        new Attacker(game, row, attackerConfig.img, attackerConfig.hp);
     this.activeAttackers.push(attacker);
     this.attackersByRow[row].push(attacker);
   }
@@ -407,7 +415,7 @@ class Game {
     let col = Math.floor(Math.random() * MAP_CELL_COL_COUNT);
     let num = Math.floor(Math.random() * this.collectibleConfigMap.size);
     let collectibleConfig = this.collectibleConfigs[num];
-    this.activeCollectibles.push(new Collectible(row, col,
+    this.activeCollectibles.push(new Collectible(game, row, col,
                                                  collectibleConfig.img,
                                                  collectibleConfig.xp,
                                                  collectibleConfig.lifespan));
@@ -541,7 +549,8 @@ class Game {
     }
     let x = 0;
     for (let defender of this.defenderConfigMap.values()) {
-       image(defender.img, x+10, 0, STORE_ITEM_IMG_WIDTH, STORE_ITEM_IMG_HEIGHT);
+       image(defender.img, x+10, 0, STORE_ITEM_IMG_WIDTH,
+             STORE_ITEM_IMG_HEIGHT);
        push();
        noStroke(); fill(0); textSize(10);
        text(defender.name, x+10, 85);
@@ -636,8 +645,8 @@ class Game {
         x = x + STORE_ITEM_WIDTH;
       }
     } else if (this.state == "SELECTED") {
-      this._highlightRectangle(STORE_X+(STORE_ITEM_WIDTH*this.selected), STORE_Y,
-                               STORE_ITEM_WIDTH, STORE_ITEM_HEIGHT,
+      this._highlightRectangle(STORE_X+(STORE_ITEM_WIDTH*this.selected),
+                               STORE_Y, STORE_ITEM_WIDTH, STORE_ITEM_HEIGHT,
                                color(0, 255, 255, 100));
       let y = MAP_Y;
       for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
@@ -752,7 +761,8 @@ class Game {
       return false;
     }
     let defenderConfig = this.defenderConfigs[this.selected];
-    let defender = new Defender(row, col, defenderConfig.uid, defenderConfig.img,
+    let defender = new Defender(game, row, col, defenderConfig.uid,
+                                defenderConfig.img,
                                 defenderConfig.hp);
     this.map_state[row][col] = defender
     this.activeDefenders.push(defender);
@@ -766,6 +776,8 @@ class Game {
   // In NORMAL and SELECTED states, we always handle collectible clicks,
   // followed by character selection changes. Only in SELECTED do we handle
   // placing a character on the map.
+  // FIXME: Letting off the mouse seems to count as a click which can cause
+  // mispacement of defenders after clicking on a collectibel.
   mouseClicked() {
     if ((this.state == "NORMAL") || (this.state == "SELECTED")) {
       if (this._handleCollectibleClick()) {
