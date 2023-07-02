@@ -45,7 +45,8 @@ const OVERLAY_WIDTH = 100;
 const OVERLAY_HEIGHT = 100;
 
 class Character {
-  constructor(characterConfig, state, row, col, x_pos, y_pos, health) {
+  constructor(game, characterConfig, state, row, col, x_pos, y_pos, health) {
+    this.game = game;
     // Static config:
     // name, uid, img, width, height, speed
     this.config = config;
@@ -60,9 +61,9 @@ class Character {
 }
 
 class DefenderCharacter extends Character {
-  constructor(defenderConfig, row, col) {
+  constructor(game, defenderConfig, row, col) {
     super(
-        defenderConfig,
+        game, defenderConfig,
         /*state=*/"IDLE", row, col,
         /*x_pos=*/MAP_X + (MAP_CELL_WIDTH * col),
         /*y_pos=*/MAP_Y + (MAP_CELL_HEIGHT * row),
