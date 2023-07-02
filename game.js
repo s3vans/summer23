@@ -44,6 +44,10 @@ const OVERLAY_Y = 0;
 const OVERLAY_WIDTH = 100;
 const OVERLAY_HEIGHT = 100;
 
+function removeFromArray(arr, elem) {
+  arr = arr.filter(x => x != elem);
+}
+
 class Character {
   constructor(game, characterConfig, state, row, col, x_pos, y_pos, health) {
     this.game = game;
@@ -89,10 +93,8 @@ class Defender {
     this.hp -= 1;
     if (this.hp <= 0) {
       this.game.map_state[this.row][this.col] = undefined;
-      this.game.defendersByRow[this.row] =
-          this.game.defendersByRow[this.row].filter(x => x != this);
-      this.game.activeDefenders =
-          this.game.activeDefenders.filter(x => x != this);
+      removeFromArray(this.game.defendersByRow[this.row], this);
+      removeFromArray(this.game.activeDefenders, this);
     }
   }
 }
@@ -114,10 +116,8 @@ class Attacker {
     this.hp -= 100;
     if (this.hp <= 0) {
       this.game.map_state[this.row][this.col] = undefined;
-      this.game.attackersByRow[this.row] =
-          this.game.attackersByRow[this.row].filter(x => x != this);
-      this.game.activeAttackers =
-          this.game.activeAttackers.filter(x => x != this);
+      removeFromArray(this.game.attackersByRow[this.row], this);
+      removeFromArray(this.game.activeAttackers, this);
     }
   }
 
@@ -152,9 +152,7 @@ class Collectible {
       if (this.lifespan > 0) {
         this.lifespan -= 1;
       } else {
-        // Remove it.
-        this.game.activeCollectibles =
-            this.game.activeCollectibles.filter(x => x != this);
+        removeFromArray(this.game.activeCollectibles, this);
       }
     }
     if (this.y_pos < this.target_y_pos) {
@@ -195,17 +193,14 @@ class Projectile {
           this.game._nextTo(this, attackersToTheRight, MAP_CELL_WIDTH);
       if (attacker != undefined) {
         attacker.hit();
-        // No need for it now. Remove.
-        this.game.activeProjectiles =
-            this.game.activeProjectiles.filter(x => x != this);
+        removeFromArray(this.game.activeProjectiles, this);
         return;
       }
       if (this.x_pos < XRESOLUTION + MAP_CELL_WIDTH) {
         this.x_pos += this.speed;
       } else {
         // Remove it once offscreen.
-        this.game.activeProjectiles =
-            this.game.activeProjectiles.filter(x => x != this);
+        removeFromArray(this.game.activeProjectiles, this);
       }
     }
   }
@@ -732,8 +727,7 @@ class Game {
         if ((Math.abs(center_x - mX) <= hit_distance) &&
             (Math.abs(center_y - mY) <= hit_distance)) {
           this.levelXp += collectible.xp;
-          this.activeCollectibles =
-              this.activeCollectibles.filter(c => c != collectible);
+          removeFromArray(this.activeCollectibles, collectible);
           return true;
         }
       }
