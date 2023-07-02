@@ -1,6 +1,3 @@
-// TODO: Allow defenders to detect attackers in their row.
-// TODO: Allow defenders to launch projectile attacks.
-// TODO: Implement attacker deaths.
 // TODO: Make timing frame independent.
 // TODO: Implement character states.
 // TODO: Implement visual effects.
@@ -44,7 +41,10 @@ const OVERLAY_WIDTH = 100;
 const OVERLAY_HEIGHT = 100;
 
 function removeFromArray(arr, elem) {
-  arr = arr.filter(x => x != elem);
+  const index = arr.indexOf(elem);
+  if (index != -1) {
+    arr.splice(index, 1);
+  }
 }
 
 class Character {
@@ -76,7 +76,7 @@ class DefenderCharacter extends Character {
 
 // Rudimentary defender instance.
 class Defender {
-  constructor(game, row, col, uid, img, hp) {
+  constructor(game, row, col, uid, img, hp, recharge) {
     this.game = game;
     this.row = row;
     this.col = col;
@@ -86,6 +86,8 @@ class Defender {
     this.x_pos = MAP_X + (MAP_CELL_WIDTH * col);
     this.y_pos = MAP_Y + (MAP_CELL_HEIGHT * row);
     this.width = MAP_CELL_WIDTH;
+    this.charge = recharge;
+    this.recharge = recharge;
   }
 
   hit() {
@@ -98,6 +100,20 @@ class Defender {
   }
 
   update() {
+    if (this.game.attackersByRow[this.row].length > 0) {
+      if (this.charge == this.recharge) {
+        let defenderConfig = this.game.defenderConfigMap.get(this.uid);
+        let projectile = new Projectile(this.game, this.row, this.col,
+                                        defenderConfig.projectile_img,
+                                        defenderConfig.projectile_hp,
+                                        defenderConfig.projectile_speed);
+        this.game.activeProjectiles.push(projectile);
+        this.charge = 0;
+      }
+    }
+    if (this.charge < this.recharge) {
+      this.charge++;
+    }
   }
 }
 
@@ -134,17 +150,17 @@ class Attacker {
           this.game._nextTo(this, defendersToTheLeft, MAP_CELL_WIDTH);
       if (defender != undefined) {
         defender.hit();
-        continue;
+        return;
       }
 
       // Stand back if next to another attacker.
-      let attackersToTheLeft = this.attackersByRow[this.row]
+      let attackersToTheLeft = this.game.attackersByRow[this.row]
           .filter(a => a.x_pos < this.x_pos);
       let other_attacker = this.game._nextTo(this, attackersToTheLeft,
                                              MAP_ENEMY_QUEUE_OFFSET);
 
       if (other_attacker != undefined) {
-        continue;
+        return;
       }
 
       // Move left at speed.
@@ -236,7 +252,8 @@ class Projectile {
 // A template that defines an available defender in a game level.
 // Note that this doesn't currently represent an active character in the game.
 class DefenderConfig {
-  constructor(uid, name, img, xp_cost, hp, projectile_img, projectile_hp) {
+  constructor(uid, name, img, xp_cost, hp, projectile_img, projectile_hp,
+              projectile_speed, projectile_recharge) {
     this.uid = uid;
     this.name = name;
     this.img = img;
@@ -244,8 +261,8 @@ class DefenderConfig {
     this.hp = hp;
     this.projectile_img = projectile_img;
     this.projectile_hp = projectile_hp;
-    this.projectile_recharge = 150;
-    this.projectile_speed = 1;
+    this.projectile_speed = projectile_speed;
+    this.projectile_recharge = projectile_recharge;
   }
 }
 
@@ -378,7 +395,9 @@ class Game {
                                            loadImage(defender.img),
                                            defender.xp_cost, defender.hp,
                                            loadImage(defender.projectile_img),
-                                           defender.projectile_hp);
+                                           defender.projectile_hp,
+                                           defender.projectile_speed,
+                                           defender.projectile_recharge);
       this.defenderConfigMap.set(defender.uid, defenderObj);
       this.defenderConfigs.push(defenderObj);
     }
@@ -404,19 +423,6 @@ class Game {
       this.collectibleConfigMap.set(collectible.uid, collectibleObj);
       this.collectibleConfigs.push(collectibleObj);
     }
-  }
-
-  _sendProjectile() {
-    if (this.activeDefenders.length <= 0) {
-      return;
-    }
-    let num = Math.floor(Math.random() * this.activeDefenders.length);
-    let defender = this.activeDefenders[num];
-    let defenderConfig = this.defenderConfigMap.get(defender.uid);
-    let projectile = new Projectile(game, defender.row, defender.col,
-                                    defenderConfig.projectile_img,
-                                    defenderConfig.projectile_hp, 10);
-    this.activeProjectiles.push(projectile);
   }
 
   _sendAttacker() {
@@ -466,7 +472,6 @@ class Game {
     this._updateScaleFactor();
     this.canvas = createCanvas(XRESOLUTION*this.scaleFactor,
                                YRESOLUTION*this.scaleFactor);
-    setInterval(() => { this._sendProjectile(); }, 2000);
     setInterval(() => { this._sendAttacker(); }, 5000);
     setInterval(() => { this._sendCollectible(); }, 6000);
   }
@@ -765,7 +770,8 @@ class Game {
     let defenderConfig = this.defenderConfigs[this.selected];
     let defender = new Defender(game, row, col, defenderConfig.uid,
                                 defenderConfig.img,
-                                defenderConfig.hp);
+                                defenderConfig.hp,
+                                defenderConfig.projectile_recharge);
     this.map_state[row][col] = defender
     this.activeDefenders.push(defender);
     this.defendersByRow[row].push(defender);
