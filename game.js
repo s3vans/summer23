@@ -1,4 +1,3 @@
-// TODO: Call update() function on attackers/defenders to produce movement.
 // TODO: Allow defenders to detect attackers in their row.
 // TODO: Allow defenders to launch projectile attacks.
 // TODO: Implement attacker deaths.
@@ -97,6 +96,9 @@ class Defender {
       removeFromArray(this.game.activeDefenders, this);
     }
   }
+
+  update() {
+  }
 }
 
 // Rudimentary attacker instance.
@@ -122,6 +124,31 @@ class Attacker {
   }
 
   update() {
+      // Order is important here. If we check for attack after we check for
+      // neighboring attacker, then we stop hitting.
+
+      // Check for attack condition.
+      let defendersToTheLeft = this.game.defendersByRow[this.row]
+          .filter(a => a.x_pos < this.x_pos);
+      let defender =
+          this.game._nextTo(this, defendersToTheLeft, MAP_CELL_WIDTH);
+      if (defender != undefined) {
+        defender.hit();
+        continue;
+      }
+
+      // Stand back if next to another attacker.
+      let attackersToTheLeft = this.attackersByRow[this.row]
+          .filter(a => a.x_pos < this.x_pos);
+      let other_attacker = this.game._nextTo(this, attackersToTheLeft,
+                                             MAP_ENEMY_QUEUE_OFFSET);
+
+      if (other_attacker != undefined) {
+        continue;
+      }
+
+      // Move left at speed.
+      this.x_pos -= this.speed;
   }
 }
 
@@ -451,31 +478,11 @@ class Game {
         this.state = "GAMEOVER";
         return;
       }
+      attacker.update();
+    }
 
-      // Order is important here. If we check for attack after we check for
-      // neighboring attacker, then we stop hitting.
-
-      // Check for attack condition.
-      let defendersToTheLeft = this.defendersByRow[attacker.row]
-          .filter(a => a.x_pos < attacker.x_pos);
-      let defender = this._nextTo(attacker, defendersToTheLeft, MAP_CELL_WIDTH);
-      if (defender != undefined) {
-        defender.hit();
-        continue;
-      }
-
-      // Stand back if next to another attacker.
-      let attackersToTheLeft = this.attackersByRow[attacker.row]
-          .filter(a => a.x_pos < attacker.x_pos);
-      let other_attacker = this._nextTo(attacker, attackersToTheLeft,
-                                        MAP_ENEMY_QUEUE_OFFSET);
-
-      if (other_attacker != undefined) {
-        continue;
-      }
-
-      // Move left at speed.
-      attacker.x_pos -= attacker.speed;
+    for (let defender of this.activeDefenders) {
+      defender.update();
     }
 
     for (let collectible of this.activeCollectibles) {
