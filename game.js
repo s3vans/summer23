@@ -375,7 +375,7 @@ class Game {
     this.levelUid = levelConfig.uid;
     this.levelName = levelConfig.name;
     this.levelImg = loadImage(levelConfig.img);
-    this.levelXp = levelConfig.levelXp;
+    this.levelXp = levelConfig.startingXp;
     this._checkUidsFromLevel(levelConfig);
   }
 
