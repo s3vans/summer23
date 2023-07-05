@@ -96,7 +96,98 @@ let levels = [{
         "time": 1500,
         "row": -1, // if not a valid row 1-5, then random
    }],
-  }];
+}];
+
+let levels_new = [{
+    "root": "assets/pokemon",
+    "uid": "level1",
+    "name": "Level 1",
+    "imgs": {
+        "background": {
+            "img": "levels/level1.png",  // Defaults to {root}/levels/{uid}.png"
+            "fps": 12, // Defaults to 1
+            "numFrames": 9,  // Defaults to 1
+            "frameHeight": undefined,  // Defaults to (img.height / fps) 
+            "loop": true,  // Defaults to true.
+         }
+    },
+    // These are all optional.
+    "mp3s": {
+        "background": "levels/level1_background.mp3",  // Defaults to {root}/levels/level1_background.mp3"
+        "start": "levels/level1_start.mp3",  // Default to {root}/levels/level1_start.mp3
+        "win": "levels/level1_win.mp3",  // Default to {root}/levels/level1_win.mp3
+        "lose": "levels/level1_lose.mp3",  // Default to {root}/levels/level1_lose.mp3
+    },
+    "startingMoney": 500,
+    "defenderConfigs": [{
+        "uid": "pikachu",
+        "name": "Pikachu",
+        "moneyCost": 150,
+        "startingHealth": 200,
+        "imgs": {
+            "default": {
+                "img": "defenders/pikachu_default.png",  // Defaults to {root}/defenders/{uid}_default.png"
+                "fps": 12, // Defaults to 1
+                "numFrames": 9,  // Defaults to 1
+                "frameHeight": undefined,  // Defaults to (img.height / fps) 
+                "loop": true,  // Defaults to true.
+            },
+            "hurt":  {
+                "img": "defenders/pikachu_hurt.png",  // Defaults to {root}/defenders/{uid}_hurt.png"
+                "loop": false,  // TODO: We can let death animations play out over some fixed OR configurable time period.
+            },
+            "die":  {
+                "img": "defenders/pikachu_die.png",  // Defaults to {root}/defenders/{uid}_die.png"
+            },
+        },
+        "mp3s": {
+            "default": {
+            },
+            "place":  {
+            },
+            "hurt":  {
+            },
+            "die":  {
+            },
+          
+        },
+        "projectiles": [{
+            "uid": "bolt",
+            "healthDamage": 50,
+            "randomDamage": false,
+            "img": {
+                // "assets/pokemon/objects/bolt.png"
+            },
+            "mp3s": {
+                "launch": {
+                },
+                "hit": {
+                },
+            },
+            "rechargeTimeMs": 1000,
+        }],
+    }],
+    "collectibleConfigs": [{
+        "uid": "raspberries",
+        "name": "Raspberries",
+        "img": "assets/pokemon/objects/raspberries.png",
+        "mp3": "assets/pokemon/objects/raspberries.mp3",
+        "xp": 50,
+        "lifespan": 250,
+    }],
+    // TODO: Consider alternative that lists enemies of what type and max
+    // duration between respawns, then use randomness to distribute.  Maybe
+    // make sequences recordable in level design mode.
+    "attackerSequence": [{
+        "uid": "evee",
+        "elapsedTime": 1000,
+        "row": -1, // if not a valid row 1-5, then random
+   }, {
+        "uid": "evee2",
+        "elapsedTime": 1500,
+        "row": -1, // if not a valid row 1-5, then random
+   }],
+}];
 
 let game = new Game();
 
