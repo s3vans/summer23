@@ -76,8 +76,8 @@ let levels = [{
         "name": "Evee",
         "img": "assets/pokemon/attackers/evee.png",
         "hp": 150,
-        "hit_xp": 1;
-        "hit_recharge": 1;
+        "hit_xp": 1,
+        "hit_recharge": 1,
     }],
     "collectibleConfigs": [{
         "uid": "raspberries",
@@ -89,12 +89,12 @@ let levels = [{
     // Maybe make sequences recordable.
     "attackerSequence": [{
         "uid": "evee",
-        "time": 1000;
-        "row": -1; // if not a valid row 1-5, then random
+        "time": 1000,
+        "row": -1, // if not a valid row 1-5, then random
    }, {
         "uid": "evee2",
-        "time": 1500;
-        "row": -1; // if not a valid row 1-5, then random
+        "time": 1500,
+        "row": -1, // if not a valid row 1-5, then random
    }],
   }];
 
