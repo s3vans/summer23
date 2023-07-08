@@ -11,7 +11,7 @@ let levels = [{
     "defenderConfigs": [{
         "uid": "pikachu",
         "name": "Pikachu",
-        "img": "assets/pokemon/defenders/pikachu.png",
+        "img": "assets/pokemon/defenders/pikachu_sprites.png",
         "img_idle": "", // Defaults used if not specified.
         "img_hurt": "",
         "img_die": "",
@@ -25,7 +25,7 @@ let levels = [{
         "projectile_mp3_hit": "assets/pokemon/objects/bolt.mp3",
         "projectile_hp": 50,
         "projectile_speed": 10,
-        "projectile_recharge": 1000,
+        "projectile_recharge": 100,
       }, {
         "uid": "pika2",
         "name": "Pikachu2",

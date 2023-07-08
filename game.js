@@ -85,9 +85,14 @@ class Defender {
     this.hp = hp;
     this.x_pos = MAP_X + (MAP_CELL_WIDTH * col);
     this.y_pos = MAP_Y + (MAP_CELL_HEIGHT * row);
+    this.height = MAP_CELL_HEIGHT;
     this.width = MAP_CELL_WIDTH;
     this.charge = recharge;
     this.recharge = recharge;
+    this.lastFrame = 0;
+    this.frameRate = 5;
+    this.spriteX = 0;
+    this.spriteY = 0;
   }
 
   hit() {
@@ -113,6 +118,10 @@ class Defender {
     }
     if (this.charge < this.recharge) {
       this.charge++;
+    }
+    if (frameCount > this.lastFrame + this.frameRate) {
+      this.spriteY = (this.spriteY + this.height) % this.img.height;
+      this.lastFrame = frameCount;
     }
   }
 }
@@ -557,8 +566,7 @@ class Game {
     }
     let x = 0;
     for (let defender of this.defenderConfigMap.values()) {
-       image(defender.img, x+10, 0, STORE_ITEM_IMG_WIDTH,
-             STORE_ITEM_IMG_HEIGHT);
+       image(defender.img, x+10, 0, STORE_ITEM_IMG_WIDTH, STORE_ITEM_IMG_HEIGHT, 0, 0, STORE_ITEM_IMG_WIDTH, STORE_ITEM_IMG_HEIGHT);
        push();
        noStroke(); fill(0); textSize(10);
        text(defender.name, x+10, 85);
@@ -580,7 +588,7 @@ class Game {
       for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
         let defender = this.map_state[row][col];
         if (defender != undefined) {
-          image(defender.img, x, y, MAP_CELL_IMG_WIDTH, MAP_CELL_IMG_HEIGHT);
+          image(defender.img, x, y, MAP_CELL_IMG_WIDTH, MAP_CELL_IMG_HEIGHT, defender.spriteX, defender.spriteY, MAP_CELL_IMG_WIDTH, MAP_CELL_IMG_HEIGHT);
           push();
           noStroke(); fill(255); textSize(10);
           text('HP:' + defender.hp, x+MAP_HP_XOFFSET, y+MAP_HP_YOFFSET);
