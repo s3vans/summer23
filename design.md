@@ -8,6 +8,31 @@ Kieran wants to customize it with a Pokemon theme.
 
 Finn wants to customize it with an Among Us theme.
 
+## Update as of July 7, 2023
+
+The MVP feature are arguably done but in a very rudimentary way.  I took a lot
+of shortcuts and the code needs refactoring and clean up.
+
+Now that I have a vision for what the config looks like, I would like to move
+to a model where config will be implicit in most cases, derived from the
+existance of specific files, but overrides can be added if needed.
+
+Two big missing pieces are:
+
+1. The timing of events is frame-dependent.
+2. I haven't added any sounds yet.
+
+There are also some ugly hacks that I'd like to clean up:
+
+1. Attackers and defenders don't manage their own drawing logic.
+2. The animation code uses a hard-coded frame rate.
+
+There are some things I'm currenty wondering about:
+
+* Is there a better way to distinguish between type config (like the name and
+  size of a defender) and instance config (like it's current position on the
+  map)?
+
 ## Road to MVP
 
 1. Display a rudimentary background in the standard resolution.
