@@ -98,6 +98,64 @@ let levels = [{
    }],
 }];
 
+
+//
+// Example of minimal game config.
+//
+let game_config = {
+  "root_dir": "assets/pokemon",
+  "levels": [
+    {
+      "uid": "level1",
+      "startingMoney": 500,
+      "defenders": [
+        {
+          "uid": "pikachu",
+          "startingHealth": 200,
+          "cost": 150,
+          "restockTime": 200,
+          "projectile": {
+            "uid": "bolt",
+            "maxHitDamage": 150,
+            "reloadTime": 200,
+          },
+        }, {
+          "uid": "bulbasaur",
+          "startingHealth": 300,
+          "cost": 50,
+          "restockTime": 200,
+          "projectile": {
+            "uid": "splash",
+            "maxHitDamage": 250,
+            "reloadTime": 200,
+          },
+        }
+      ],
+      "attacker": [
+        {
+          "uid": "evee",
+          "startingHealth": 200,
+          "maxHitDamage": 200,
+          "reloadTime": 200,
+        }
+      ],
+      "sequence": [
+        {
+          //message(/*duration*/=3000, "Level #1 - First Wave..."),
+          //wait(2500),
+          //attack("evee", /*row=*/-1),
+          //randomWaitUpTo(2500),
+          //attack("evee", /*row=*/2),
+        }
+      ],
+    },
+  ],
+}
+
+//
+// Unrefined example of explicit game config that shows some of the implicit.
+// (Needs to be reworked to match the above config.)
+//
 let levels_new = [{
     "root": "assets/pokemon",
     "uid": "level1",
