@@ -98,6 +98,111 @@ let levels = [{
    }],
 }];
 
+class Level {
+  constructor() {
+    this.config = {};
+    this.config.uid = undefined;
+    this.config.startingMoney = 0;
+    this.config.imgs = {};
+    this.config.imgs.background = undefined;
+    this.config.mp3s = {};
+    this.config.mp3s.background = undefined;
+    this.config.mp3s.start = undefined;
+    this.config.mp3s.win = undefined; ;
+    this.config.mp3s.lose = undefined;
+    this.config.defenders = [];
+    this.config.attckers = [];
+    this.config.sequence = [];
+
+    this.state = {};
+    this.state.money = 0;
+  }
+
+  // Given a pointer to a level's config, returns "" on success, or an error
+  // string if there is an error parsing the config.
+  initFromConfig(rootDir, config) {
+    if (config.uid === undefined) {
+      return "Level config is missing required uid";
+    }
+    this.config.uid = config.uid;
+
+    if (config.startingMoney !== undefined) {
+      this.config.startingMoney = config.startingMoney);
+    }
+
+    let path;
+    let obj;
+
+    path = rootDir + '/levels/' + this.config.uid + '_background.png';
+    if (config.imgs.background !== undefined) {
+        path = rootDir + '/' + config.imgs.background;
+    }
+    obj = loadImageFromPath(path);
+    if (obj == undefined) {
+      console.log(path + ": Image not found");
+    } else {
+      this.config.imgs.background = obj;
+    }
+
+    path = rootDir + '/levels/' + this.config.uid + '_background.png';
+    if (config.imgs.background !== undefined) {
+        path = rootDir + '/' + config.imgs.background;
+    }
+    obj = loadImageFromPath(path);
+    if (obj == undefined) {
+      console.log(path + ": Image not found");
+    } else {
+      this.config.imgs.background = obj;
+    }
+
+
+
+    this.config.imgs = {};
+    this.config.imgs.background = undefined;
+    this.config.mp3s = {};
+    this.config.mp3s.background = undefined;
+    this.config.mp3s.start = undefined;
+    this.config.mp3s.win = undefined; ;
+    this.config.mp3s.lose = undefined;
+
+    for (let defenderConfig of config.defenders) {
+      let defender = new Defender();
+      let error = defender.initFromConfig(rootDir, defenderConfig);
+      if (error !== "") {
+        return error;
+      }
+    }
+
+    for (let attackerConfig of config.attackers) {
+      let attacker = new Attacker();
+      let error = attacker.initFromConfig(rootDir, attackerConfig);
+      if (error !== "") {
+        return error;
+      }
+    }
+
+    for (let sequenceItem of config.sequence) {
+    }
+  }
+};
+
+const DEFAULT_PROJECTILE_CONFIG = {
+};
+const DEFAULT_DEFENDER_CONFIG = {
+};
+const DEFAULT_ATTACKER_CONFIG = {
+};
+const DEFAULT_LEVEL_CONFIG = {
+};
+
+
+let attacker_config_template = {
+};
+
+let level_config_template = {
+};
+
+let
 
 //
 // Example of minimal game config.
@@ -131,6 +236,8 @@ let game_config = {
           },
         }
       ],
+      // Should attackers and defenders be global game config as opposed to per-level?
+      // Note: We could allow per-level overrides, if that was ever even necessary.
       "attacker": [
         {
           "uid": "evee",
@@ -165,7 +272,7 @@ let levels_new = [{
             "img": "levels/level1.png",  // Defaults to {root}/levels/{uid}.png"
             "fps": 12, // Defaults to 1
             "numFrames": 9,  // Defaults to 1
-            "frameHeight": undefined,  // Defaults to (img.height / fps) 
+            "frameHeight": undefined,  // Defaults to (img.height / fps)
             "loop": true,  // Defaults to true.
          }
     },
@@ -187,7 +294,7 @@ let levels_new = [{
                 "img": "defenders/pikachu_default.png",  // Defaults to {root}/defenders/{uid}_default.png"
                 "fps": 12, // Defaults to 1
                 "numFrames": 9,  // Defaults to 1
-                "frameHeight": undefined,  // Defaults to (img.height / fps) 
+                "frameHeight": undefined,  // Defaults to (img.height / fps)
                 "loop": true,  // Defaults to true.
             },
             "hurt":  {
@@ -207,7 +314,6 @@ let levels_new = [{
             },
             "die":  {
             },
-          
         },
         "projectiles": [{
             "uid": "bolt",
