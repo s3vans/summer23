@@ -98,260 +98,273 @@ let levels = [{
    }],
 }];
 
-class Level {
-  constructor() {
-    this.config = {};
-    this.config.uid = undefined;
-    this.config.startingMoney = 0;
-    this.config.imgs = {};
-    this.config.imgs.background = undefined;
-    this.config.mp3s = {};
-    this.config.mp3s.background = undefined;
-    this.config.mp3s.start = undefined;
-    this.config.mp3s.win = undefined; ;
-    this.config.mp3s.lose = undefined;
-    this.config.defenders = [];
-    this.config.attckers = [];
-    this.config.sequence = [];
 
-    this.state = {};
-    this.state.money = 0;
-  }
-
-  // Given a pointer to a level's config, returns "" on success, or an error
-  // string if there is an error parsing the config.
-  initFromConfig(rootDir, config) {
-    if (config.uid === undefined) {
-      return "Level config is missing required uid";
-    }
-    this.config.uid = config.uid;
-
-    if (config.startingMoney !== undefined) {
-      this.config.startingMoney = config.startingMoney);
-    }
-
-    let path;
-    let obj;
-
-    path = rootDir + '/levels/' + this.config.uid + '_background.png';
-    if (config.imgs.background !== undefined) {
-        path = rootDir + '/' + config.imgs.background;
-    }
-    obj = loadImageFromPath(path);
-    if (obj == undefined) {
-      console.log(path + ": Image not found");
-    } else {
-      this.config.imgs.background = obj;
-    }
-
-    path = rootDir + '/levels/' + this.config.uid + '_background.png';
-    if (config.imgs.background !== undefined) {
-        path = rootDir + '/' + config.imgs.background;
-    }
-    obj = loadImageFromPath(path);
-    if (obj == undefined) {
-      console.log(path + ": Image not found");
-    } else {
-      this.config.imgs.background = obj;
-    }
-
-
-
-    this.config.imgs = {};
-    this.config.imgs.background = undefined;
-    this.config.mp3s = {};
-    this.config.mp3s.background = undefined;
-    this.config.mp3s.start = undefined;
-    this.config.mp3s.win = undefined; ;
-    this.config.mp3s.lose = undefined;
-
-    for (let defenderConfig of config.defenders) {
-      let defender = new Defender();
-      let error = defender.initFromConfig(rootDir, defenderConfig);
-      if (error !== "") {
-        return error;
-      }
-    }
-
-    for (let attackerConfig of config.attackers) {
-      let attacker = new Attacker();
-      let error = attacker.initFromConfig(rootDir, attackerConfig);
-      if (error !== "") {
-        return error;
-      }
-    }
-
-    for (let sequenceItem of config.sequence) {
-    }
-  }
-};
-
-const DEFAULT_PROJECTILE_CONFIG = {
-};
-const DEFAULT_DEFENDER_CONFIG = {
-};
-const DEFAULT_ATTACKER_CONFIG = {
-};
-const DEFAULT_LEVEL_CONFIG = {
-};
-
-
-let attacker_config_template = {
-};
-
-let level_config_template = {
-};
-
-let
-
+//_loadImage(config, dir, fieldName) {
+//  let path = dir + '/' + config.uid + '_' + fieldName + '.png';
+//  if (config.imgs.background !== undefined) {
+//      path = rootDir + '/' + config.imgs.background;
+//  }
+//  let obj = loadImageFromPath(path);
+//  if (obj == undefined) {
+//    console.log(path + ": image not found");
+//  } else {
+//    this.config.imgs.background = obj;
+//  }
+//}
 //
-// Example of minimal game config.
+//class Level {
+//  constructor() {
+//    this.config = {};
+//    this.config.uid = undefined;
+//    this.config.startingMoney = 0;
+//    this.config.imgs = {};
+//    this.config.imgs.background = undefined;
+//    this.config.mp3s = {};
+//    this.config.mp3s.background = undefined;
+//    this.config.mp3s.start = undefined;
+//    this.config.mp3s.win = undefined; ;
+//    this.config.mp3s.lose = undefined;
+//    this.config.defenders = [];
+//    this.config.attckers = [];
+//    this.config.sequence = [];
 //
-let game_config = {
-  "root_dir": "assets/pokemon",
-  "levels": [
-    {
-      "uid": "level1",
-      "startingMoney": 500,
-      "defenders": [
-        {
-          "uid": "pikachu",
-          "startingHealth": 200,
-          "cost": 150,
-          "restockTime": 200,
-          "projectile": {
-            "uid": "bolt",
-            "maxHitDamage": 150,
-            "reloadTime": 200,
-          },
-        }, {
-          "uid": "bulbasaur",
-          "startingHealth": 300,
-          "cost": 50,
-          "restockTime": 200,
-          "projectile": {
-            "uid": "splash",
-            "maxHitDamage": 250,
-            "reloadTime": 200,
-          },
-        }
-      ],
-      // Should attackers and defenders be global game config as opposed to per-level?
-      // Note: We could allow per-level overrides, if that was ever even necessary.
-      "attacker": [
-        {
-          "uid": "evee",
-          "startingHealth": 200,
-          "maxHitDamage": 200,
-          "reloadTime": 200,
-        }
-      ],
-      "sequence": [
-        {
-          //message(/*duration*/=3000, "Level #1 - First Wave..."),
-          //wait(2500),
-          //attack("evee", /*row=*/-1),
-          //randomWaitUpTo(2500),
-          //attack("evee", /*row=*/2),
-        }
-      ],
-    },
-  ],
-}
-
+//    this.state = {};
+//    this.state.money = 0;
+//  }
 //
-// Unrefined example of explicit game config that shows some of the implicit.
-// (Needs to be reworked to match the above config.)
+//  // Given a pointer to a level's config, returns "" on success, or an error
+//  // string if there is an error parsing the config.
+//  initFromConfig(rootDir, config) {
+//    if (config.uid === undefined) {
+//      return "Level config is missing required uid";
+//    }
+//    this.config.uid = config.uid;
 //
-let levels_new = [{
-    "root": "assets/pokemon",
-    "uid": "level1",
-    "name": "Level 1",
-    "imgs": {
-        "background": {
-            "img": "levels/level1.png",  // Defaults to {root}/levels/{uid}.png"
-            "fps": 12, // Defaults to 1
-            "numFrames": 9,  // Defaults to 1
-            "frameHeight": undefined,  // Defaults to (img.height / fps)
-            "loop": true,  // Defaults to true.
-         }
-    },
-    // These are all optional.
-    "mp3s": {
-        "background": "levels/level1_background.mp3",  // Defaults to {root}/levels/level1_background.mp3"
-        "start": "levels/level1_start.mp3",  // Default to {root}/levels/level1_start.mp3
-        "win": "levels/level1_win.mp3",  // Default to {root}/levels/level1_win.mp3
-        "lose": "levels/level1_lose.mp3",  // Default to {root}/levels/level1_lose.mp3
-    },
-    "startingMoney": 500,
-    "defenderConfigs": [{
-        "uid": "pikachu",
-        "name": "Pikachu",
-        "moneyCost": 150,
-        "startingHealth": 200,
-        "imgs": {
-            "default": {
-                "img": "defenders/pikachu_default.png",  // Defaults to {root}/defenders/{uid}_default.png"
-                "fps": 12, // Defaults to 1
-                "numFrames": 9,  // Defaults to 1
-                "frameHeight": undefined,  // Defaults to (img.height / fps)
-                "loop": true,  // Defaults to true.
-            },
-            "hurt":  {
-                "img": "defenders/pikachu_hurt.png",  // Defaults to {root}/defenders/{uid}_hurt.png"
-                "loop": false,  // TODO: We can let death animations play out over some fixed OR configurable time period.
-            },
-            "die":  {
-                "img": "defenders/pikachu_die.png",  // Defaults to {root}/defenders/{uid}_die.png"
-            },
-        },
-        "mp3s": {
-            "default": {
-            },
-            "place":  {
-            },
-            "hurt":  {
-            },
-            "die":  {
-            },
-        },
-        "projectiles": [{
-            "uid": "bolt",
-            "healthDamage": 50,
-            "randomDamage": false,
-            "img": {
-                // "assets/pokemon/objects/bolt.png"
-            },
-            "mp3s": {
-                "launch": {
-                },
-                "hit": {
-                },
-            },
-            "rechargeTimeMs": 1000,
-        }],
-    }],
-    "collectibleConfigs": [{
-        "uid": "raspberries",
-        "name": "Raspberries",
-        "img": "assets/pokemon/objects/raspberries.png",
-        "mp3": "assets/pokemon/objects/raspberries.mp3",
-        "xp": 50,
-        "lifespan": 250,
-    }],
-    // TODO: Consider alternative that lists enemies of what type and max
-    // duration between respawns, then use randomness to distribute.  Maybe
-    // make sequences recordable in level design mode.
-    "attackerSequence": [{
-        "uid": "evee",
-        "elapsedTime": 1000,
-        "row": -1, // if not a valid row 1-5, then random
-   }, {
-        "uid": "evee2",
-        "elapsedTime": 1500,
-        "row": -1, // if not a valid row 1-5, then random
-   }],
-}];
+//    if (config.startingMoney !== undefined) {
+//      this.config.startingMoney = config.startingMoney);
+//    }
+//
+//    let path;
+//    let obj;
+//
+//    path = rootDir + '/levels/' + this.config.uid + '_background.png';
+//    if (config.imgs.background !== undefined) {
+//        path = rootDir + '/' + config.imgs.background;
+//    }
+//    obj = loadImageFromPath(path);
+//    if (obj == undefined) {
+//      console.log(path + ": image not found");
+//    } else {
+//      this.config.imgs.background = obj;
+//    }
+//
+//    path = rootDir + '/levels/' + this.config.uid + '_background.mp3';
+//    if (config.mp3s.background !== undefined) {
+//        path = rootDir + '/' + config.mp3s.background;
+//    }
+//    obj = loadSoundFromPath(path);
+//    if (obj == undefined) {
+//      console.log(path + ": sound not found");
+//    } else {
+//      this.config.imgs.background = obj;
+//    }
+//
+//
+//    this.config.imgs = {};
+//    this.config.imgs.background = undefined;
+//    this.config.mp3s = {};
+//    this.config.mp3s.background = undefined;
+//    this.config.mp3s.start = undefined;
+//    this.config.mp3s.win = undefined; ;
+//    this.config.mp3s.lose = undefined;
+//
+//    for (let defenderConfig of config.defenders) {
+//      let defender = new Defender();
+//      let error = defender.initFromConfig(rootDir, defenderConfig);
+//      if (error !== "") {
+//        return error;
+//      }
+//    }
+//
+//    for (let attackerConfig of config.attackers) {
+//      let attacker = new Attacker();
+//      let error = attacker.initFromConfig(rootDir, attackerConfig);
+//      if (error !== "") {
+//        return error;
+//      }
+//    }
+//
+//    for (let sequenceItem of config.sequence) {
+//    }
+//  }
+//};
+//
+//const DEFAULT_PROJECTILE_CONFIG = {
+//};
+//const DEFAULT_DEFENDER_CONFIG = {
+//};
+//const DEFAULT_ATTACKER_CONFIG = {
+//};
+//const DEFAULT_LEVEL_CONFIG = {
+//};
+//
+//
+//let attacker_config_template = {
+//};
+//
+//let level_config_template = {
+//};
+//
+//let
+//
+////
+//// Example of minimal game config.
+////
+//let game_config = {
+//  "root_dir": "assets/pokemon",
+//  "levels": [
+//    {
+//      "uid": "level1",
+//      "startingMoney": 500,
+//      "defenders": [
+//        {
+//          "uid": "pikachu",
+//          "startingHealth": 200,
+//          "cost": 150,
+//          "restockTime": 200,
+//          "projectile": {
+//            "uid": "bolt",
+//            "maxHitDamage": 150,
+//            "reloadTime": 200,
+//          },
+//        }, {
+//          "uid": "bulbasaur",
+//          "startingHealth": 300,
+//          "cost": 50,
+//          "restockTime": 200,
+//          "projectile": {
+//            "uid": "splash",
+//            "maxHitDamage": 250,
+//            "reloadTime": 200,
+//          },
+//        }
+//      ],
+//      // Should attackers and defenders be global game config as opposed to per-level?
+//      // Note: We could allow per-level overrides, if that was ever even necessary.
+//      "attacker": [
+//        {
+//          "uid": "evee",
+//          "startingHealth": 200,
+//          "maxHitDamage": 200,
+//          "reloadTime": 200,
+//        }
+//      ],
+//      "sequence": [
+//        {
+//          //message(/*duration*/=3000, "Level #1 - First Wave..."),
+//          //wait(2500),
+//          //attack("evee", /*row=*/-1),
+//          //randomWaitUpTo(2500),
+//          //attack("evee", /*row=*/2),
+//        }
+//      ],
+//    },
+//  ],
+//}
+//
+////
+//// Unrefined example of explicit game config that shows some of the implicit.
+//// (Needs to be reworked to match the above config.)
+////
+//let levels_new = [{
+//    "root": "assets/pokemon",
+//    "uid": "level1",
+//    "name": "Level 1",
+//    "imgs": {
+//        "background": {
+//            "img": "levels/level1.png",  // Defaults to {root}/levels/{uid}.png"
+//            "fps": 12, // Defaults to 1
+//            "numFrames": 9,  // Defaults to 1
+//            "frameHeight": undefined,  // Defaults to (img.height / fps)
+//            "loop": true,  // Defaults to true.
+//         }
+//    },
+//    // These are all optional.
+//    "mp3s": {
+//        "background": "levels/level1_background.mp3",  // Defaults to {root}/levels/level1_background.mp3"
+//        "start": "levels/level1_start.mp3",  // Default to {root}/levels/level1_start.mp3
+//        "win": "levels/level1_win.mp3",  // Default to {root}/levels/level1_win.mp3
+//        "lose": "levels/level1_lose.mp3",  // Default to {root}/levels/level1_lose.mp3
+//    },
+//    "startingMoney": 500,
+//    "defenderConfigs": [{
+//        "uid": "pikachu",
+//        "name": "Pikachu",
+//        "moneyCost": 150,
+//        "startingHealth": 200,
+//        "imgs": {
+//            "default": {
+//                "img": "defenders/pikachu_default.png",  // Defaults to {root}/defenders/{uid}_default.png"
+//                "fps": 12, // Defaults to 1
+//                "numFrames": 9,  // Defaults to 1
+//                "frameHeight": undefined,  // Defaults to (img.height / fps)
+//                "loop": true,  // Defaults to true.
+//            },
+//            "hurt":  {
+//                "img": "defenders/pikachu_hurt.png",  // Defaults to {root}/defenders/{uid}_hurt.png"
+//                "loop": false,  // TODO: We can let death animations play out over some fixed OR configurable time period.
+//            },
+//            "die":  {
+//                "img": "defenders/pikachu_die.png",  // Defaults to {root}/defenders/{uid}_die.png"
+//            },
+//        },
+//        "mp3s": {
+//            "default": {
+//            },
+//            "place":  {
+//            },
+//            "hurt":  {
+//            },
+//            "die":  {
+//            },
+//        },
+//        "projectiles": [{
+//            "uid": "bolt",
+//            "healthDamage": 50,
+//            "randomDamage": false,
+//            "img": {
+//                // "assets/pokemon/objects/bolt.png"
+//            },
+//            "mp3s": {
+//                "launch": {
+//                },
+//                "hit": {
+//                },
+//            },
+//            "rechargeTimeMs": 1000,
+//        }],
+//    }],
+//    "collectibleConfigs": [{
+//        "uid": "raspberries",
+//        "name": "Raspberries",
+//        "img": "assets/pokemon/objects/raspberries.png",
+//        "mp3": "assets/pokemon/objects/raspberries.mp3",
+//        "xp": 50,
+//        "lifespan": 250,
+//    }],
+//    // TODO: Consider alternative that lists enemies of what type and max
+//    // duration between respawns, then use randomness to distribute.  Maybe
+//    // make sequences recordable in level design mode.
+//    "attackerSequence": [{
+//        "uid": "evee",
+//        "elapsedTime": 1000,
+//        "row": -1, // if not a valid row 1-5, then random
+//   }, {
+//        "uid": "evee2",
+//        "elapsedTime": 1500,
+//        "row": -1, // if not a valid row 1-5, then random
+//   }],
+//}];
 
 let game = new Game();
 
