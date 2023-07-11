@@ -506,6 +506,8 @@ class Game {
     for (let projectile of this.activeProjectiles) {
       projectile.update();
     }
+
+    animation.update(deltaTime);
   }
 
   draw() {
@@ -542,6 +544,8 @@ class Game {
     this._drawStore();
     this._drawCursor();
     this._drawOverlay();
+
+    animation.draw(deltaTime, 25, 25, 100, 100);
   }
 
   _scaleMouse(pos) {

@@ -112,18 +112,32 @@ let levels = [{
 //  }
 //}
 //
+//_loadImage(config, dir, fieldName) {
+//  let path = dir + '/' + config.uid + '_' + fieldName + '.png';
+//  if (config.imgs[fieldName] !== undefined) {
+//      path = dir + '/' + config.imgs[fieldName];
+//  }
+//  config.imgs[fieldName] = loadImage(
+//      path,
+//      img => return img,
+//      err => {
+//          console.log(path + ": image not found");
+//          return null;
+//      });
+//}
+//
 //class Level {
 //  constructor() {
 //    this.config = {};
-//    this.config.uid = undefined;
+//    this.config.uid = null;
 //    this.config.startingMoney = 0;
 //    this.config.imgs = {};
-//    this.config.imgs.background = undefined;
+//    this.config.imgs.background = null;
 //    this.config.mp3s = {};
-//    this.config.mp3s.background = undefined;
-//    this.config.mp3s.start = undefined;
-//    this.config.mp3s.win = undefined; ;
-//    this.config.mp3s.lose = undefined;
+//    this.config.mp3s.background = null;
+//    this.config.mp3s.start = null;
+//    this.config.mp3s.win = null; ;
+//    this.config.mp3s.lose = null;
 //    this.config.defenders = [];
 //    this.config.attckers = [];
 //    this.config.sequence = [];
@@ -147,16 +161,7 @@ let levels = [{
 //    let path;
 //    let obj;
 //
-//    path = rootDir + '/levels/' + this.config.uid + '_background.png';
-//    if (config.imgs.background !== undefined) {
-//        path = rootDir + '/' + config.imgs.background;
-//    }
-//    obj = loadImageFromPath(path);
-//    if (obj == undefined) {
-//      console.log(path + ": image not found");
-//    } else {
-//      this.config.imgs.background = obj;
-//    }
+//    _loadImage(rootDir+'/levels/', config, 'background');
 //
 //    path = rootDir + '/levels/' + this.config.uid + '_background.mp3';
 //    if (config.mp3s.background !== undefined) {
@@ -368,8 +373,13 @@ let levels = [{
 
 let game = new Game();
 
+let animation;
+
 function preload() {
   game.loadLevel(levels[0]);
+
+  let p = loadImage('assets/pokemon/defenders/pikachu_sprites.png');
+  animation = new Animation(p, 100, 12, true);
 }
 
 function setup() {
