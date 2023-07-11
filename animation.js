@@ -1,4 +1,46 @@
 
+function buildAnimationFromConfig(animationConfig, defaultAnimationConfig) {
+  let img;
+  let frameHeight;
+  let fps;
+  let isLooping;
+
+  if (defaultAnimationConfig != undefined) {
+    if (defaultAnimationConfig.img != undefined) {
+      img = defaultAnimationConfig.img;
+    }
+    if (defaultAnimationConfig.frameHeight != undefined) {
+      frameHeight = defaultAnimationConfig.frameHeight;
+    }
+    if (defaultAnimationConfig.fps != undefined) {
+      fps = defaultAnimationConfig.fps;
+    }
+    if (defaultAnimationConfig.isLooping != undefined) {
+      isLooping = defaultAnimationConfig.isLooping;
+    }
+  }
+
+  if (animationConfig.img != undefined) {
+    img = animationConfig.img;
+  }
+  if (animationConfig.frameHeight != undefined) {
+    frameHeight = animationConfig.frameHeight;
+  }
+  if (animationConfig.fps != undefined) {
+    fps = animationConfig.fps;
+  }
+  if (animationConfig.isLooping != undefined) {
+    isLooping = animationConfig.isLooping;
+  }
+
+  if ((img == undefined) || (frameHeight == undefined) || (fps == undefined) ||
+      (isLooping == undefined)) {
+    return null;
+  }
+
+  return new Animation(img, frameHeight, fps, isLooping);
+}
+
 class Animation {
   constructor(img, frameHeight, fps, isLooping) {
     this.img = img;
@@ -22,7 +64,8 @@ class Animation {
     }
     let timeSinceLastFrame = nowMs - this.lastFrameTime;
     let numFramesToAdvance = Math.floor(timeSinceLastFrame / this.msPerFrame);
-    this.currentFrameNum = (this.currentFrameNum + numFramesToAdvance) % this.numFrames;
+    let nextFrame = (this.currentFrameNum + numFramesToAdvance) % this.numFrames;
+    this.currentFrameNum =  nextFrame;
     if (numFramesToAdvance > 0) {
       this.lastFrameTime = nowMs;
     }
