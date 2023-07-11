@@ -1,40 +1,25 @@
 
 function buildAnimationFromConfig(animationConfig, defaultAnimationConfig) {
-  let img;
-  let frameHeight;
-  let fps;
-  let isLooping;
+  let config = animationConfig;
+  let defaultConfig = defaultAnimationConfig;
 
-  if (defaultAnimationConfig != undefined) {
-    if (defaultAnimationConfig.img != undefined) {
-      img = defaultAnimationConfig.img;
-    }
-    if (defaultAnimationConfig.frameHeight != undefined) {
-      frameHeight = defaultAnimationConfig.frameHeight;
-    }
-    if (defaultAnimationConfig.fps != undefined) {
-      fps = defaultAnimationConfig.fps;
-    }
-    if (defaultAnimationConfig.isLooping != undefined) {
-      isLooping = defaultAnimationConfig.isLooping;
-    }
+  let img = _getField("img", config, defaultConfig);
+  if (img == undefined) {
+    return null;
   }
 
-  if (animationConfig.img != undefined) {
-    img = animationConfig.img;
-  }
-  if (animationConfig.frameHeight != undefined) {
-    frameHeight = animationConfig.frameHeight;
-  }
-  if (animationConfig.fps != undefined) {
-    fps = animationConfig.fps;
-  }
-  if (animationConfig.isLooping != undefined) {
-    isLooping = animationConfig.isLooping;
+  let frameHeight = _getField("frameHeight", config, defaultConfig);
+  if (frameHeight == undefined) {
+    return null;
   }
 
-  if ((img == undefined) || (frameHeight == undefined) || (fps == undefined) ||
-      (isLooping == undefined)) {
+  let fps =  _getField("fps", config, defaultConfig);
+  if (fps == undefined) {
+    return null;
+  }
+
+  let isLooping = _getField("isLooping", config, defaultConfig);
+  if (isLooping == undefined) {
     return null;
   }
 
