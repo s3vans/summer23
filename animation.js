@@ -4,22 +4,22 @@ function buildAnimationFromConfig(animationConfig, defaultAnimationConfig) {
   let defaultConfig = defaultAnimationConfig;
 
   let img = _getField("img", config, defaultConfig);
-  if (img == undefined) {
+  if (img == null) {
     return null;
   }
 
   let frameHeight = _getField("frameHeight", config, defaultConfig);
-  if (frameHeight == undefined) {
+  if (frameHeight == null) {
     return null;
   }
 
   let fps =  _getField("fps", config, defaultConfig);
-  if (fps == undefined) {
+  if (fps == null) {
     return null;
   }
 
   let isLooping = _getField("isLooping", config, defaultConfig);
-  if (isLooping == undefined) {
+  if (isLooping == null) {
     return null;
   }
 
