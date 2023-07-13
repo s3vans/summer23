@@ -40,6 +40,7 @@ const OVERLAY_Y = 0;
 const OVERLAY_WIDTH = 100;
 const OVERLAY_HEIGHT = 100;
 
+
 function removeFromArray(arr, elem) {
   const index = arr.indexOf(elem);
   if (index != -1) {
@@ -297,9 +298,17 @@ class CollectibleConfig {
   }
 }
 
+function expandGameConfig(gameConfig) {
+
+}
+
 // All of the game config, state, and logic lives here.
 class Game {
-  constructor() {
+  constructor(gameConfig) {
+    gameConfig.consts.yResolution = 600;
+    expandGameConfig(gameConfig);
+    this.config = gameConfig;
+
     // General state
     this.canvas = undefined;
     this.uids = new Map();

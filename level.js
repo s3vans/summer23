@@ -1,23 +1,5 @@
-const LEVEL_DEFAULT_STARTING_MONEY = 0;
-const LEVEL_DEFAULT_BACKGROUND_FRAME_HEIGHT = GAME_XRESOLUTION;
-const LEVEL_DEFAULT_BACKGROUND_FPS = 12;
-const LEVEL_DEFAULT_BACKGROUND_IS_LOOPING = true;
 
-function expandDefenderConfig(rootDir, defenderConfig) {
-  let config = defenderConfig;
-}
-
-function expandAttackerConfig(rootDir, attackerConfig) {
-  let config = attackerConfig;
-}
-
-function expandSequenceConfig(rootDir, sequenceConfig) {
-  let config = sequenceConfig;
-}
-
-function expandLevelConfig(rootDir, levelConfig) {
-  let config = levelConfig;
-
+function expandLevelConfig(rootDir, config) {
   let uid = _getField("uid", config);
   if (uid == null) {
     console.log("Level config is missing required uid.");
@@ -25,60 +7,44 @@ function expandLevelConfig(rootDir, levelConfig) {
   }
 
   if (config.startingMoney == undefined) {
-    config.startingMoney = LEVEL_DEFAULT_STARTING_MONEY;
+    config.startingMoney = config.consts.defaultStartingMoney;
   }
 
   if (config.imgs == undefined) {
     config.imgs = {};
   }
-
-  _makeOrExpandAssetPath(config.imgs, "background", rootDir, uid, "background.png");
+  _makeOrExpandAssetPath(config.imgs, "background", rootDir, uid,
+                         "background.png");
   let defaultAnimationConfig = {
-    "frameHeight": LEVEL_DEFAULT_BACKGROUND_FRAME_HEIGHT,
-    "fps": LEVEL_DEFAULT_BACKGROUND_FPS,
-    "isLooping": LEVEL_DEFAULT_BACKGROUND_IS_LOOPING,
+    "frameHeight": levelConfig.consts.defaultFrameHeight,
+    "fps": levelConfig.consts.defaultFps,
+    "isLooping": levelConfig.consts.defaultIsLooping,
   }
+  // NOTE: loadAnimationFromConfig() updates the |img| value asynchronously
+  // after the image loads or fails to load.
+  loadAnimationFromConfig(config.imgs.background, defaultAnimationConfig);
 
-  // HACK: loadAnimationFromConfig() actually manages this
-  // value asynchronously after the image loads or fails
-  // ot load, but I left this code here to make it clear
-  // that this value is part of the config.
-  config.imgs.background.img =
-      loadAnimationFromConfig(config.imgs.background, defaultAnimationConfig);
-
+  // TODO: Load the audio from config.
   if (config.mp3s == undefined) {
     config.mp3s = {};
   }
-  _makeOrExpandAssetPath(config.mp3s, "background", rootDir, uid, "background.mp3");
+  _makeOrExpandAssetPath(config.mp3s, "background", rootDir, uid,
+                         "background.mp3");
   _makeOrExpandAssetPath(config.mp3s, "start", rootDir, uid, "start.mp3");
   _makeOrExpandAssetPath(config.mp3s, "win", rootDir, uid, "win.mp3");
   _makeOrExpandAssetPath(config.mp3s, "lose", rootDir, uid, "lose.mp3");
-
-  if (config.defenders == undefined) {
-    config.defenders = [];
-  }
-  for (defenderConfig of config.defenders) {
-    expandDefenderConfig(rootDir, defenderConfig);
-  }
-
-  if (config.attackers == undefined) {
-    config.attackers = [];
-  }
-  for (attackerConfig of config.attackers) {
-    expandAttackerConfig(rootDir, attackerConfig);
-  }
-
-  if (config.sequences == undefined) {
-    config.sequences = [];
-  }
-  for (sequenceConfig of config.sequences) {
-    expandSequenceConfig(rootDir, sequenceConfig);
-  }
 }
 
 class Level {
-  constructor(expandedLevelConfig) {
-    this.config = expandedLevelConfig;
+  constructor(gameConfig, levelConfig) {
+    levelConfig.consts = {};
+    levelConfig.consts.defaultStartingMoney = 0;
+    levelConfig.consts.defaultFrameHeight = gameConfig.consts.yResolution;
+    levelConfig.consts.defaultFps = 1;
+    levelConfig.consts.defaultIsLooping = false;
+
+    expandLevelConfig(gameConfig.rootDir, levelConfig);
+    this.config = levelConfig;
     this.state = {};
     this.state.money = 0;
   }
