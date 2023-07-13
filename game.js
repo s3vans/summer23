@@ -10,8 +10,8 @@
 
 let attackerCnt = 0;
 
-const XRESOLUTION = 800;
-const YRESOLUTION = 600;
+const GAME_XRESOLUTION = 800;
+const GAME_YRESOLUTION = 600;
 const MIN_SCALE_FACTOR = .5;
 const MAX_SCALE_FACTOR = 3;
 
@@ -133,7 +133,7 @@ class Attacker {
     this.row = row;
     this.img = img;
     this.hp = hp;
-    this.x_pos = XRESOLUTION + MAP_CELL_WIDTH;
+    this.x_pos = GAME_XRESOLUTION + MAP_CELL_WIDTH;
     this.y_pos = MAP_Y + row * MAP_CELL_HEIGHT;
     this.speed = 1;
     this.width = MAP_CELL_WIDTH;
@@ -248,7 +248,7 @@ class Projectile {
         removeFromArray(this.game.activeProjectiles, this);
         return;
       }
-      if (this.x_pos < XRESOLUTION + MAP_CELL_WIDTH) {
+      if (this.x_pos < GAME_XRESOLUTION + MAP_CELL_WIDTH) {
         this.x_pos += this.speed;
       } else {
         // Remove it once offscreen.
@@ -344,8 +344,8 @@ class Game {
   }
 
   _updateScaleFactor() {
-    let yFactor = Math.max(windowHeight / YRESOLUTION, MIN_SCALE_FACTOR);
-    let xFactor = Math.max(windowWidth / XRESOLUTION, MIN_SCALE_FACTOR);
+    let yFactor = Math.max(windowHeight / GAME_YRESOLUTION, MIN_SCALE_FACTOR);
+    let xFactor = Math.max(windowWidth / GAME_XRESOLUTION, MIN_SCALE_FACTOR);
     this.scaleFactor = Math.min(MAX_SCALE_FACTOR, Math.min(yFactor, xFactor));
   }
 
@@ -479,8 +479,8 @@ class Game {
 
   setup() {
     this._updateScaleFactor();
-    this.canvas = createCanvas(XRESOLUTION*this.scaleFactor,
-                               YRESOLUTION*this.scaleFactor);
+    this.canvas = createCanvas(GAME_XRESOLUTION*this.scaleFactor,
+                               GAME_YRESOLUTION*this.scaleFactor);
     setInterval(() => { this._sendAttacker(); }, 5000);
     setInterval(() => { this._sendCollectible(); }, 6000);
   }
@@ -520,7 +520,7 @@ class Game {
     if (this.state == "GAMEOVER") {
       console.log("GAME OVER");
       push();
-      translate(XRESOLUTION/2, YRESOLUTION/2);
+      translate(GAME_XRESOLUTION/2, GAME_YRESOLUTION/2);
       stroke(0); fill(255);
       rectMode(CENTER);
       //let goW = 300;
@@ -555,7 +555,7 @@ class Game {
   _drawBackground() {
     push();
     background(0);
-    image(this.levelImg, 0, 0, XRESOLUTION, YRESOLUTION);
+    image(this.levelImg, 0, 0, GAME_XRESOLUTION, GAME_YRESOLUTION);
     pop();
   }
 
@@ -570,7 +570,8 @@ class Game {
     }
     let x = 0;
     for (let defender of this.defenderConfigMap.values()) {
-       image(defender.img, x+10, 0, STORE_ITEM_IMG_WIDTH, STORE_ITEM_IMG_HEIGHT, 0, 0, STORE_ITEM_IMG_WIDTH, STORE_ITEM_IMG_HEIGHT);
+       image(defender.img, x+10, 0, STORE_ITEM_IMG_WIDTH, STORE_ITEM_IMG_HEIGHT,
+             0, 0, STORE_ITEM_IMG_WIDTH, STORE_ITEM_IMG_HEIGHT);
        push();
        noStroke(); fill(0); textSize(10);
        text(defender.name, x+10, 85);
@@ -592,7 +593,9 @@ class Game {
       for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
         let defender = this.map_state[row][col];
         if (defender != undefined) {
-          image(defender.img, x, y, MAP_CELL_IMG_WIDTH, MAP_CELL_IMG_HEIGHT, defender.spriteX, defender.spriteY, MAP_CELL_IMG_WIDTH, MAP_CELL_IMG_HEIGHT);
+          image(defender.img, x, y, MAP_CELL_IMG_WIDTH, MAP_CELL_IMG_HEIGHT,
+                defender.spriteX, defender.spriteY, MAP_CELL_IMG_WIDTH,
+                MAP_CELL_IMG_HEIGHT);
           push();
           noStroke(); fill(255); textSize(10);
           text('HP:' + defender.hp, x+MAP_HP_XOFFSET, y+MAP_HP_YOFFSET);
@@ -818,6 +821,7 @@ class Game {
   windowResized() {
     // TODO: Is there a resize for this.canvas?
     this._updateScaleFactor();
-    resizeCanvas(XRESOLUTION*this.scaleFactor, YRESOLUTION*this.scaleFactor);
+    resizeCanvas(GAME_XRESOLUTION*this.scaleFactor,
+                 GAME_YRESOLUTION*this.scaleFactor);
   }
 }

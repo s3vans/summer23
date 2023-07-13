@@ -1,101 +1,85 @@
+const LEVEL_DEFAULT_STARTING_MONEY = 0;
+const LEVEL_DEFAULT_BACKGROUND_FRAME_HEIGHT = GAME_XRESOLUTION;
+const LEVEL_DEFAULT_BACKGROUND_FPS = 12;
+const LEVEL_DEFAULT_BACKGROUND_IS_LOOPING = true;
 
-function buildLevelFromConfig(rootDir, levelConfig, defaultLevelConfig) {
+function expandDefenderConfig(rootDir, defenderConfig) {
+  let config = defenderConfig;
+}
+
+function expandAttackerConfig(rootDir, attackerConfig) {
+  let config = attackerConfig;
+}
+
+function expandSequenceConfig(rootDir, sequenceConfig) {
+  let config = sequenceConfig;
+}
+
+function expandLevelConfig(rootDir, levelConfig) {
   let config = levelConfig;
-  let defaultConfig = defaultLevelConfig; 
- 
-  let uid = _getField("uid", config, defaultConfig);
+
+  let uid = _getField("uid", config);
   if (uid == null) {
     console.log("Level config is missing required uid.");
     return null;
   }
 
-  let startingMoney = _getField("startingMoney", config, defaultConfig);
-  if (startingMoney == null) {
-    startingMoney = 0;
+  if (config.startingMoney == undefined) {
+    config.startingMoney = LEVEL_DEFAULT_STARTING_MONEY;
   }
-  
-  // To load an image we need:
-  // 1) img path from config, or default path
-  // 2) loaded img from server
-  // 3) created animation from img and animation settings from config
-  let background_path = rootDir + '/' + uid + '_background
 
-  return new Level(uid, startingMoney);
+  if (config.imgs == undefined) {
+    config.imgs = {};
+  }
+
+  _makeOrExpandAssetPath(config.imgs, "background", rootDir, uid, "background.png");
+  let defaultAnimationConfig = {
+    "frameHeight": LEVEL_DEFAULT_BACKGROUND_FRAME_HEIGHT,
+    "fps": LEVEL_DEFAULT_BACKGROUND_FPS,
+    "isLooping": LEVEL_DEFAULT_BACKGROUND_IS_LOOPING,
+  }
+
+  // HACK: loadAnimationFromConfig() actually manages this
+  // value asynchronously after the image loads or fails
+  // ot load, but I left this code here to make it clear
+  // that this value is part of the config.
+  config.imgs.background.img =
+      loadAnimationFromConfig(config.imgs.background, defaultAnimationConfig);
+
+  if (config.mp3s == undefined) {
+    config.mp3s = {};
+  }
+  _makeOrExpandAssetPath(config.mp3s, "background", rootDir, uid, "background.mp3");
+  _makeOrExpandAssetPath(config.mp3s, "start", rootDir, uid, "start.mp3");
+  _makeOrExpandAssetPath(config.mp3s, "win", rootDir, uid, "win.mp3");
+  _makeOrExpandAssetPath(config.mp3s, "lose", rootDir, uid, "lose.mp3");
+
+  if (config.defenders == undefined) {
+    config.defenders = [];
+  }
+  for (defenderConfig of config.defenders) {
+    expandDefenderConfig(rootDir, defenderConfig);
+  }
+
+  if (config.attackers == undefined) {
+    config.attackers = [];
+  }
+  for (attackerConfig of config.attackers) {
+    expandAttackerConfig(rootDir, attackerConfig);
+  }
+
+  if (config.sequences == undefined) {
+    config.sequences = [];
+  }
+  for (sequenceConfig of config.sequences) {
+    expandSequenceConfig(rootDir, sequenceConfig);
+  }
 }
 
 class Level {
-  constructor(uid, startingMoney) {
-    this.config = {};
-    this.config.uid = uid;
-    this.config.startingMoney = startingMoney;
-    this.config.imgs = {};
-    this.config.imgs.background = null;
-    this.config.mp3s = {};
-    this.config.mp3s.background = null;
-    this.config.mp3s.start = null;
-    this.config.mp3s.win = null; ;
-    this.config.mp3s.lose = null;
-    this.config.defenders = [];
-    this.config.attckers = [];
-    this.config.sequence = [];
-
+  constructor(expandedLevelConfig) {
+    this.config = expandedLevelConfig;
     this.state = {};
     this.state.money = 0;
-  }
-
-  // Given a pointer to a level's config, returns "" on success, or an error
-  // string if there is an error parsing the config.
-  initFromConfig(rootDir, config) {
-    if (config.uid === undefined) {
-      return "Level config is missing required uid";
-    }
-    this.config.uid = config.uid;
-
-    if (config.startingMoney !== undefined) {
-      this.config.startingMoney = config.startingMoney);
-    }
-
-    let path;
-    let obj;
-
-    _loadImage(rootDir+'/levels/', config, 'background');
-
-    path = rootDir + '/levels/' + this.config.uid + '_background.mp3';
-    if (config.mp3s.background !== undefined) {
-        path = rootDir + '/' + config.mp3s.background;
-    }
-    obj = loadSoundFromPath(path);
-    if (obj == undefined) {
-      console.log(path + ": sound not found");
-    } else {
-      this.config.imgs.background = obj;
-    }
-
-    this.config.imgs = {};
-    this.config.imgs.background = undefined;
-    this.config.mp3s = {};
-    this.config.mp3s.background = undefined;
-    this.config.mp3s.start = undefined;
-    this.config.mp3s.win = undefined; ;
-    this.config.mp3s.lose = undefined;
-
-    for (let defenderConfig of config.defenders) {
-      let defender = new Defender();
-      let error = defender.initFromConfig(rootDir, defenderConfig);
-      if (error !== "") {
-        return error;
-      }
-    }
-
-    for (let attackerConfig of config.attackers) {
-      let attacker = new Attacker();
-      let error = attacker.initFromConfig(rootDir, attackerConfig);
-      if (error !== "") {
-        return error;
-      }
-    }
-
-    for (let sequenceItem of config.sequence) {
-    }
   }
 };

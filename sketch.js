@@ -98,93 +98,60 @@ let levels = [{
    }],
 }];
 
-
-//_loadImage(config, dir, fieldName) {
-//  let path = dir + '/' + config.uid + '_' + fieldName + '.png';
-//  if (config.imgs.background !== undefined) {
-//      path = rootDir + '/' + config.imgs.background;
-//  }
-//  let obj = loadImageFromPath(path);
-//  if (obj == undefined) {
-//    console.log(path + ": image not found");
-//  } else {
-//    this.config.imgs.background = obj;
-//  }
-//}
 //
+// Example of minimal game config.
 //
-//const DEFAULT_PROJECTILE_CONFIG = {
-//};
-//const DEFAULT_DEFENDER_CONFIG = {
-//};
-//const DEFAULT_ATTACKER_CONFIG = {
-//};
-//const DEFAULT_LEVEL_CONFIG = {
-//};
-//
-//
-//let attacker_config_template = {
-//};
-//
-//let level_config_template = {
-//};
-//
-//let
-//
-////
-//// Example of minimal game config.
-////
-//let game_config = {
-//  "root_dir": "assets/pokemon",
-//  "levels": [
-//    {
-//      "uid": "level1",
-//      "startingMoney": 500,
-//      "defenders": [
-//        {
-//          "uid": "pikachu",
-//          "startingHealth": 200,
-//          "cost": 150,
-//          "restockTime": 200,
-//          "projectile": {
-//            "uid": "bolt",
-//            "maxHitDamage": 150,
-//            "reloadTime": 200,
-//          },
-//        }, {
-//          "uid": "bulbasaur",
-//          "startingHealth": 300,
-//          "cost": 50,
-//          "restockTime": 200,
-//          "projectile": {
-//            "uid": "splash",
-//            "maxHitDamage": 250,
-//            "reloadTime": 200,
-//          },
-//        }
-//      ],
-//      // Should attackers and defenders be global game config as opposed to per-level?
-//      // Note: We could allow per-level overrides, if that was ever even necessary.
-//      "attacker": [
-//        {
-//          "uid": "evee",
-//          "startingHealth": 200,
-//          "maxHitDamage": 200,
-//          "reloadTime": 200,
-//        }
-//      ],
-//      "sequence": [
-//        {
-//          //message(/*duration*/=3000, "Level #1 - First Wave..."),
-//          //wait(2500),
-//          //attack("evee", /*row=*/-1),
-//          //randomWaitUpTo(2500),
-//          //attack("evee", /*row=*/2),
-//        }
-//      ],
-//    },
-//  ],
-//}
+let game_config = {
+  "root_dir": "assets/pokemon",
+  "levels": [
+    {
+      "uid": "level1",
+      "startingMoney": 500,
+      "defenders": [
+        {
+          "uid": "pikachu",
+          "startingHealth": 200,
+          "cost": 150,
+          "restockTime": 200,
+          "projectile": {
+            "uid": "bolt",
+            "maxHitDamage": 150,
+            "reloadTime": 200,
+          },
+        }, {
+          "uid": "bulbasaur",
+          "startingHealth": 300,
+          "cost": 50,
+          "restockTime": 200,
+          "projectile": {
+            "uid": "splash",
+            "maxHitDamage": 250,
+            "reloadTime": 200,
+          },
+        }
+      ],
+      // Should attackers and defenders be global game config as opposed to per-level?
+      // Note: We could allow per-level overrides, if that was ever even necessary.
+      "attacker": [
+        {
+          "uid": "evee",
+          "startingHealth": 200,
+          "maxHitDamage": 200,
+          "reloadTime": 200,
+        }
+      ],
+      "sequence": [
+        {
+          //message(/*duration*/=3000, "Level #1 - First Wave..."),
+          //wait(2500),
+          //attack("evee", /*row=*/-1),
+          //randomWaitUpTo(2500),
+          //attack("evee", /*row=*/2),
+        }
+      ],
+    },
+  ],
+}
 //
 ////
 //// Unrefined example of explicit game config that shows some of the implicit.

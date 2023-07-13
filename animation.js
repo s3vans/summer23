@@ -1,29 +1,51 @@
-
-function buildAnimationFromConfig(animationConfig, defaultAnimationConfig) {
+function loadAnimationFromConfig(animationConfig, defaultAnimationConfig) {
   let config = animationConfig;
   let defaultConfig = defaultAnimationConfig;
 
-  let img = _getField("img", config, defaultConfig);
-  if (img == null) {
+  let path = _getFieldDefaultConfig("path", config, defaultConfig);
+  if (path == null) {
     return null;
   }
 
-  let frameHeight = _getField("frameHeight", config, defaultConfig);
+  let frameHeight =
+      _getFieldDefaultConfig("frameHeight", config, defaultConfig);
   if (frameHeight == null) {
     return null;
   }
 
-  let fps =  _getField("fps", config, defaultConfig);
+  let fps =  _getFieldDefaultConfig("fps", config, defaultConfig);
   if (fps == null) {
     return null;
   }
 
-  let isLooping = _getField("isLooping", config, defaultConfig);
+  let isLooping = _getFieldDefaultConfig("isLooping", config, defaultConfig);
   if (isLooping == null) {
     return null;
   }
 
-  return new Animation(img, frameHeight, fps, isLooping);
+  // NOTE: Because loading is asynchronous, the returned
+  // animation is initialized with a `null` |img| field.
+  // When loading is finished, a callback will either
+  // populate the |img| field or leave it as `null.
+  let animation =
+      new Animation(null, frameHeight, fps, isLooping);
+
+  // NOTE: To make it easier to read, this function is
+  // written like it returns the new animation, but we must
+  // set it manually here to avoid a race condition where
+  // the following asynchronous code tries to update the
+  // |img| field inside the animation.
+  animationConfig.img = animation;
+
+  _asyncLoadImageFromPath(path)
+      .then((img) => {
+        animationConfig.img.img = img;
+      })
+      .catch((err) => {
+        console.log("Error loading ", path);
+        animationConfig.img.img = null;
+      });
+  return animation;
 }
 
 class Animation {
@@ -41,6 +63,9 @@ class Animation {
   }
 
   update(deltaTime) {
+    if (this.img == null) {
+      return;
+    }
     if (this.isDone) {
       return;
     }
@@ -65,6 +90,9 @@ class Animation {
   }
 
   draw(deltaTime, x, y, width, height) {
+    if (this.img == null) {
+      return;
+    }
     let srcX = 0;
     let srcY = this.frameHeight * this.currentFrameNum;
     let srcWidth = this.img.width;
