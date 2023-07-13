@@ -99,10 +99,11 @@ class Game {
     this.config = gameConfig;
 
     // General state
-    this.canvas = undefined;
-    this.uids = new Map();
-    this.err_duplicate_uid = "";
-    this.scaleFactor = 1;
+    this.state = {};
+    this.state.canvas = undefined;
+    this.state.uids = new Map();
+    this.state.err_duplicate_uid = "";
+    this.state.scaleFactor = 1;
 
     // Level State
     this.levelConfig = undefined;
@@ -131,7 +132,7 @@ class Game {
     this.activeDefenders = [];
     this.activeCollectibles = [];
     this.activeProjectiles = [];
-    this.state = "NORMAL";
+    this.game_state = "NORMAL";
     this.map_state = [];
     for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
       this.map_state[row] = [];
@@ -148,7 +149,8 @@ class Game {
     const maxScaleFactor = this.config.consts.maxScaleFactor;
     let xFactor = Math.max(windowWidth / xRes, minScaleFactor);
     let yFactor = Math.max(windowHeight / yRes, minScaleFactor);
-    this.scaleFactor = Math.min(maxScaleFactor, Math.min(yFactor, xFactor));
+    this.state.scaleFactor =
+        Math.min(maxScaleFactor, Math.min(yFactor, xFactor));
   }
 
   _displayError(err) {
@@ -160,18 +162,18 @@ class Game {
   }
 
   _isUidUnique(uid) {
-    if (this.uids.has(uid)) {
-      err_duplicate_uid = uid;
+    if (this.state.uids.has(uid)) {
+      this.state.err_duplicate_uid = uid;
       return false;
     }
-    this.uids.set(uid, true);
+    this.state.uids.set(uid, true);
     return true;
   }
 
   // Returns "" if no duplicates were encountered.
   // Else returns the last duplicate id encountered.
   getDuplicateUid() {
-    return this.err_duplicate_uid;
+    return this.state.err_duplicate_uid;
   }
 
   loadLevel(levelConfig) {
@@ -283,7 +285,8 @@ class Game {
     this._updateScaleFactor();
     const xRes = this.config.consts.xResolution;
     const yRes = this.config.consts.yResolution;
-    this.canvas = createCanvas(xRes*this.scaleFactor, yRes*this.scaleFactor);
+    this.state.canvas =
+        createCanvas(xRes*this.state.scaleFactor, yRes*this.state.scaleFactor);
     setInterval(() => { this._sendAttacker(); }, 5000);
     setInterval(() => { this._sendCollectible(); }, 6000);
   }
@@ -292,7 +295,7 @@ class Game {
     for (let attacker of this.activeAttackers) {
       // Check for GAME OVER condition.
       if (attacker.x_pos < MAP_X - (MAP_CELL_WIDTH / 2)) {
-        this.state = "GAMEOVER";
+        this.game_state = "GAMEOVER";
         return;
       }
       attacker.update();
@@ -314,13 +317,14 @@ class Game {
   }
 
   draw() {
-    scale(this.scaleFactor);
+    scale(this.state.scaleFactor);
     if (this.getDuplicateUid() != "") {
-      this._displayError("Duplicate uid detected: " + err_duplicate_uid);
+      this._displayError("Duplicate uid detected: " +
+          this.state.err_duplicate_uid);
       noLoop();
       return;
     }
-    if (this.state == "GAMEOVER") {
+    if (this.game_state == "GAMEOVER") {
       console.log("GAME OVER");
       push();
       const xRes = this.config.consts.xResolution;
@@ -354,7 +358,7 @@ class Game {
   }
 
   _scaleMouse(pos) {
-    return pos / this.scaleFactor;
+    return pos / this.state.scaleFactor;
   }
 
   _drawBackground() {
@@ -464,7 +468,7 @@ class Game {
 
   _drawCursor() {
     push();
-    if (this.state == "NORMAL") {
+    if (this.game_state == "NORMAL") {
       let x = STORE_X;
       let y = STORE_Y;
       for (let i = 0; i < STORE_ITEM_COUNT; i++) {
@@ -474,7 +478,7 @@ class Game {
         }
         x = x + STORE_ITEM_WIDTH;
       }
-    } else if (this.state == "SELECTED") {
+    } else if (this.game_state == "SELECTED") {
       this._highlightRectangle(STORE_X+(STORE_ITEM_WIDTH*this.selected),
                                STORE_Y, STORE_ITEM_WIDTH, STORE_ITEM_HEIGHT,
                                color(0, 255, 255, 100));
@@ -573,7 +577,7 @@ class Game {
     let idx = this._getSelectedStoreItemIdx();
     if (idx != -1) {
       if (this.levelXp >= this.defenderConfigs[idx].xp) {
-        this.state = "SELECTED";
+        this.game_state = "SELECTED";
         this.selected = idx;
         return true;
       }
@@ -598,7 +602,7 @@ class Game {
     this.activeDefenders.push(defender);
     this.defendersByRow[row].push(defender);
     this.levelXp -= this.defenderConfigs[this.selected].xp;
-    this.state = "NORMAL";
+    this.game_state = "NORMAL";
     this.selected = -1;
     return true;
   }
@@ -609,7 +613,7 @@ class Game {
   // FIXME: Letting off the mouse seems to count as a click which can cause
   // mispacement of defenders after clicking on a collectibel.
   mouseClicked() {
-    if ((this.state == "NORMAL") || (this.state == "SELECTED")) {
+    if ((this.game_state == "NORMAL") || (this.game_state == "SELECTED")) {
       if (this._handleCollectibleClick()) {
         return;
       }
@@ -617,7 +621,7 @@ class Game {
         return;
       }
     }
-    if (this.state == "SELECTED") {
+    if (this.game_state == "SELECTED") {
       if (this._handleCharacterPlacement()) {
         return;
       }
@@ -626,10 +630,10 @@ class Game {
   }
 
   windowResized() {
-    // TODO: Is there a resize for this.canvas?
+    // TODO: Is there a resize for this.state.canvas?
     this._updateScaleFactor();
     const xRes = this.config.consts.xResoultion;
     const yRes = this.config.consts.yResoultion;
-    resizeCanvas(xRes*this.scaleFactor, yRes*this.scaleFactor);
+    resizeCanvas(xRes*this.state.scaleFactor, yRes*this.state.scaleFactor);
   }
 }
