@@ -185,7 +185,7 @@ let game_config = {
   ],
 }
 
-let game = new Game();
+let game = new Game(game_config);
 
 let animation;
 

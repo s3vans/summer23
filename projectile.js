@@ -32,7 +32,7 @@ class Projectile {
         removeFromArray(this.game.activeProjectiles, this);
         return;
       }
-      if (this.x_pos < GAME_XRESOLUTION + MAP_CELL_WIDTH) {
+      if (this.x_pos < game.config.consts.xResolution + MAP_CELL_WIDTH) {
         this.x_pos += this.speed;
       } else {
         // Remove it once offscreen.

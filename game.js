@@ -10,11 +10,6 @@
 
 let attackerCnt = 0;
 
-const GAME_XRESOLUTION = 800;
-const GAME_YRESOLUTION = 600;
-const MIN_SCALE_FACTOR = .5;
-const MAX_SCALE_FACTOR = 3;
-
 const STORE_X = 100;
 const STORE_Y = 0;
 const STORE_ITEM_COUNT = 6;
@@ -93,11 +88,14 @@ function expandGameConfig(gameConfig) {
 // All of the game config, state, and logic lives here.
 class Game {
   constructor(gameConfig) {
-    if (gameConfig != undefined) {
-      gameConfig.consts = {};
-      gameConfig.consts.yResolution = 600;
-    }
+    gameConfig.consts = {};
+    gameConfig.consts.xResolution = 800;
+    gameConfig.consts.yResolution = 600;
+    gameConfig.consts.minScaleFactor = .5;
+    gameConfig.consts.maxScaleFactor = 3;
+
     expandGameConfig(gameConfig);
+
     this.config = gameConfig;
 
     // General state
@@ -144,9 +142,13 @@ class Game {
   }
 
   _updateScaleFactor() {
-    let yFactor = Math.max(windowHeight / GAME_YRESOLUTION, MIN_SCALE_FACTOR);
-    let xFactor = Math.max(windowWidth / GAME_XRESOLUTION, MIN_SCALE_FACTOR);
-    this.scaleFactor = Math.min(MAX_SCALE_FACTOR, Math.min(yFactor, xFactor));
+    const xRes = this.config.consts.xResolution;
+    const yRes = this.config.consts.yResolution;
+    const minScaleFactor = this.config.consts.minScaleFactor;
+    const maxScaleFactor = this.config.consts.maxScaleFactor;
+    let xFactor = Math.max(windowWidth / xRes, minScaleFactor);
+    let yFactor = Math.max(windowHeight / yRes, minScaleFactor);
+    this.scaleFactor = Math.min(maxScaleFactor, Math.min(yFactor, xFactor));
   }
 
   _displayError(err) {
@@ -279,8 +281,9 @@ class Game {
 
   setup() {
     this._updateScaleFactor();
-    this.canvas = createCanvas(GAME_XRESOLUTION*this.scaleFactor,
-                               GAME_YRESOLUTION*this.scaleFactor);
+    const xRes = this.config.consts.xResolution;
+    const yRes = this.config.consts.yResolution;
+    this.canvas = createCanvas(xRes*this.scaleFactor, yRes*this.scaleFactor);
     setInterval(() => { this._sendAttacker(); }, 5000);
     setInterval(() => { this._sendCollectible(); }, 6000);
   }
@@ -320,7 +323,9 @@ class Game {
     if (this.state == "GAMEOVER") {
       console.log("GAME OVER");
       push();
-      translate(GAME_XRESOLUTION/2, GAME_YRESOLUTION/2);
+      const xRes = this.config.consts.xResolution;
+      const yRes = this.config.consts.yResolution;
+      translate(xRes/2, yRes/2);
       stroke(0); fill(255);
       rectMode(CENTER);
       //let goW = 300;
@@ -355,7 +360,9 @@ class Game {
   _drawBackground() {
     push();
     background(0);
-    image(this.levelImg, 0, 0, GAME_XRESOLUTION, GAME_YRESOLUTION);
+    const xRes = this.config.consts.xResolution;
+    const yRes = this.config.consts.yResolution;
+    image(this.levelImg, 0, 0, xRes, yRes);
     pop();
   }
 
@@ -621,7 +628,8 @@ class Game {
   windowResized() {
     // TODO: Is there a resize for this.canvas?
     this._updateScaleFactor();
-    resizeCanvas(GAME_XRESOLUTION*this.scaleFactor,
-                 GAME_YRESOLUTION*this.scaleFactor);
+    const xRes = this.config.consts.xResoultion;
+    const yRes = this.config.consts.yResoultion;
+    resizeCanvas(xRes*this.scaleFactor, yRes*this.scaleFactor);
   }
 }

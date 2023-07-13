@@ -6,7 +6,7 @@ class Attacker {
     this.row = row;
     this.img = img;
     this.hp = hp;
-    this.x_pos = GAME_XRESOLUTION + MAP_CELL_WIDTH;
+    this.x_pos = game.config.consts.xResolution + MAP_CELL_WIDTH;
     this.y_pos = MAP_Y + row * MAP_CELL_HEIGHT;
     this.speed = 1;
     this.width = MAP_CELL_WIDTH;
