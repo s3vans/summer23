@@ -1,3 +1,4 @@
+
 function loadAnimationFromConfig(animationConfig, defaultAnimationConfig) {
   let config = animationConfig;
   let defaultConfig = defaultAnimationConfig;
@@ -58,6 +59,11 @@ class Animation {
     this.numFrames = null;
     this.lastFrameTime = null;
     this.msPerFrame = Math.floor(1000 / this.fps);
+    this.currentFrameNum = 0;
+    this.isDone = false;
+  }
+
+  reset() {
     this.currentFrameNum = 0;
     this.isDone = false;
   }
