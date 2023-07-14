@@ -3,23 +3,24 @@ function loadAnimationFromConfig(animationConfig, defaultAnimationConfig) {
   let config = animationConfig;
   let defaultConfig = defaultAnimationConfig;
 
-  let path = _getFieldDefaultConfig("path", config, defaultConfig);
+  let path = helper.getFieldDefaultConfig("path", config, defaultConfig);
   if (path == null) {
     return null;
   }
 
   let frameHeight =
-      _getFieldDefaultConfig("frameHeight", config, defaultConfig);
+      helper.getFieldDefaultConfig("frameHeight", config, defaultConfig);
   if (frameHeight == null) {
     return null;
   }
 
-  let fps =  _getFieldDefaultConfig("fps", config, defaultConfig);
+  let fps =  helper.getFieldDefaultConfig("fps", config, defaultConfig);
   if (fps == null) {
     return null;
   }
 
-  let isLooping = _getFieldDefaultConfig("isLooping", config, defaultConfig);
+  let isLooping = helper.getFieldDefaultConfig("isLooping", config,
+                                               defaultConfig);
   if (isLooping == null) {
     return null;
   }
@@ -38,7 +39,7 @@ function loadAnimationFromConfig(animationConfig, defaultAnimationConfig) {
   // |img| field inside the animation.
   animationConfig.img = animation;
 
-  _asyncLoadImageFromPath(path)
+  helper.asyncLoadImageFromPath(path)
       .then((img) => {
         animationConfig.img.img = img;
       })

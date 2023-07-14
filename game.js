@@ -34,8 +34,8 @@ const OVERLAY_Y = 0;
 const OVERLAY_WIDTH = 100;
 const OVERLAY_HEIGHT = 100;
 
-// A template that defines an available defender in a game level.
-// Note that this doesn't currently represent an active character in the game.
+// A template that defines an available defender in a game level.  Note that
+// this doesn't currently represent an active character in the game.
 class DefenderConfig {
   constructor(uid, name, img, xp_cost, hp, projectile_img, projectile_hp,
               projectile_speed, projectile_recharge) {
@@ -51,8 +51,8 @@ class DefenderConfig {
   }
 }
 
-// A template that defines an available attacker in a game level.
-// Note that this doesn't currently represent an active character in the game.
+// A template that defines an available attacker in a game level.  Note that
+// this doesn't currently represent an active character in the game.
 class AttackerConfig {
   constructor(uid, name, img, hp) {
     this.uid = uid;
@@ -74,7 +74,6 @@ class CollectibleConfig {
 }
 
 function expandGameConfig(gameConfig) {
-
 }
 
 // All of the game config, state, and logic lives here.
@@ -553,7 +552,7 @@ class Game {
         if ((Math.abs(center_x - mX) <= hit_distance) &&
             (Math.abs(center_y - mY) <= hit_distance)) {
           this.levelXp += collectible.xp;
-          _removeFromArray(this.activeCollectibles, collectible);
+          helper.removeFromArray(this.activeCollectibles, collectible);
           return true;
         }
       }

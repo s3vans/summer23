@@ -1,6 +1,6 @@
 
 function expandLevelConfig(rootDir, config) {
-  let uid = _getField("uid", config);
+  let uid = helper.getField("uid", config);
   if (uid == null) {
     console.log("Level config is missing required uid.");
     return null;
@@ -13,8 +13,8 @@ function expandLevelConfig(rootDir, config) {
   if (config.imgs == undefined) {
     config.imgs = {};
   }
-  _makeOrExpandAssetPath(config.imgs, "background", rootDir, uid,
-                         "background.png");
+  helper.makeOrExpandAssetPath(config.imgs, "background", rootDir, uid,
+                               "background.png");
   let defaultAnimationConfig = {
     "frameHeight": levelConfig.consts.defaultFrameHeight,
     "fps": levelConfig.consts.defaultFps,
@@ -28,11 +28,11 @@ function expandLevelConfig(rootDir, config) {
   if (config.mp3s == undefined) {
     config.mp3s = {};
   }
-  _makeOrExpandAssetPath(config.mp3s, "background", rootDir, uid,
-                         "background.mp3");
-  _makeOrExpandAssetPath(config.mp3s, "start", rootDir, uid, "start.mp3");
-  _makeOrExpandAssetPath(config.mp3s, "win", rootDir, uid, "win.mp3");
-  _makeOrExpandAssetPath(config.mp3s, "lose", rootDir, uid, "lose.mp3");
+  helper.makeOrExpandAssetPath(config.mp3s, "background", rootDir, uid,
+                               "background.mp3");
+  helper.makeOrExpandAssetPath(config.mp3s, "start", rootDir, uid, "start.mp3");
+  helper.makeOrExpandAssetPath(config.mp3s, "win", rootDir, uid, "win.mp3");
+  helper.makeOrExpandAssetPath(config.mp3s, "lose", rootDir, uid, "lose.mp3");
 }
 
 class Level {

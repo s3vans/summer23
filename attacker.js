@@ -16,8 +16,8 @@ class Attacker {
     this.hp -= 100;
     if (this.hp <= 0) {
       this.game.map_state[this.row][this.col] = undefined;
-      _removeFromArray(this.game.attackersByRow[this.row], this);
-      _removeFromArray(this.game.activeAttackers, this);
+      helper.removeFromArray(this.game.attackersByRow[this.row], this);
+      helper.removeFromArray(this.game.activeAttackers, this);
     }
   }
 

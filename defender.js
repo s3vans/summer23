@@ -24,8 +24,8 @@ class Defender {
     this.hp -= 1;
     if (this.hp <= 0) {
       this.game.map_state[this.row][this.col] = undefined;
-      _removeFromArray(this.game.defendersByRow[this.row], this);
-      _removeFromArray(this.game.activeDefenders, this);
+      helper.removeFromArray(this.game.defendersByRow[this.row], this);
+      helper.removeFromArray(this.game.activeDefenders, this);
     }
   }
 
