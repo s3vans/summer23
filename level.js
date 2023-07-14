@@ -46,6 +46,6 @@ class Level {
     expandLevelConfig(gameConfig.rootDir, levelConfig);
     this.config = levelConfig;
     this.state = {};
-    this.state.money = 0;
+    this.state.money = this.config.startingMoney;
   }
 };
