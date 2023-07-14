@@ -1,4 +1,4 @@
-expandGameConfig(pokemonGameConfig);
+configHelper.expandGameConfig(pokemonGameConfig);
 let game = new Game(pokemonGameConfig);
 
 function preload() {

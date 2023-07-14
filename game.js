@@ -73,62 +73,6 @@ class CollectibleConfig {
   }
 }
 
-function expandAttackerConfig(config) {
-}
-
-function expandDefenderConfig(config) {
-}
-
-function expandProjectileConfig(config) {
-}
-
-function expandCollectibleConfig(config) {
-}
-
-function expandCollectibleConfig(config) {
-}
-
-function expandGameConfig(gameConfig) {
-  gameConfig.consts = {};
-  gameConfig.consts.xResolution = 800;
-  gameConfig.consts.yResolution = 600;
-  gameConfig.consts.minScaleFactor = .5;
-  gameConfig.consts.maxScaleFactor = 3;
-
-  let rootDir = "";
-  if (gameConfig.rootDir != undefined) {
-    rootDir = gameConfig.rootDir;
-  }
-
-  if (gameConfig.attackers == undefined) {
-    gameConfig.attackers = {};
-  }
-  for (let attackerConfig in gameConfig.attackers) {
-    expandAttackerConfig(rootDir, attackerConfig);
-  }
-
-  if (gameConfig.defenders == undefined) {
-    gameConfig.defenders = {};
-  }
-  for (let defenderConfig in gameConfig.defenders) {
-    expandDefenderConfig(rootDir, defenderConfig);
-  }
-
-  if (gameConfig.projectiles == undefined) {
-    gameConfig.projectiles = {};
-  }
-  for (let projectileConfig in gameConfig.projectiles) {
-    expandProjectileConfig(rootDir, projectileConfig);
-  }
-
-  if (gameConfig.collectibles == undefined) {
-    gameConfig.collectibles = {};
-  }
-  for (let collectibleConfig in gameConfig.collectibles) {
-    expandCollectibleConfig(rootDir, collectibleConfig);
-  }
-}
-
 // All of the game config, state, and logic lives here.
 class Game {
   constructor(expandedGameConfig) {

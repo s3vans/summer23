@@ -193,3 +193,107 @@ let pokemonGameConfig = {
     },
   ],
 }
+
+class ConfigHelper {
+  constructor() { };
+
+  _expandAttackerConfig(config) {
+  }
+
+  _expandDefenderConfig(config) {
+  }
+
+  _expandProjectileConfig(config) {
+  }
+
+  _expandCollectibleConfig(config) {
+  }
+
+  _expandCollectibleConfig(config) {
+  }
+
+  _expandLevelConfig(rootDir, config) {
+    levelConfig.consts = {};
+    levelConfig.consts.defaultStartingMoney = 0;
+    levelConfig.consts.defaultFrameHeight = gameConfig.consts.yResolution;
+    levelConfig.consts.defaultFps = 1;
+    levelConfig.consts.defaultIsLooping = false;
+
+    let uid = helper.getField("uid", config);
+    if (uid == null) {
+      console.log("Level config is missing required uid.");
+      return null;
+    }
+
+    if (config.startingMoney == undefined) {
+      config.startingMoney = config.consts.defaultStartingMoney;
+    }
+
+    if (config.imgs == undefined) {
+      config.imgs = {};
+    }
+    helper.expandAssetPath(config.imgs, "background", rootDir, uid,
+                           "background.png");
+    let defaultAnimationConfig = {
+      "frameHeight": levelConfig.consts.defaultFrameHeight,
+      "fps": levelConfig.consts.defaultFps,
+      "isLooping": levelConfig.consts.defaultIsLooping,
+    }
+    // NOTE: loadAnimationFromConfig() updates the |img| value asynchronously
+    // after the image loads or fails to load.
+    loadAnimationFromConfig(config.imgs.background, defaultAnimationConfig);
+
+    // TODO: Load the audio from config.
+    if (config.mp3s == undefined) {
+      config.mp3s = {};
+    }
+    helper.expandAssetPath(config.mp3s, "background", rootDir, uid,
+                           "background.mp3");
+    helper.expandAssetPath(config.mp3s, "start", rootDir, uid, "start.mp3");
+    helper.expandAssetPath(config.mp3s, "win", rootDir, uid, "win.mp3");
+    helper.expandAssetPath(config.mp3s, "lose", rootDir, uid, "lose.mp3");
+  }
+
+  expandGameConfig(gameConfig) {
+    gameConfig.consts = {};
+    gameConfig.consts.xResolution = 800;
+    gameConfig.consts.yResolution = 600;
+    gameConfig.consts.minScaleFactor = .5;
+    gameConfig.consts.maxScaleFactor = 3;
+
+    let rootDir = "";
+    if (gameConfig.rootDir != undefined) {
+      rootDir = gameConfig.rootDir;
+    }
+
+    if (gameConfig.attackers == undefined) {
+      gameConfig.attackers = {};
+    }
+    for (let attackerConfig in gameConfig.attackers) {
+      this._expandAttackerConfig(rootDir, attackerConfig);
+    }
+
+    if (gameConfig.defenders == undefined) {
+      gameConfig.defenders = {};
+    }
+    for (let defenderConfig in gameConfig.defenders) {
+      this._expandDefenderConfig(rootDir, defenderConfig);
+    }
+
+    if (gameConfig.projectiles == undefined) {
+      gameConfig.projectiles = {};
+    }
+    for (let projectileConfig in gameConfig.projectiles) {
+      this._expandProjectileConfig(rootDir, projectileConfig);
+    }
+
+    if (gameConfig.collectibles == undefined) {
+      gameConfig.collectibles = {};
+    }
+    for (let collectibleConfig in gameConfig.collectibles) {
+      this._expandCollectibleConfig(rootDir, collectibleConfig);
+    }
+  }
+}
+
+let configHelper = new ConfigHelper();

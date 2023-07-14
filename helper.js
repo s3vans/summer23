@@ -19,8 +19,7 @@ class Helper {
   // Create config.<key> object if it doesn't exist, populate config.<key>.path
   // with "<rootDir>/<uid>_<path> if it doesn't exist, else expand
   // config.<key>.path to "<rootDir>/<config.<key>.path>" if it exists.
-  makeOrExpandAssetPath(config, key, rootDir, uid,
-  path) {
+  expandAssetPath(config, key, rootDir, uid, path) {
     if (config[key] == undefined) {
       config[key] = {};
     }
