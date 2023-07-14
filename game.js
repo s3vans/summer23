@@ -92,6 +92,7 @@ class Game {
     this.state = {};
     this.state.canvas = undefined;
     this.state.scaleFactor = 1;
+    this.state.game_state = "NORMAL";
 
     // Game Level State
     this.state.currentLevelIndex = 0;
@@ -115,7 +116,7 @@ class Game {
     this.defenderConfigs = [];
     this.selected = -1;
 
-    // Active Game + Map State
+    // Map State
     this.attackersByRow = [];
     for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
       this.attackersByRow[row] = [];
@@ -128,7 +129,6 @@ class Game {
     this.activeDefenders = [];
     this.activeCollectibles = [];
     this.activeProjectiles = [];
-    this.game_state = "NORMAL";
     this.map_state = [];
     for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
       this.map_state[row] = [];
@@ -291,7 +291,7 @@ class Game {
     for (let attacker of this.activeAttackers) {
       // Check for GAME OVER condition.
       if (attacker.x_pos < MAP_X - (MAP_CELL_WIDTH / 2)) {
-        this.game_state = "GAMEOVER";
+        this.state.game_state = "GAMEOVER";
         return;
       }
       attacker.update();
@@ -318,7 +318,7 @@ class Game {
       noLoop();
       return;
     }
-    if (this.game_state == "GAMEOVER") {
+    if (this.state.game_state == "GAMEOVER") {
       console.log("GAME OVER");
       push();
       const xRes = this.config.consts.xResolution;
@@ -460,7 +460,7 @@ class Game {
 
   _drawCursor() {
     push();
-    if (this.game_state == "NORMAL") {
+    if (this.state.game_state == "NORMAL") {
       let x = STORE_X;
       let y = STORE_Y;
       for (let i = 0; i < STORE_ITEM_COUNT; i++) {
@@ -470,7 +470,7 @@ class Game {
         }
         x = x + STORE_ITEM_WIDTH;
       }
-    } else if (this.game_state == "SELECTED") {
+    } else if (this.state.game_state == "SELECTED") {
       this._highlightRectangle(STORE_X+(STORE_ITEM_WIDTH*this.selected),
                                STORE_Y, STORE_ITEM_WIDTH, STORE_ITEM_HEIGHT,
                                color(0, 255, 255, 100));
@@ -569,7 +569,7 @@ class Game {
     let idx = this._getSelectedStoreItemIdx();
     if (idx != -1) {
       if (this.levelXp >= this.defenderConfigs[idx].xp) {
-        this.game_state = "SELECTED";
+        this.state.game_state = "SELECTED";
         this.selected = idx;
         return true;
       }
@@ -594,7 +594,7 @@ class Game {
     this.activeDefenders.push(defender);
     this.defendersByRow[row].push(defender);
     this.levelXp -= this.defenderConfigs[this.selected].xp;
-    this.game_state = "NORMAL";
+    this.state.game_state = "NORMAL";
     this.selected = -1;
     return true;
   }
@@ -605,7 +605,7 @@ class Game {
   // FIXME: Letting off the mouse seems to count as a click which can cause
   // mispacement of defenders after clicking on a collectibel.
   mouseClicked() {
-    if ((this.game_state == "NORMAL") || (this.game_state == "SELECTED")) {
+    if ((this.state.game_state == "NORMAL") || (this.state.game_state == "SELECTED")) {
       if (this._handleCollectibleClick()) {
         return;
       }
@@ -613,7 +613,7 @@ class Game {
         return;
       }
     }
-    if (this.game_state == "SELECTED") {
+    if (this.state.game_state == "SELECTED") {
       if (this._handleCharacterPlacement()) {
         return;
       }
