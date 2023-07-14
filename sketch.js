@@ -119,13 +119,14 @@ let levels = [{
 //   * game.levels.mp3s.start
 //   * game.levels.mp3s.win
 //   * game.levels.mp3s.lose
+//
 let game_config = {
   "root_dir": "assets/pokemon",
   "projectiles": [{
       "uid": "bolt",
-      "speed": 10,
       "damage": 50,
       "reloadTimeMs": 1000,
+      "speed": 10,
   }],
   "defenders": [
     {
@@ -187,13 +188,8 @@ let game_config = {
 
 let game = new Game(game_config);
 
-let animation;
-
 function preload() {
   game.loadLevel(levels[0]);
-
-  let p = loadImage('assets/pokemon/defenders/pikachu_sprites.png');
-  animation = new Animation(p, 100, 12, true);
 }
 
 function setup() {

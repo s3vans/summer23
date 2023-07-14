@@ -2,7 +2,6 @@
 // TODO: Implement character states.
 // TODO: Implement visual effects.
 // TODO: Add sounds.
-// TODO: Support drawing character animations (at rest).
 // TODO: Allow attackers to be scheduled via config.
 // TODO: Unify common character/object traits into parent class.
 // TODO: Replace many hard coded vals with default vals overriden by config.
@@ -312,8 +311,6 @@ class Game {
     for (let projectile of this.activeProjectiles) {
       projectile.update();
     }
-
-    animation.update(deltaTime);
   }
 
   draw() {
@@ -353,8 +350,6 @@ class Game {
     this._drawStore();
     this._drawCursor();
     this._drawOverlay();
-
-    animation.draw(deltaTime, 25, 25, 100, 100);
   }
 
   _scaleMouse(pos) {
