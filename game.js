@@ -86,31 +86,28 @@ class Game {
     gameConfig.consts.maxScaleFactor = 3;
 
     expandGameConfig(gameConfig);
-
     this.config = gameConfig;
 
     // General state
     this.state = {};
     this.state.canvas = undefined;
-    this.state.uids = new Map();
-    this.state.err_duplicate_uid = "";
     this.state.scaleFactor = 1;
 
-    // Level State
+    // Game Level State
+    this.state.currentLevelIndex = 0;
+    this.state.currentLevel = this.config.levels[this.state.currentLevelIndex];
+
+    // To be retired, last value wins in config. Config can be used like maps.
+    this.state.uids = new Map();
+    this.state.err_duplicate_uid = "";
+    // To be retired, replaced by Level instance:
     this.levelConfig = undefined;
     this.levelImg = undefined;
     this.levelXp = 0;
+    // To be retired, replaced by game.config:
     this.attackerConfigMap = new Map();
     this.attackerConfigs = [];
-    this.attackersByRow = [];
-    for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
-      this.attackersByRow[row] = [];
-    }
     this.defenderConfigMap = new Map();
-    this.defendersByRow = [];
-    for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
-      this.defendersByRow[row] = [];
-    }
     this.collectibleConfigMap = new Map();
     this.collectibleConfigs = [];
 
@@ -119,6 +116,14 @@ class Game {
     this.selected = -1;
 
     // Active Game + Map State
+    this.attackersByRow = [];
+    for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
+      this.attackersByRow[row] = [];
+    }
+    this.defendersByRow = [];
+    for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
+      this.defendersByRow[row] = [];
+    }
     this.activeAttackers = [];
     this.activeDefenders = [];
     this.activeCollectibles = [];
