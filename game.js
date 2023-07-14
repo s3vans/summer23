@@ -670,8 +670,8 @@ class Game {
   windowResized() {
     // TODO: Is there a resize for this.state.canvas?
     this._updateScaleFactor();
-    const xRes = this.config.consts.xResoultion;
-    const yRes = this.config.consts.yResoultion;
+    const xRes = this.config.consts.xResolution;
+    const yRes = this.config.consts.yResolution;
     resizeCanvas(xRes*this.state.scaleFactor, yRes*this.state.scaleFactor);
   }
 }
