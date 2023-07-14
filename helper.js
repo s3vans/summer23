@@ -1,3 +1,10 @@
+function _removeFromArray(arr, elem) {
+  const index = arr.indexOf(elem);
+  if (index != -1) {
+    arr.splice(index, 1);
+  }
+}
+
 function _makePath(rootDir, uid, key) {
   return rootDir + '/' + uid + '_' + key;
 }

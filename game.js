@@ -34,13 +34,6 @@ const OVERLAY_Y = 0;
 const OVERLAY_WIDTH = 100;
 const OVERLAY_HEIGHT = 100;
 
-function removeFromArray(arr, elem) {
-  const index = arr.indexOf(elem);
-  if (index != -1) {
-    arr.splice(index, 1);
-  }
-}
-
 // A template that defines an available defender in a game level.
 // Note that this doesn't currently represent an active character in the game.
 class DefenderConfig {
@@ -560,7 +553,7 @@ class Game {
         if ((Math.abs(center_x - mX) <= hit_distance) &&
             (Math.abs(center_y - mY) <= hit_distance)) {
           this.levelXp += collectible.xp;
-          removeFromArray(this.activeCollectibles, collectible);
+          _removeFromArray(this.activeCollectibles, collectible);
           return true;
         }
       }

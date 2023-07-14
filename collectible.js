@@ -26,7 +26,7 @@ class Collectible {
       if (this.lifespan > 0) {
         this.lifespan -= 1;
       } else {
-        removeFromArray(this.game.activeCollectibles, this);
+        _removeFromArray(this.game.activeCollectibles, this);
       }
     }
     if (this.y_pos < this.target_y_pos) {

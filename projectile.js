@@ -29,14 +29,14 @@ class Projectile {
           this.game._nextTo(this, attackersToTheRight, MAP_CELL_WIDTH);
       if (attacker != undefined) {
         attacker.hit();
-        removeFromArray(this.game.activeProjectiles, this);
+        _removeFromArray(this.game.activeProjectiles, this);
         return;
       }
       if (this.x_pos < game.config.consts.xResolution + MAP_CELL_WIDTH) {
         this.x_pos += this.speed;
       } else {
         // Remove it once offscreen.
-        removeFromArray(this.game.activeProjectiles, this);
+        _removeFromArray(this.game.activeProjectiles, this);
       }
     }
   }
