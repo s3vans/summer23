@@ -73,30 +73,76 @@ class CollectibleConfig {
   }
 }
 
+function expandAttackerConfig(config) {
+}
+
+function expandDefenderConfig(config) {
+}
+
+function expandProjectileConfig(config) {
+}
+
+function expandCollectibleConfig(config) {
+}
+
+function expandCollectibleConfig(config) {
+}
+
 function expandGameConfig(gameConfig) {
+  gameConfig.consts = {};
+  gameConfig.consts.xResolution = 800;
+  gameConfig.consts.yResolution = 600;
+  gameConfig.consts.minScaleFactor = .5;
+  gameConfig.consts.maxScaleFactor = 3;
+
+  let rootDir = "";
+  if (gameConfig.rootDir != undefined) {
+    rootDir = gameConfig.rootDir;
+  }
+
+  if (gameConfig.attackers == undefined) {
+    gameConfig.attackers = {};
+  }
+  for (let attackerConfig in gameConfig.attackers) {
+    expandAttackerConfig(rootDir, attackerConfig);
+  }
+
+  if (gameConfig.defenders == undefined) {
+    gameConfig.defenders = {};
+  }
+  for (let defenderConfig in gameConfig.defenders) {
+    expandDefenderConfig(rootDir, defenderConfig);
+  }
+
+  if (gameConfig.projectiles == undefined) {
+    gameConfig.projectiles = {};
+  }
+  for (let projectileConfig in gameConfig.projectiles) {
+    expandProjectileConfig(rootDir, projectileConfig);
+  }
+
+  if (gameConfig.collectibles == undefined) {
+    gameConfig.collectibles = {};
+  }
+  for (let collectibleConfig in gameConfig.collectibles) {
+    expandCollectibleConfig(rootDir, collectibleConfig);
+  }
 }
 
 // All of the game config, state, and logic lives here.
 class Game {
-  constructor(gameConfig) {
-    gameConfig.consts = {};
-    gameConfig.consts.xResolution = 800;
-    gameConfig.consts.yResolution = 600;
-    gameConfig.consts.minScaleFactor = .5;
-    gameConfig.consts.maxScaleFactor = 3;
-
-    expandGameConfig(gameConfig);
-    this.config = gameConfig;
+  constructor(expandedGameConfig) {
+    this.config = expandedGameConfig;
 
     // General state
     this.state = {};
-    this.state.canvas = undefined;
+    this.state.canvas = null;
     this.state.scaleFactor = 1;
     this.state.game_state = "NORMAL";
 
     // Game Level State
     this.state.currentLevelIndex = 0;
-    this.state.currentLevel = this.config.levels[this.state.currentLevelIndex];
+    this.state.currentLevel = null;
 
     // To be retired, last value wins in config. Config can be used like maps.
     this.state.uids = new Map();
