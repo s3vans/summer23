@@ -132,20 +132,26 @@ let pokemonGameConfig = {
   },
   "defenders": {
     "pikachu": {
-      "startingHealth": 200,
+      "startingHealth": 100,
       "cost": 150,
       "restockTimeMs": 200,
       "projectile": "bolt",
     },
     "bulbasaur": {
-      "startingHealth": 300,
-      "cost": 50,
+      "startingHealth": 200,
+      "cost": 250,
       "restockTime": 200,
       "projectile": "bolt",
     },
     "charmander": {
       "startingHealth": 300,
-      "cost": 50,
+      "cost": 350,
+      "restockTime": 200,
+      "projectile": "bolt",
+    },
+    "meowth": {
+      "startingHealth": 400,
+      "cost": 450,
       "restockTime": 200,
       "projectile": "bolt",
     },
@@ -153,8 +159,8 @@ let pokemonGameConfig = {
   "attackers": {
     "evee": {
       "startingHealth": 200,
-      "damage": 200,
-      "reloadTimeMs": 200,
+      "damage": 10,
+      "reloadTimeMs": 10,
     },
   },
   "collectibles": {
@@ -171,6 +177,7 @@ let pokemonGameConfig = {
           "pikachu",
           "bulbasaur",
           "charmander",
+          "meowth",
       ],
       "attackers": [
           "evee",
