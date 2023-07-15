@@ -3,11 +3,11 @@ let game;
 function preload() {
   configHelper.expandGameConfig(pokemonGameConfig);
   game = new Game(pokemonGameConfig);
-  game.loadLevel(levels[0]);
 }
 
 function setup() {
   game.setup();
+  game.loadLevel(pokemonGameConfig, levels[0], 0);
 }
 
 function draw() {

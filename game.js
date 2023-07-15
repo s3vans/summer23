@@ -9,14 +9,6 @@
 
 let attackerCnt = 0;
 
-const STORE_X = 100;
-const STORE_Y = 0;
-const STORE_ITEM_COUNT = 6;
-const STORE_ITEM_WIDTH = 100;
-const STORE_ITEM_HEIGHT = 100;
-const STORE_ITEM_IMG_WIDTH = 80;
-const STORE_ITEM_IMG_HEIGHT = 80;
-
 const MAP_X = 100;
 const MAP_Y = 100;
 const MAP_CELL_COL_COUNT = 7;
@@ -33,23 +25,6 @@ const OVERLAY_X = 700;
 const OVERLAY_Y = 0;
 const OVERLAY_WIDTH = 100;
 const OVERLAY_HEIGHT = 100;
-
-// A template that defines an available defender in a game level.  Note that
-// this doesn't currently represent an active character in the game.
-class DefenderConfig {
-  constructor(uid, name, img, xp_cost, hp, projectile_img, projectile_hp,
-              projectile_speed, projectile_recharge) {
-    this.uid = uid;
-    this.name = name;
-    this.img = img;
-    this.xp = xp_cost;
-    this.hp = hp;
-    this.projectile_img = projectile_img;
-    this.projectile_hp = projectile_hp;
-    this.projectile_speed = projectile_speed;
-    this.projectile_recharge = projectile_recharge;
-  }
-}
 
 // A template that defines an available attacker in a game level.  Note that
 // this doesn't currently represent an active character in the game.
@@ -93,18 +68,14 @@ class Game {
     this.state.err_duplicate_uid = "";
     // To be retired, replaced by Level instance:
     this.levelConfig = undefined;
-    this.levelImg = undefined;
-    this.levelXp = 0;
     // To be retired, replaced by game.config:
     this.attackerConfigMap = new Map();
     this.attackerConfigs = [];
-    this.defenderConfigMap = new Map();
     this.collectibleConfigMap = new Map();
     this.collectibleConfigs = [];
 
     // Store State
-    this.defenderConfigs = [];
-    this.selected = -1;
+    this.store = new Store(this);
 
     // Map State
     this.attackersByRow = [];
@@ -162,44 +133,16 @@ class Game {
     return this.state.err_duplicate_uid;
   }
 
-  loadLevel(levelConfig) {
-    this._loadLevel(levelConfig);
-    this._loadDefenderConfigForLevel(levelConfig);
+  loadLevel(gameConfig, levelConfig, levelIndex) {
+    let newLevelConfig = gameConfig.levels[levelIndex];
+    this.currentLevelIndex = levelIndex;
+    this.currentLevel = new Level(this, newLevelConfig);
+
+    for (let uid of newLevelConfig.defenders) {
+      this.store.addDefenderConfig(gameConfig.defenders[uid]);
+    }
     this._loadAttackerConfigForLevel(levelConfig);
     this._loadCollectibleConfigForLevel(levelConfig);
-  }
-
-  _loadLevel(levelConfig) {
-    this.levelConfig = levelConfig;
-    this.levelUid = levelConfig.uid;
-    this.levelName = levelConfig.name;
-    this.levelImg = loadImage(levelConfig.img);
-    this.levelXp = levelConfig.startingXp;
-    this._checkUidsFromLevel(levelConfig);
-  }
-
-  _checkUidsFromLevel(levelConfig) {
-    this._isUidUnique(levelConfig.uid);
-    for (let defender of levelConfig.defenderConfigs) {
-      this._isUidUnique(defender.uid);
-    }
-    for (let attacker of levelConfig.attackerConfigs) {
-      this._isUidUnique(attacker.uid);
-    }
-  }
-
-  _loadDefenderConfigForLevel(levelConfig) {
-    for (let defender of levelConfig.defenderConfigs) {
-      let defenderObj = new DefenderConfig(defender.uid, defender.name,
-                                           loadImage(defender.img),
-                                           defender.xp_cost, defender.hp,
-                                           loadImage(defender.projectile_img),
-                                           defender.projectile_hp,
-                                           defender.projectile_speed,
-                                           defender.projectile_recharge);
-      this.defenderConfigMap.set(defender.uid, defenderObj);
-      this.defenderConfigs.push(defenderObj);
-    }
   }
 
   _loadAttackerConfigForLevel(levelConfig) {
@@ -329,51 +272,18 @@ class Game {
       noLoop();
       return;
     }
-    this._drawBackground();
+    this.currentLevel.draw();  // background
     this._drawCharacters();
     this._drawProjectiles();
     this._drawCollectibles();
     this._drawEffects();
-    this._drawStore();
+    this.store.draw();
     this._drawCursor();
     this._drawOverlay();
   }
 
   _scaleMouse(pos) {
     return pos / this.state.scaleFactor;
-  }
-
-  _drawBackground() {
-    push();
-    background(0);
-    const xRes = this.config.consts.xResolution;
-    const yRes = this.config.consts.yResolution;
-    image(this.levelImg, 0, 0, xRes, yRes);
-    pop();
-  }
-
-  _drawStore() {
-    push();
-    translate(STORE_X, STORE_Y);
-    for (let i = 0; i < STORE_ITEM_COUNT; i++) {
-       push();
-       strokeWeight(1); stroke(0); fill(255);
-       rect(STORE_ITEM_WIDTH*i, 0, STORE_ITEM_WIDTH, STORE_ITEM_HEIGHT);
-       pop();
-    }
-    let x = 0;
-    for (let defender of this.defenderConfigMap.values()) {
-       image(defender.img, x+10, 0, STORE_ITEM_IMG_WIDTH, STORE_ITEM_IMG_HEIGHT,
-             0, 0, STORE_ITEM_IMG_WIDTH, STORE_ITEM_IMG_HEIGHT);
-       push();
-       noStroke(); fill(0); textSize(10);
-       text(defender.name, x+10, 85);
-       text('HP:' + defender.hp, x+60, 85);
-       text('XP:' + defender.xp, x+60, 95);
-       pop();
-       x += STORE_ITEM_WIDTH;
-    }
-    pop();
   }
 
   // Draws all of the characters.
@@ -451,18 +361,22 @@ class Game {
   _drawCursor() {
     push();
     if (this.state.game_state == "NORMAL") {
-      let x = STORE_X;
-      let y = STORE_Y;
-      for (let i = 0; i < STORE_ITEM_COUNT; i++) {
-        if (this._mouseInRectangle(x, y, STORE_ITEM_WIDTH, STORE_ITEM_HEIGHT)) {
-          this._highlightRectangle(x, y, STORE_ITEM_WIDTH, STORE_ITEM_HEIGHT,
-                                   color(255, 255, 0, 100));
+      let x = this.store.consts.XPOS;
+      let y = this.store.consts.YPOS;
+      for (let i = 0; i < this.store.consts.ITEM_COUNT; i++) {
+        if (this._mouseInRectangle(x, y, this.store.consts.ITEM_WIDTH,
+            this.store.consts.ITEM_HEIGHT)) {
+          this._highlightRectangle(x, y, this.store.consts.ITEM_WIDTH,
+              this.store.consts.ITEM_HEIGHT, color(255, 255, 0, 100));
         }
-        x = x + STORE_ITEM_WIDTH;
+        x = x + this.store.consts.ITEM_WIDTH;
       }
     } else if (this.state.game_state == "SELECTED") {
-      this._highlightRectangle(STORE_X+(STORE_ITEM_WIDTH*this.selected),
-                               STORE_Y, STORE_ITEM_WIDTH, STORE_ITEM_HEIGHT,
+      let xpos = this.store.consts.XPOS +
+          (this.store.consts.ITEM_WIDTH*this.store.selected);
+      let ypos = this.store.consts.YPOS;
+      this._highlightRectangle(xpos, ypos, this.store.consts.ITEM_WIDTH,
+                               this.store.consts.ITEM_HEIGHT,
                                color(0, 255, 255, 100));
       let y = MAP_Y;
       for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
@@ -496,27 +410,10 @@ class Game {
     translate(OVERLAY_X+20, OVERLAY_Y+30);
     fill(255); strokeWeight(1); stroke(255); textSize(16);
     text(this.levelName, 0, 0);
-    text("XP: " + this.levelXp, 0, 24);
+    text("XP: " + this.currentLevel.state.money, 0, 24);
     pop();
   }
 
-  _getSelectedStoreItemIdx() {
-    let mX = this._scaleMouse(mouseX);
-    let mY = this._scaleMouse(mouseY);
-    let x = STORE_X;
-    let y = STORE_Y;
-    for (let i = 0; i < STORE_ITEM_COUNT; i++) {
-      if (mX >= x+(STORE_ITEM_WIDTH*i) && mX < x+(STORE_ITEM_WIDTH*(i+1))) {
-        if (mY >= y && mY <= 120) {
-          if (i < this.defenderConfigMap.size) {
-            return i;
-          }
-          return -1;
-        }
-      }
-    }
-    return -1;
-  }
 
   _getSelectedMapRowCol() {
       let y = MAP_Y;
@@ -536,7 +433,8 @@ class Game {
   _handleCollectibleClick() {
     let mX = this._scaleMouse(mouseX);
     let mY = this._scaleMouse(mouseY);
-    if ((mY >= STORE_Y+STORE_ITEM_HEIGHT) && (mX >= STORE_X)) {
+    if ((mY >= this.store.consts.YPOS+this.store.consts.ITEM_HEIGHT) &&
+        (mX >= this.store.consts.XPOS)) {
       for (let collectible of this.activeCollectibles) {
         let center_x = collectible.x_pos + (collectible.width / 2);
         let center_y = collectible.y_pos + (collectible.height / 2);
@@ -546,22 +444,10 @@ class Game {
         }
         if ((Math.abs(center_x - mX) <= hit_distance) &&
             (Math.abs(center_y - mY) <= hit_distance)) {
-          this.levelXp += collectible.xp;
+          this.currentLevel.state.money += collectible.xp;
           helper.removeFromArray(this.activeCollectibles, collectible);
           return true;
         }
-      }
-    }
-    return false;
-  }
-
-  _handleCharacterSelection() {
-    let idx = this._getSelectedStoreItemIdx();
-    if (idx != -1) {
-      if (this.levelXp >= this.defenderConfigs[idx].xp) {
-        this.state.game_state = "SELECTED";
-        this.selected = idx;
-        return true;
       }
     }
     return false;
@@ -575,17 +461,18 @@ class Game {
     if (this.map_state[row][col] != undefined) {
       return false;
     }
-    let defenderConfig = this.defenderConfigs[this.selected];
-    let defender = new Defender(game, row, col, defenderConfig.uid,
-                                defenderConfig.img,
-                                defenderConfig.hp,
-                                defenderConfig.projectile_recharge);
+    let defenderConfig = this.store.getSelectedDefenderConfig();
+    let defenderUid = this.currentLevel.config.defenders[this.store.selected];
+    let defender = new Defender(game, row, col, defenderUid,
+                                defenderConfig.imgs.idle.img,
+                                defenderConfig.startingHealth,
+                                /*projectile_recharge=*/3000);
     this.map_state[row][col] = defender
     this.activeDefenders.push(defender);
     this.defendersByRow[row].push(defender);
-    this.levelXp -= this.defenderConfigs[this.selected].xp;
+    this.currentLevel.state.money -= defenderConfig.cost;
     this.state.game_state = "NORMAL";
-    this.selected = -1;
+    this.store.selected = -1;
     return true;
   }
 
@@ -595,11 +482,12 @@ class Game {
   // FIXME: Letting off the mouse seems to count as a click which can cause
   // mispacement of defenders after clicking on a collectibel.
   mouseClicked() {
-    if ((this.state.game_state == "NORMAL") || (this.state.game_state == "SELECTED")) {
+    if ((this.state.game_state == "NORMAL") ||
+        (this.state.game_state == "SELECTED")) {
       if (this._handleCollectibleClick()) {
         return;
       }
-      if (this._handleCharacterSelection()) {
+      if (this.store.handleCharacterSelection()) {
         return;
       }
     }

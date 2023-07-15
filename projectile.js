@@ -16,7 +16,12 @@ class Projectile {
 
   draw() {
     push();
-    image(this.img, this.x_pos, this.y_pos, this.width, this.height);
+    if (this.img != null) {
+      image(this.img, this.x_pos, this.y_pos, this.width, this.height);
+    }
+    else {
+      circle(this.x_pos, this.y_pos, this.width);
+    }
     pop();
   }
 
@@ -28,7 +33,7 @@ class Projectile {
       let attacker =
           this.game._nextTo(this, attackersToTheRight, MAP_CELL_WIDTH);
       if (attacker != undefined) {
-        attacker.hit();
+        attacker.hit(this.hp);
         helper.removeFromArray(this.game.activeProjectiles, this);
         return;
       }

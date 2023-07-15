@@ -1,7 +1,7 @@
 
 // Rudimentary defender instance.
 class Defender {
-  constructor(game, row, col, uid, img, hp, recharge) {
+  constructor(game, row, col, uid, img, hp) {
     this.game = game;
     this.row = row;
     this.col = col;
@@ -12,8 +12,11 @@ class Defender {
     this.y_pos = MAP_Y + (MAP_CELL_HEIGHT * row);
     this.height = MAP_CELL_HEIGHT;
     this.width = MAP_CELL_WIDTH;
-    this.charge = recharge;
-    this.recharge = recharge;
+    let defenderConfig = this.game.config.defenders[this.uid];
+    let projectileUid = defenderConfig.projectile;
+    let projectileConfig = this.game.config.projectiles[projectileUid];
+    this.recharge = projectileConfig.reloadTimeMs;
+    this.charge = this.recharge;
     this.lastFrame = 0;
     this.frameRate = 5;
     this.spriteX = 0;
@@ -32,11 +35,13 @@ class Defender {
   update() {
     if (this.game.attackersByRow[this.row].length > 0) {
       if (this.charge == this.recharge) {
-        let defenderConfig = this.game.defenderConfigMap.get(this.uid);
+        let defenderConfig = this.game.config.defenders[this.uid];
+        let projectileUid = defenderConfig.projectile;
+        let projectileConfig = this.game.config.projectiles[projectileUid];
         let projectile = new Projectile(this.game, this.row, this.col,
-                                        defenderConfig.projectile_img,
-                                        defenderConfig.projectile_hp,
-                                        defenderConfig.projectile_speed);
+                                        projectileConfig.imgs.flying.img,
+                                        projectileConfig.damage,
+                                        projectileConfig.speed);
         this.game.activeProjectiles.push(projectile);
         this.charge = 0;
       }

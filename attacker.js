@@ -12,8 +12,8 @@ class Attacker {
     this.width = MAP_CELL_WIDTH;
   }
 
-  hit() {
-    this.hp -= 100;
+  hit(damage) {
+    this.hp -= damage;
     if (this.hp <= 0) {
       this.game.map_state[this.row][this.col] = undefined;
       helper.removeFromArray(this.game.attackersByRow[this.row], this);

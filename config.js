@@ -126,13 +126,13 @@ let pokemonGameConfig = {
   "projectiles": {
     "bolt": {
       "damage": 50,
-      "reloadTimeMs": 1000,
+      "reloadTimeMs": 300,
       "speed": 10,
     },
   },
   "defenders": {
     "pikachu": {
-      "startingHealth": 100,
+      "startingHealth": 600,
       "cost": 150,
       "restockTimeMs": 200,
       "projectile": "bolt",
