@@ -11,7 +11,7 @@ class Collectible {
     this.y_pos = 0 - MAP_CELL_HEIGHT;
     this.target_y_pos = MAP_Y + (row * MAP_CELL_HEIGHT);
     this.speed = 1;
-    this.xp = xp;
+    this.health = health;
     this.lifespan = lifespan;
   }
 

@@ -170,7 +170,7 @@ let pokemonGameConfig = {
   },
   "collectibles": {
     "raspberries": {
-      "xp": 50,
+      "health": 50,
       "lifespan": 250,
     },
   },

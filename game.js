@@ -26,17 +26,6 @@ const OVERLAY_Y = 0;
 const OVERLAY_WIDTH = 100;
 const OVERLAY_HEIGHT = 100;
 
-// A template that defines an available collectible in a game level.
-class CollectibleConfig {
-  constructor(uid, name, img, xp, lifespan) {
-    this.uid = uid;
-    this.name = name;
-    this.img = img;
-    this.xp = xp;
-    this.lifespan = lifespan;
-  }
-}
-
 // All of the game config, state, and logic lives here.
 class Game {
   constructor(expandedGameConfig) {
@@ -55,7 +44,6 @@ class Game {
     // To be retired, replaced by Level instance:
     this.levelConfig = undefined;
     // To be retired, replaced by game.config:
-    this.collectibleConfigMap = new Map();
     this.collectibleConfigs = [];
 
     // Store State
@@ -114,18 +102,8 @@ class Game {
     for (let uid of newLevelConfig.attackers) {
       this.attackerConfigs.push(gameConfig.attackers[uid]);
     }
-    this._loadCollectibleConfigForLevel(levelConfig);
-  }
-
-  _loadCollectibleConfigForLevel(levelConfig) {
-    for (let collectible of levelConfig.collectibleConfigs) {
-      let collectibleObj = new CollectibleConfig(collectible.uid,
-                                                 collectible.name,
-                                                 loadImage(collectible.img),
-                                                 collectible.xp,
-                                                 collectible.lifespan);
-      this.collectibleConfigMap.set(collectible.uid, collectibleObj);
-      this.collectibleConfigs.push(collectibleObj);
+    for (let uid of newLevelConfig.collectibles) {
+      this.collectibleConfigs.push(gameConfig.collectibles[uid]);
     }
   }
 
@@ -147,11 +125,11 @@ class Game {
   _sendCollectible() {
     let row = Math.floor(Math.random() * MAP_CELL_ROW_COUNT);
     let col = Math.floor(Math.random() * MAP_CELL_COL_COUNT);
-    let num = Math.floor(Math.random() * this.collectibleConfigMap.size);
+    let num = Math.floor(Math.random() * this.collectibleConfigs.length);
     let collectibleConfig = this.collectibleConfigs[num];
     this.activeCollectibles.push(new Collectible(game, row, col,
-                                                 collectibleConfig.img,
-                                                 collectibleConfig.xp,
+                                                 collectibleConfig.imgs.falling.img,
+                                                 collectibleConfig.health,
                                                  collectibleConfig.lifespan));
   }
 
@@ -400,7 +378,7 @@ class Game {
         }
         if ((Math.abs(center_x - mX) <= hit_distance) &&
             (Math.abs(center_y - mY) <= hit_distance)) {
-          this.currentLevel.state.money += collectible.xp;
+          this.currentLevel.state.money += collectible.health;
           helper.removeFromArray(this.activeCollectibles, collectible);
           return true;
         }
