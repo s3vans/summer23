@@ -45,7 +45,7 @@ class Store {
     let idx = this._getSelectedStoreItemIdx();
     if (idx != -1) {
       if (this.game.currentLevel.state.money >= this.defenderConfigs[idx].cost) {
-        this.game.state.game_state = "SELECTED";
+        this.game.state.gameState = "SELECTED";
         this.selected = idx;
         return true;
       }

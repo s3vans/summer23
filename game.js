@@ -35,7 +35,7 @@ class Game {
     this.state = {};
     this.state.canvas = null;
     this.state.scaleFactor = 1;
-    this.state.game_state = "NORMAL";
+    this.state.gameState = "NORMAL";
 
     // Game Level State
     this.state.currentLevelIndex = 0;
@@ -81,14 +81,6 @@ class Game {
     let yFactor = Math.max(windowHeight / yRes, minScaleFactor);
     this.state.scaleFactor =
         Math.min(maxScaleFactor, Math.min(yFactor, xFactor));
-  }
-
-  _displayError(err) {
-    console.err(err);
-    background(255);
-    fill(255, 0, 0);
-    textSize(20);
-    text(err, 10, 20);
   }
 
   loadLevel(gameConfig, levelConfig, levelIndex) {
@@ -165,7 +157,7 @@ class Game {
     for (let attacker of this.activeAttackers) {
       // Check for GAME OVER condition.
       if (attacker.x_pos < MAP_X - (MAP_CELL_WIDTH / 2)) {
-        this.state.game_state = "GAMEOVER";
+        this.state.gameState = "GAMEOVER";
         return;
       }
       attacker.update();
@@ -186,7 +178,7 @@ class Game {
 
   draw() {
     scale(this.state.scaleFactor);
-    if (this.state.game_state == "GAMEOVER") {
+    if (this.state.gameState == "GAMEOVER") {
       console.log("GAME OVER");
       push();
       const xRes = this.config.consts.xResolution;
@@ -294,7 +286,7 @@ class Game {
 
   _drawCursor() {
     push();
-    if (this.state.game_state == "NORMAL") {
+    if (this.state.gameState == "NORMAL") {
       let x = this.store.consts.XPOS;
       let y = this.store.consts.YPOS;
       for (let i = 0; i < this.store.consts.ITEM_COUNT; i++) {
@@ -305,7 +297,7 @@ class Game {
         }
         x = x + this.store.consts.ITEM_WIDTH;
       }
-    } else if (this.state.game_state == "SELECTED") {
+    } else if (this.state.gameState == "SELECTED") {
       let xpos = this.store.consts.XPOS +
           (this.store.consts.ITEM_WIDTH*this.store.selected);
       let ypos = this.store.consts.YPOS;
@@ -405,7 +397,7 @@ class Game {
     this.activeDefenders.push(defender);
     this.defendersByRow[row].push(defender);
     this.currentLevel.state.money -= defenderConfig.cost;
-    this.state.game_state = "NORMAL";
+    this.state.gameState = "NORMAL";
     this.store.selected = -1;
     return true;
   }
@@ -416,8 +408,8 @@ class Game {
   // FIXME: Letting off the mouse seems to count as a click which can cause
   // mispacement of defenders after clicking on a collectibel.
   mouseClicked() {
-    if ((this.state.game_state == "NORMAL") ||
-        (this.state.game_state == "SELECTED")) {
+    if ((this.state.gameState == "NORMAL") ||
+        (this.state.gameState == "SELECTED")) {
       if (this._handleCollectibleClick()) {
         return;
       }
@@ -425,7 +417,7 @@ class Game {
         return;
       }
     }
-    if (this.state.game_state == "SELECTED") {
+    if (this.state.gameState == "SELECTED") {
       if (this._handleCharacterPlacement()) {
         return;
       }
