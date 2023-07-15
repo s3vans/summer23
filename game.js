@@ -41,8 +41,6 @@ class Game {
     this.state.currentLevelIndex = 0;
     this.state.currentLevel = null;
 
-    // To be retired, replaced by Level instance:
-    this.levelConfig = undefined;
     // To be retired, replaced by game.config:
     this.collectibleConfigs = [];
 
@@ -83,7 +81,7 @@ class Game {
         Math.min(maxScaleFactor, Math.min(yFactor, xFactor));
   }
 
-  loadLevel(gameConfig, levelConfig, levelIndex) {
+  loadLevel(gameConfig, levelIndex) {
     let newLevelConfig = gameConfig.levels[levelIndex];
     this.currentLevelIndex = levelIndex;
     this.currentLevel = new Level(this, newLevelConfig);
@@ -100,9 +98,11 @@ class Game {
   }
 
   _sendAttacker() {
-    // TODO: Validate that there is at least one attacker in the levelConfig.
     if (attackerCnt++ > 100) {
       return;
+    }
+    if (this.attackerConfigs.length == 0) {
+      console.log("No attackers defiend for this level.");
     }
     let row = Math.floor(Math.random() * MAP_CELL_ROW_COUNT);
     let num = Math.floor(Math.random() * this.attackerConfigs.length);
