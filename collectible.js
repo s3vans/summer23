@@ -1,7 +1,7 @@
 
 // Rudimentary collectible instance.
 class Collectible {
-  constructor(game, row, col, img, xp, lifespan) {
+  constructor(game, row, col, img, health, lifespan) {
     this.game = game;
     this.state = "FALLING";
     this.height = MAP_CELL_HEIGHT / 2;
