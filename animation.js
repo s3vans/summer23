@@ -1,35 +1,3 @@
-function expandAnimationConfig(animationConfig, defaultAnimationConfig) {
-  let config = animationConfig;
-  let defaultConfig = defaultAnimationConfig;
-
-  let path = helper.getFieldDefaultConfig("path", config, defaultConfig);
-  animationConfig.path = path;
-
-  animationConfig.frameHeight =
-      helper.getFieldDefaultConfig("frameHeight", config, defaultConfig);
-
-  animationConfig.fps =
-      helper.getFieldDefaultConfig("fps", config, defaultConfig);
-
-  animationConfig.isLooping =
-      helper.getFieldDefaultConfig("isLooping", config, defaultConfig);
-  if (isLooping == null) {
-    return null;
-  }
-
-  animationConfig.img = null;
-  helper.asyncLoadImageFromPath(path)
-      .then((img) => {
-        //console.log("Loaded " + path);
-        animationConfig.img = img;
-      })
-      .catch((err) => {
-        //console.log("Error loading " + path);
-        //console.log(err);
-        animationConfig.img = null;
-      });
-}
-
 function loadAnimationFromConfig(animationConfig, defaultAnimationConfig) {
   let config = animationConfig;
   let defaultConfig = defaultAnimationConfig;
