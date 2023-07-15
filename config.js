@@ -161,6 +161,11 @@ let pokemonGameConfig = {
       "startingHealth": 200,
       "damage": 10,
       "reloadTimeMs": 10,
+      "imgs": {
+        "idle": {
+          "frameHeight": 100,
+        }
+      }
     },
   },
   "collectibles": {
@@ -172,7 +177,7 @@ let pokemonGameConfig = {
   "levels": [
     {
       "uid": "level1",
-      "startingMoney": 500,
+      "startingMoney": 1250,
       "defenders": [
           "pikachu",
           "bulbasaur",

@@ -26,17 +26,6 @@ const OVERLAY_Y = 0;
 const OVERLAY_WIDTH = 100;
 const OVERLAY_HEIGHT = 100;
 
-// A template that defines an available attacker in a game level.  Note that
-// this doesn't currently represent an active character in the game.
-class AttackerConfig {
-  constructor(uid, name, img, hp) {
-    this.uid = uid;
-    this.name = name;
-    this.img = img;
-    this.hp = hp;
-  }
-}
-
 // A template that defines an available collectible in a game level.
 class CollectibleConfig {
   constructor(uid, name, img, xp, lifespan) {
@@ -66,8 +55,6 @@ class Game {
     // To be retired, replaced by Level instance:
     this.levelConfig = undefined;
     // To be retired, replaced by game.config:
-    this.attackerConfigMap = new Map();
-    this.attackerConfigs = [];
     this.collectibleConfigMap = new Map();
     this.collectibleConfigs = [];
 
@@ -75,6 +62,7 @@ class Game {
     this.store = new Store(this);
 
     // Map State
+    this.attackerConfigs = [];
     this.attackersByRow = [];
     for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
       this.attackersByRow[row] = [];
@@ -123,18 +111,10 @@ class Game {
     for (let uid of newLevelConfig.defenders) {
       this.store.addDefenderConfig(gameConfig.defenders[uid]);
     }
-    this._loadAttackerConfigForLevel(levelConfig);
-    this._loadCollectibleConfigForLevel(levelConfig);
-  }
-
-  _loadAttackerConfigForLevel(levelConfig) {
-    for (let attacker of levelConfig.attackerConfigs) {
-      let attackerObj = new AttackerConfig(attacker.uid, attacker.name,
-                                           loadImage(attacker.img),
-                                           attacker.hp);
-      this.attackerConfigMap.set(attacker.uid, attackerObj);
-      this.attackerConfigs.push(attackerObj);
+    for (let uid of newLevelConfig.attackers) {
+      this.attackerConfigs.push(gameConfig.attackers[uid]);
     }
+    this._loadCollectibleConfigForLevel(levelConfig);
   }
 
   _loadCollectibleConfigForLevel(levelConfig) {
@@ -155,10 +135,11 @@ class Game {
       return;
     }
     let row = Math.floor(Math.random() * MAP_CELL_ROW_COUNT);
-    let num = Math.floor(Math.random() * this.attackerConfigMap.size);
+    let num = Math.floor(Math.random() * this.attackerConfigs.length);
     let attackerConfig = this.attackerConfigs[num];
     let attacker =
-        new Attacker(game, row, attackerConfig.img, attackerConfig.hp);
+        new Attacker(game, row, attackerConfig.imgs.idle,
+                     attackerConfig.startingHealth);
     this.activeAttackers.push(attacker);
     this.attackersByRow[row].push(attacker);
   }
@@ -287,8 +268,7 @@ class Game {
 
     // FIXME: Here's another hack for drawing the attackers.
     for (let attacker of this.activeAttackers) {
-      image(attacker.img, attacker.x_pos, attacker.y_pos, MAP_CELL_IMG_WIDTH,
-            MAP_CELL_IMG_HEIGHT);
+      attacker.draw();
       push();
       noStroke(); fill(255); textSize(10);
       text('HP:' + attacker.hp, attacker.x_pos+MAP_HP_XOFFSET,

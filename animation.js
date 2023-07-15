@@ -28,25 +28,7 @@ function loadAnimationFromConfig(animationConfig, defaultAnimationConfig) {
   // animation is initialized with a `null` |img| field.
   // When loading is finished, a callback will either
   // populate the |img| field or leave it as `null.
-  let animation =
-      new Animation(null, frameHeight, fps, isLooping);
-
-  // NOTE: To make it easier to read, this function is
-  // written like it returns the new animation, but we must
-  // set it manually here to avoid a race condition where
-  // the following asynchronous code tries to update the
-  // |img| field inside the animation.
-  animationConfig.img = animation;
-
-  helper.asyncLoadImageFromPath(path)
-      .then((img) => {
-        animationConfig.img.img = img;
-      })
-      .catch((err) => {
-        console.log("Error loading ", path);
-        animationConfig.img.img = null;
-      });
-  return animation;
+  return new Animation(animationConfig.img, frameHeight, fps, isLooping);
 }
 
 class Animation {
