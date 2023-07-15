@@ -63,9 +63,6 @@ class Game {
     this.state.currentLevelIndex = 0;
     this.state.currentLevel = null;
 
-    // To be retired, last value wins in config. Config can be used like maps.
-    this.state.uids = new Map();
-    this.state.err_duplicate_uid = "";
     // To be retired, replaced by Level instance:
     this.levelConfig = undefined;
     // To be retired, replaced by game.config:
@@ -116,21 +113,6 @@ class Game {
     fill(255, 0, 0);
     textSize(20);
     text(err, 10, 20);
-  }
-
-  _isUidUnique(uid) {
-    if (this.state.uids.has(uid)) {
-      this.state.err_duplicate_uid = uid;
-      return false;
-    }
-    this.state.uids.set(uid, true);
-    return true;
-  }
-
-  // Returns "" if no duplicates were encountered.
-  // Else returns the last duplicate id encountered.
-  getDuplicateUid() {
-    return this.state.err_duplicate_uid;
   }
 
   loadLevel(gameConfig, levelConfig, levelIndex) {
@@ -245,12 +227,6 @@ class Game {
 
   draw() {
     scale(this.state.scaleFactor);
-    if (this.getDuplicateUid() != "") {
-      this._displayError("Duplicate uid detected: " +
-          this.state.err_duplicate_uid);
-      noLoop();
-      return;
-    }
     if (this.state.game_state == "GAMEOVER") {
       console.log("GAME OVER");
       push();
