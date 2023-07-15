@@ -1,7 +1,8 @@
-configHelper.expandGameConfig(pokemonGameConfig);
-let game = new Game(pokemonGameConfig);
+let game;
 
 function preload() {
+  configHelper.expandGameConfig(pokemonGameConfig);
+  game = new Game(pokemonGameConfig);
   game.loadLevel(levels[0]);
 }
 
