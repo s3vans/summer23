@@ -39,7 +39,7 @@ class ConfigHelper {
     attackerConfig.consts.defaultDamage = 10;
     attackerConfig.consts.defaultReloadTimeMs = 3000;
     attackerConfig.consts.defaultFrameHeight =
-        expandedGameConfig.consts.cellRowHeight;
+        expandedGameConfig.gameMap.consts.cellHeight;
     attackerConfig.consts.defaultFps = 12;
     attackerConfig.consts.defaultIsLooping = true;
 
@@ -96,7 +96,7 @@ class ConfigHelper {
     defenderConfig.consts.defaultRestockTimeMs = 0;
     defenderConfig.consts.defaultProjectile = null;
     defenderConfig.consts.defaultFrameHeight =
-        expandedGameConfig.consts.cellRowHeight;
+        expandedGameConfig.gameMap.consts.cellHeight;
     defenderConfig.consts.defaultFps = 12;
     defenderConfig.consts.defaultIsLooping = true;
 
@@ -157,7 +157,7 @@ class ConfigHelper {
     projectileConfig.consts.defaultReloadTimeMs = 3000;
     projectileConfig.consts.defaultSpeed = 10;
     projectileConfig.consts.defaultFrameHeight =
-        expandedGameConfig.consts.cellRowHeight;
+        expandedGameConfig.gameMap.consts.cellHeight;
     projectileConfig.consts.defaultFps = 12;
     projectileConfig.consts.defaultIsLooping = true;
 
@@ -242,20 +242,6 @@ class ConfigHelper {
     }
   }
 
-  _expandMapConfig(expandedGameConfig) {
-    if (expandedGameConfig.map == undefined) {
-      expandedGameConfig.map = {};
-    }
-    expandedGameConfig.map.consts = {};
-    expandedGameConfig.map.consts.xPos = 100;
-    expandedGameConfig.map.consts.yPos = 0;
-    expandedGameConfig.map.consts.itemCount = 6;
-    expandedGameConfig.map.consts.itemWidth = 100;
-    expandedGameConfig.map.consts.itemHeight = 100;
-    expandedGameConfig.map.consts.itemImgWidth = 80;
-    expandedGameConfig.map.consts.itemImgHeight = 80;
-  }
-
   _expandStoreConfig(expandedGameConfig) {
     if (expandedGameConfig.store == undefined) {
       expandedGameConfig.store = {};
@@ -268,6 +254,24 @@ class ConfigHelper {
     expandedGameConfig.store.consts.itemHeight = 100;
     expandedGameConfig.store.consts.itemImgWidth = 80;
     expandedGameConfig.store.consts.itemImgHeight = 80;
+  }
+
+  _expandGameMapConfig(expandedGameConfig) {
+    if (expandedGameConfig.gameMap == undefined) {
+      expandedGameConfig.gameMap = {};
+    }
+    expandedGameConfig.gameMap.consts = {};
+    expandedGameConfig.gameMap.consts.xPos = 100;
+    expandedGameConfig.gameMap.consts.yPos = 100;
+    expandedGameConfig.gameMap.consts.cellColCount = 7;
+    expandedGameConfig.gameMap.consts.cellRowCount = 5;
+    expandedGameConfig.gameMap.consts.cellWidth = 100;
+    expandedGameConfig.gameMap.consts.cellHeight = 100;
+    expandedGameConfig.gameMap.consts.cellImgWidth = 100;
+    expandedGameConfig.gameMap.consts.cellImgHeight = 100;
+    expandedGameConfig.gameMap.consts.enemyQueueOffset = 50;
+    expandedGameConfig.gameMap.consts.health_xoffset = 50;
+    expandedGameConfig.gameMap.consts.health_yoffset = 100;
   }
 
   _expandLevelConfig(expandedGameConfig, rootDir, levelConfig) {
@@ -326,7 +330,8 @@ class ConfigHelper {
     }
 
     this._expandStoreConfig(gameConfig);
-    this._expandMapConfig(gameConfig);
+    // Note: Some configs below use consts from this config. Order matters.
+    this._expandGameMapConfig(gameConfig);
 
     if (gameConfig.attackers == undefined) {
       gameConfig.attackers = {};

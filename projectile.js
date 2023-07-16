@@ -5,11 +5,11 @@ class Projectile {
     this.state = "FLYING";
     this.row = row;
     this.col = col;
-    this.height = MAP_CELL_HEIGHT / 2;
-    this.width = MAP_CELL_WIDTH / 2;
+    this.height = this.game.gameMap.config.consts.cellHeight / 2;
+    this.width = this.game.gameMap.config.consts.cellWidth / 2;
     this.img = img;
-    this.x_pos = MAP_X + (col * MAP_CELL_WIDTH);
-    this.y_pos = MAP_Y + (row * MAP_CELL_HEIGHT);
+    this.x_pos = this.game.gameMap.config.consts.xPos + (col * this.game.gameMap.config.consts.cellWidth);
+    this.y_pos = this.game.gameMap.config.consts.yPos + (row * this.game.gameMap.config.consts.cellHeight);
     this.speed = speed;
     this.hp = hp;
   }
@@ -28,20 +28,20 @@ class Projectile {
   update() {
     if (this.state == "FLYING") {
       // Handle hits first.
-      let attackersToTheRight = this.game.attackersByRow[this.row]
+      let attackersToTheRight = this.game.gameMap.state.attackersByRow[this.row]
           .filter(a => a.x_pos > this.x_pos);
       let attacker =
-          this.game._nextTo(this, attackersToTheRight, MAP_CELL_WIDTH);
+          this.game._nextTo(this, attackersToTheRight, this.game.gameMap.config.consts.cellWidth);
       if (attacker != undefined) {
         attacker.hit(this.hp);
-        helper.removeFromArray(this.game.activeProjectiles, this);
+        helper.removeFromArray(this.game.gameMap.state.activeProjectiles, this);
         return;
       }
-      if (this.x_pos < game.config.consts.xResolution + MAP_CELL_WIDTH) {
+      if (this.x_pos < game.config.consts.xResolution + this.game.gameMap.config.consts.cellWidth) {
         this.x_pos += this.speed;
       } else {
         // Remove it once offscreen.
-        helper.removeFromArray(this.game.activeProjectiles, this);
+        helper.removeFromArray(this.game.gameMap.state.activeProjectiles, this);
       }
     }
   }

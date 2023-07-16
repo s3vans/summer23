@@ -4,12 +4,12 @@ class Collectible {
   constructor(game, row, col, img, health, lifespan) {
     this.game = game;
     this.state = "FALLING";
-    this.height = MAP_CELL_HEIGHT / 2;
-    this.width = MAP_CELL_WIDTH / 2;
+    this.height = this.game.gameMap.config.consts.cellHeight / 2;
+    this.width = this.game.gameMap.config.consts.cellWidth / 2;
     this.img = img;
-    this.x_pos = MAP_X + (col * MAP_CELL_WIDTH);
-    this.y_pos = 0 - MAP_CELL_HEIGHT;
-    this.target_y_pos = MAP_Y + (row * MAP_CELL_HEIGHT);
+    this.x_pos = this.game.gameMap.config.consts.xPos + (col * this.game.gameMap.config.consts.cellWidth);
+    this.y_pos = 0 - this.game.gameMap.config.consts.cellHeight;
+    this.target_y_pos = this.game.gameMap.config.consts.yPos + (row * this.game.gameMap.config.consts.cellHeight);
     this.speed = 1;
     this.health = health;
     this.lifespan = lifespan;
@@ -26,7 +26,7 @@ class Collectible {
       if (this.lifespan > 0) {
         this.lifespan -= 1;
       } else {
-        helper.removeFromArray(this.game.activeCollectibles, this);
+        helper.removeFromArray(this.game.gameMap.state.activeCollectibles, this);
       }
     }
     if (this.y_pos < this.target_y_pos) {

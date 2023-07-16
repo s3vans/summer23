@@ -9,18 +9,6 @@
 
 let attackerCnt = 0;
 
-const MAP_X = 100;
-const MAP_Y = 100;
-const MAP_CELL_COL_COUNT = 7;
-const MAP_CELL_ROW_COUNT = 5;
-const MAP_CELL_WIDTH = 100;
-const MAP_CELL_HEIGHT = 100;
-const MAP_CELL_IMG_WIDTH = 100;
-const MAP_CELL_IMG_HEIGHT = 100;
-const MAP_ENEMY_QUEUE_OFFSET = 50;
-const MAP_HP_XOFFSET = 50;
-const MAP_HP_YOFFSET = 100;
-
 const OVERLAY_X = 700;
 const OVERLAY_Y = 0;
 const OVERLAY_WIDTH = 100;
@@ -41,33 +29,9 @@ class Game {
     this.state.currentLevelIndex = 0;
     this.state.currentLevel = null;
 
-    // To be retired, replaced by game.config:
-    this.collectibleConfigs = [];
-
-    // Store State
     this.store = new Store(this, expandedGameConfig.store);
 
-    // Map State
-    this.attackerConfigs = [];
-    this.attackersByRow = [];
-    for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
-      this.attackersByRow[row] = [];
-    }
-    this.defendersByRow = [];
-    for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
-      this.defendersByRow[row] = [];
-    }
-    this.activeAttackers = [];
-    this.activeDefenders = [];
-    this.activeCollectibles = [];
-    this.activeProjectiles = [];
-    this.map_state = [];
-    for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
-      this.map_state[row] = [];
-      for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
-        this.map_state[row][col] = undefined;
-      }
-    }
+    this.gameMap = new GameMap(this, expandedGameConfig.gameMap);
   }
 
   _updateScaleFactor() {
@@ -90,10 +54,10 @@ class Game {
       this.store.addDefenderConfig(gameConfig.defenders[uid]);
     }
     for (let uid of newLevelConfig.attackers) {
-      this.attackerConfigs.push(gameConfig.attackers[uid]);
+      this.gameMap.addAttackerConfig(gameConfig.attackers[uid]);
     }
     for (let uid of newLevelConfig.collectibles) {
-      this.collectibleConfigs.push(gameConfig.collectibles[uid]);
+      this.gameMap.addCollectibleConfig(gameConfig.collectibles[uid]);
     }
   }
 
@@ -101,28 +65,11 @@ class Game {
     if (attackerCnt++ > 100) {
       return;
     }
-    if (this.attackerConfigs.length == 0) {
-      console.log("No attackers defiend for this level.");
-    }
-    let row = Math.floor(Math.random() * MAP_CELL_ROW_COUNT);
-    let num = Math.floor(Math.random() * this.attackerConfigs.length);
-    let attackerConfig = this.attackerConfigs[num];
-    let attacker =
-        new Attacker(game, row, attackerConfig.imgs.idle,
-                     attackerConfig.startingHealth);
-    this.activeAttackers.push(attacker);
-    this.attackersByRow[row].push(attacker);
+    this.gameMap.sendAttacker();
   }
 
   _sendCollectible() {
-    let row = Math.floor(Math.random() * MAP_CELL_ROW_COUNT);
-    let col = Math.floor(Math.random() * MAP_CELL_COL_COUNT);
-    let num = Math.floor(Math.random() * this.collectibleConfigs.length);
-    let collectibleConfig = this.collectibleConfigs[num];
-    this.activeCollectibles.push(new Collectible(game, row, col,
-                                                 collectibleConfig.imgs.falling.img,
-                                                 collectibleConfig.health,
-                                                 collectibleConfig.lifespan));
+    this.gameMap.sendCollectible();
   }
 
   // Return |other_character| from |characters| if |character| is within
@@ -154,26 +101,7 @@ class Game {
   }
 
   update() {
-    for (let attacker of this.activeAttackers) {
-      // Check for GAME OVER condition.
-      if (attacker.x_pos < MAP_X - (MAP_CELL_WIDTH / 2)) {
-        this.state.gameState = "GAMEOVER";
-        return;
-      }
-      attacker.update();
-    }
-
-    for (let defender of this.activeDefenders) {
-      defender.update();
-    }
-
-    for (let collectible of this.activeCollectibles) {
-      collectible.update();
-    }
-
-    for (let projectile of this.activeProjectiles) {
-      projectile.update();
-    }
+    this.gameMap.update();
   }
 
   draw() {
@@ -201,11 +129,8 @@ class Game {
       noLoop();
       return;
     }
-    this.currentLevel.draw();  // background
-    this._drawCharacters();
-    this._drawProjectiles();
-    this._drawCollectibles();
-    this._drawEffects();
+    this.currentLevel.draw();
+    this.gameMap.draw();
     this.store.draw();
     this._drawCursor(scaledMouseX, scaledMouseY);
     this._drawOverlay();
@@ -215,80 +140,9 @@ class Game {
     return pos / this.state.scaleFactor;
   }
 
-  // Draws all of the characters.
-  _drawCharacters() {
-    // FIXME: This is hacked together for drawing defenders. Attackers move and
-    // aren't aligned with the grids.
-    let y = MAP_Y;
-    for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
-      let x = MAP_X;
-      for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
-        let defender = this.map_state[row][col];
-        if (defender != undefined) {
-          image(defender.img, x, y, MAP_CELL_IMG_WIDTH, MAP_CELL_IMG_HEIGHT,
-                defender.spriteX, defender.spriteY, MAP_CELL_IMG_WIDTH,
-                MAP_CELL_IMG_HEIGHT);
-          push();
-          noStroke(); fill(255); textSize(10);
-          text('HP:' + defender.hp, x+MAP_HP_XOFFSET, y+MAP_HP_YOFFSET);
-          pop();
-        }
-        x = x + MAP_CELL_WIDTH;
-      }
-      y = y + MAP_CELL_HEIGHT;
-    }
-
-    // FIXME: Here's another hack for drawing the attackers.
-    for (let attacker of this.activeAttackers) {
-      attacker.draw();
-      push();
-      noStroke(); fill(255); textSize(10);
-      text('HP:' + attacker.hp, attacker.x_pos+MAP_HP_XOFFSET,
-           attacker.y_pos+MAP_HP_YOFFSET);
-      pop();
-    }
-  }
-
-  // This draws all of the projectiles.
-  _drawProjectiles() {
-    for (let projectile of this.activeProjectiles) {
-      projectile.draw();
-    }
-  }
-
-  // This draws all of the collectibles.
-  _drawCollectibles() {
-    for (let collectible of this.activeCollectibles) {
-      collectible.draw();
-    }
-  }
-
-  // TODO: This draws all of the overlayed effects.
-  _drawEffects() {
-  }
-
   _drawCursor(scaledMouseX, scaledMouseY) {
     this.store.drawCursor(this.state.gameState, scaledMouseX, scaledMouseY);
-    push();
-    let y = MAP_Y;
-    for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
-      let x = MAP_X;
-      for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
-        if (helper.mouseInRectangle(scaledMouseX, scaledMouseY, x, y,
-            MAP_CELL_WIDTH, MAP_CELL_HEIGHT)) {
-          if (this.map_state[row][col] == undefined) {
-            helper.highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
-                                      color(255, 255, 0, 100));
-          } else {
-            helper.highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
-                                      color(255, 0, 0, 100));
-          }
-        }
-        x = x + MAP_CELL_WIDTH;
-      }
-      y = y + MAP_CELL_HEIGHT;
-    }
-    pop();
+    this.gameMap.drawCursor(scaledMouseX, scaledMouseY);
   }
 
   // This draws all of the overlayed game info, such as XP.
@@ -306,86 +160,20 @@ class Game {
     pop();
   }
 
-  _getSelectedMapRowCol(scaledMouseX, scaledMouseY) {
-      let y = MAP_Y;
-      for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
-        let x = MAP_X;
-        for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
-          if (helper.mouseInRectangle(scaledMouseX, scaledMouseY, x, y,
-              MAP_CELL_WIDTH, MAP_CELL_HEIGHT)) {
-            return [row, col]
-          }
-          x = x + MAP_CELL_WIDTH;
-        }
-        y = y + MAP_CELL_HEIGHT;
-      }
-      return [-1, -1];
-  }
-
-  _handleCollectibleClick() {
-    let mX = this._scaleMouse(mouseX);
-    let mY = this._scaleMouse(mouseY);
-    let topOfMap =
-        this.store.config.consts.yPos + this.store.config.consts.itemHeight;
-    let leftOfMap = this.store.config.consts.xPos;
-    if ((mY >= topOfMap) && (mX >= leftOfMap)) {
-      for (let collectible of this.activeCollectibles) {
-        let center_x = collectible.x_pos + (collectible.width / 2);
-        let center_y = collectible.y_pos + (collectible.height / 2);
-        let hit_distance = collectible.width / 2;
-        if ((Math.abs(center_x - mX) <= hit_distance) &&
-            (Math.abs(center_y - mY) <= hit_distance)) {
-        }
-        if ((Math.abs(center_x - mX) <= hit_distance) &&
-            (Math.abs(center_y - mY) <= hit_distance)) {
-          this.currentLevel.state.money += collectible.health;
-          helper.removeFromArray(this.activeCollectibles, collectible);
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  _handleCharacterPlacement() {
-    let mX = this._scaleMouse(mouseX);
-    let mY = this._scaleMouse(mouseY);
-    let [row, col] = this._getSelectedMapRowCol(mX, mY);
-    if (row == -1) {
-      return false;
-    }
-    if (this.map_state[row][col] != undefined) {
-      return false;
-    }
-    let defenderConfig = this.store.getSelectedDefenderConfig();
-    let defenderUid = this.currentLevel.config.defenders[this.store.getSelected()];
-    let defender = new Defender(game, row, col, defenderUid,
-                                defenderConfig.imgs.idle.img,
-                                defenderConfig.startingHealth,
-                                /*projectile_recharge=*/3000);
-    this.map_state[row][col] = defender
-    this.activeDefenders.push(defender);
-    this.defendersByRow[row].push(defender);
-    this.currentLevel.state.money -= defenderConfig.cost;
-    this.state.gameState = "NORMAL";
-    this.store.resetSelected();
-    return true;
-  }
-
   // In NORMAL and SELECTED states, we always handle collectible clicks,
   // followed by character selection changes. Only in SELECTED do we handle
   // placing a character on the map.
   // FIXME: Letting off the mouse seems to count as a click which can cause
   // mispacement of defenders after clicking on a collectibel.
   mouseClicked() {
+    let scaledMouseX = this._scaleMouse(mouseX);
+    let scaledMouseY = this._scaleMouse(mouseY);
     if ((this.state.gameState == "NORMAL") ||
         (this.state.gameState == "SELECTED")) {
-      if (this._handleCollectibleClick()) {
+      if (this.gameMap.handleCollectibleClick(scaledMouseX, scaledMouseY)) {
         return;
       }
       let availableMoney = this.currentLevel.state.money;
-      let scaledMouseX = this._scaleMouse(mouseX);
-      let scaledMouseY = this._scaleMouse(mouseY);
       if (this.store.handleCharacterSelection(availableMoney, scaledMouseX,
           scaledMouseY)) {
         this.state.gameState = "SELECTED";
@@ -393,7 +181,7 @@ class Game {
       }
     }
     if (this.state.gameState == "SELECTED") {
-      if (this._handleCharacterPlacement()) {
+      if (this.gameMap.handleCharacterPlacement(scaledMouseX, scaledMouseY)) {
         return;
       }
     }

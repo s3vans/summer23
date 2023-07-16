@@ -20,8 +20,8 @@ class DefenderCharacter extends Character {
     super(
         game, defenderConfig,
         /*state=*/"IDLE", row, col,
-        /*x_pos=*/MAP_X + (MAP_CELL_WIDTH * col),
-        /*y_pos=*/MAP_Y + (MAP_CELL_HEIGHT * row),
+        /*x_pos=*/this.game.gameMap.config.consts.xPos + (this.game.gameMap.config.consts.cellWidth * col),
+        /*y_pos=*/this.game.gameMap.config.consts.yPos + (this.game.gameMap.config.consts.cellHeight * row),
         defenderConfig.health);
   }
 }

@@ -8,10 +8,10 @@ class Defender {
     this.uid = uid;
     this.img = img;
     this.hp = hp;
-    this.x_pos = MAP_X + (MAP_CELL_WIDTH * col);
-    this.y_pos = MAP_Y + (MAP_CELL_HEIGHT * row);
-    this.height = MAP_CELL_HEIGHT;
-    this.width = MAP_CELL_WIDTH;
+    this.x_pos = this.game.gameMap.config.consts.xPos + (this.game.gameMap.config.consts.cellWidth * col);
+    this.y_pos = this.game.gameMap.config.consts.yPos + (this.game.gameMap.config.consts.cellHeight * row);
+    this.height = this.game.gameMap.config.consts.cellHeight;
+    this.width = this.game.gameMap.config.consts.cellWidth;
     let defenderConfig = this.game.config.defenders[this.uid];
     let projectileUid = defenderConfig.projectile;
     let projectileConfig = this.game.config.projectiles[projectileUid];
@@ -26,14 +26,14 @@ class Defender {
   hit() {
     this.hp -= 1;
     if (this.hp <= 0) {
-      this.game.map_state[this.row][this.col] = undefined;
-      helper.removeFromArray(this.game.defendersByRow[this.row], this);
-      helper.removeFromArray(this.game.activeDefenders, this);
+      this.game.gameMap.state.map_state[this.row][this.col] = undefined;
+      helper.removeFromArray(this.game.gameMap.state.defendersByRow[this.row], this);
+      helper.removeFromArray(this.game.gameMap.state.activeDefenders, this);
     }
   }
 
   update() {
-    if (this.game.attackersByRow[this.row].length > 0) {
+    if (this.game.gameMap.state.attackersByRow[this.row].length > 0) {
       if (this.charge == this.recharge) {
         let defenderConfig = this.game.config.defenders[this.uid];
         let projectileUid = defenderConfig.projectile;
@@ -42,7 +42,7 @@ class Defender {
                                         projectileConfig.imgs.flying.img,
                                         projectileConfig.damage,
                                         projectileConfig.speed);
-        this.game.activeProjectiles.push(projectile);
+        this.game.gameMap.state.activeProjectiles.push(projectile);
         this.charge = 0;
       }
     }
