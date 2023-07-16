@@ -45,7 +45,7 @@ class Game {
     this.collectibleConfigs = [];
 
     // Store State
-    this.store = new Store(this);
+    this.store = new Store(this, expandedGameConfig.store);
 
     // Map State
     this.attackerConfigs = [];
@@ -285,42 +285,24 @@ class Game {
   }
 
   _drawCursor() {
+    this.store.drawCursor(this.state.gameState);
     push();
-    if (this.state.gameState == "NORMAL") {
-      let x = this.store.consts.XPOS;
-      let y = this.store.consts.YPOS;
-      for (let i = 0; i < this.store.consts.ITEM_COUNT; i++) {
-        if (this._mouseInRectangle(x, y, this.store.consts.ITEM_WIDTH,
-            this.store.consts.ITEM_HEIGHT)) {
-          this._highlightRectangle(x, y, this.store.consts.ITEM_WIDTH,
-              this.store.consts.ITEM_HEIGHT, color(255, 255, 0, 100));
-        }
-        x = x + this.store.consts.ITEM_WIDTH;
-      }
-    } else if (this.state.gameState == "SELECTED") {
-      let xpos = this.store.consts.XPOS +
-          (this.store.consts.ITEM_WIDTH*this.store.selected);
-      let ypos = this.store.consts.YPOS;
-      this._highlightRectangle(xpos, ypos, this.store.consts.ITEM_WIDTH,
-                               this.store.consts.ITEM_HEIGHT,
-                               color(0, 255, 255, 100));
-      let y = MAP_Y;
-      for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
-        let x = MAP_X;
-        for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
-          if (this._mouseInRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT)) {
-            if (this.map_state[row][col] == undefined) {
-              this._highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
-                                       color(255, 255, 0, 100));
-            } else {
-              this._highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
-                                       color(255, 0, 0, 100));
-            }
+    let y = MAP_Y;
+    for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
+      let x = MAP_X;
+      for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
+        if (this._mouseInRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT)) {
+          if (this.map_state[row][col] == undefined) {
+            this._highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
+                                     color(255, 255, 0, 100));
+          } else {
+            this._highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
+                                     color(255, 0, 0, 100));
           }
-          x = x + MAP_CELL_WIDTH;
         }
-        y = y + MAP_CELL_HEIGHT;
+        x = x + MAP_CELL_WIDTH;
       }
+      y = y + MAP_CELL_HEIGHT;
     }
     pop();
   }
@@ -359,8 +341,10 @@ class Game {
   _handleCollectibleClick() {
     let mX = this._scaleMouse(mouseX);
     let mY = this._scaleMouse(mouseY);
-    if ((mY >= this.store.consts.YPOS+this.store.consts.ITEM_HEIGHT) &&
-        (mX >= this.store.consts.XPOS)) {
+    let topOfMap =
+        this.store.config.consts.yPos + this.store.config.consts.itemHeight;
+    let leftOfMap = this.store.config.consts.xPos;
+    if ((mY >= topOfMap) && (mX >= leftOfMap)) {
       for (let collectible of this.activeCollectibles) {
         let center_x = collectible.x_pos + (collectible.width / 2);
         let center_y = collectible.y_pos + (collectible.height / 2);
@@ -388,7 +372,7 @@ class Game {
       return false;
     }
     let defenderConfig = this.store.getSelectedDefenderConfig();
-    let defenderUid = this.currentLevel.config.defenders[this.store.selected];
+    let defenderUid = this.currentLevel.config.defenders[this.store.getSelected()];
     let defender = new Defender(game, row, col, defenderUid,
                                 defenderConfig.imgs.idle.img,
                                 defenderConfig.startingHealth,
@@ -398,7 +382,7 @@ class Game {
     this.defendersByRow[row].push(defender);
     this.currentLevel.state.money -= defenderConfig.cost;
     this.state.gameState = "NORMAL";
-    this.store.selected = -1;
+    this.store.resetSelected();
     return true;
   }
 
@@ -413,7 +397,9 @@ class Game {
       if (this._handleCollectibleClick()) {
         return;
       }
-      if (this.store.handleCharacterSelection()) {
+      let availableMoney = this.currentLevel.state.money;
+      if (this.store.handleCharacterSelection(availableMoney)) {
+        this.state.gameState = "SELECTED";
         return;
       }
     }

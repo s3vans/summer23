@@ -1,35 +1,26 @@
 class Store {
-  constructor(game) {
-    this.consts = {};
-    this.consts.XPOS = 100;
-    this.consts.YPOS = 0;
-    this.consts.ITEM_COUNT = 6;
-    this.consts.ITEM_WIDTH = 100;
-    this.consts.ITEM_HEIGHT = 100;
-    this.consts.ITEM_IMG_WIDTH = 80;
-    this.consts.ITEM_IMG_HEIGHT = 80;
-
+  constructor(game, storeConfig) {
     this.game = game;
-
+    this.config = storeConfig;
     this.reset();
   };
 
   addDefenderConfig(defenderConfig) {
-    this.defenderConfigs.push(defenderConfig);
+    this.state.defenderConfigs.push(defenderConfig);
   }
 
   _getNumDefenderConfigs() {
-    return this.defenderConfigs.length;
+    return this.state.defenderConfigs.length;
   }
 
   _getSelectedStoreItemIdx() {
     let mX = this.game._scaleMouse(mouseX);
     let mY = this.game._scaleMouse(mouseY);
-    let x = this.consts.XPOS;
-    let y = this.consts.YPOS;
-    for (let i = 0; i < this.consts.ITEM_COUNT; i++) {
-      if (mX >= x+(this.consts.ITEM_WIDTH*i) &&
-          mX < x+(this.consts.ITEM_WIDTH*(i+1))) {
+    let x = this.config.consts.xPos;
+    let y = this.config.consts.yPos;
+    for (let i = 0; i < this.config.consts.itemCount; i++) {
+      if (mX >= x+(this.config.consts.itemWidth*i) &&
+          mX < x+(this.config.consts.itemWidth*(i+1))) {
         if (mY >= y && mY <= 120) {
           if (i < this._getNumDefenderConfigs()) {
             return i;
@@ -41,12 +32,20 @@ class Store {
     return -1;
   }
 
-  handleCharacterSelection() {
+  getSelected() {
+    return this.state.selected;
+  }
+
+  resetSelected() {
+    this.state.selected = -1;
+  }
+
+  handleCharacterSelection(availableMoney) {
     let idx = this._getSelectedStoreItemIdx();
     if (idx != -1) {
-      if (this.game.currentLevel.state.money >= this.defenderConfigs[idx].cost) {
-        this.game.state.gameState = "SELECTED";
-        this.selected = idx;
+      let cost = this.state.defenderConfigs[idx].cost
+      if (availableMoney >= cost) {
+        this.state.selected = idx;
         return true;
       }
     }
@@ -54,25 +53,52 @@ class Store {
   }
 
   getSelectedDefenderConfig() {
-    return this.defenderConfigs[this.selected];
+    return this.state.defenderConfigs[this.state.selected];
+  }
+
+  drawCursor(gameState) {
+    push();
+    if (gameState == "NORMAL") {
+      let x = this.config.consts.xPos;
+      let y = this.config.consts.yPos;
+      for (let i = 0; i < this.config.consts.itemCount; i++) {
+        if (this._mouseInRectangle(x, y, this.config.consts.itemWidth,
+            this.config.consts.itemHeight)) {
+          this.game._highlightRectangle(x, y, this.config.consts.itemWidth,
+                                        this.config.consts.itemHeight,
+                                        color(255, 255, 0, 100));
+        }
+        x = x + this.config.consts.itemWidth;
+      }
+    } else if (gameState == "SELECTED") {
+      let xpos = this.config.consts.xPos +
+          (this.config.consts.itemWidth*this.getSelected());
+      let ypos = this.config.consts.yPos;
+      this.game._highlightRectangle(xpos, ypos, this.config.consts.itemWidth,
+                                    this.config.consts.itemHeight,
+                                    color(0, 255, 255, 100));
+    }
+    pop();
   }
 
   draw() {
     push();
-    translate(this.consts.XPOS, this.consts.YPOS);
-    for (let i = 0; i < this.consts.ITEM_COUNT; i++) {
+    translate(this.config.consts.xPos, this.config.consts.yPos);
+    for (let i = 0; i < this.config.consts.itemCount; i++) {
        push();
        strokeWeight(1); stroke(0); fill(255);
-       rect(this.consts.ITEM_WIDTH*i, 0, this.consts.ITEM_WIDTH,
-            this.consts.ITEM_HEIGHT);
+       rect(this.config.consts.itemWidth*i, 0, this.config.consts.itemWidth,
+            this.config.consts.itemHeight);
        pop();
     }
     let x = 0;
-    for (let defenderConfig of this.defenderConfigs) {
+    for (let defenderConfig of this.state.defenderConfigs) {
        if (defenderConfig.imgs.idle.img != undefined) {
-         image(defenderConfig.imgs.idle.img, x+10, 0, this.consts.ITEM_IMG_WIDTH,
-               this.consts.ITEM_IMG_HEIGHT, 0, 0, this.consts.ITEM_IMG_WIDTH,
-               this.consts.ITEM_IMG_HEIGHT);
+         image(defenderConfig.imgs.idle.img, x+10, 0,
+               this.config.consts.itemImgWidth,
+               this.config.consts.itemImgHeight, 0, 0,
+               this.config.consts.itemImgWidth,
+               this.config.consts.itemImgHeight);
        }
        push();
        noStroke(); fill(0); textSize(10);
@@ -80,13 +106,14 @@ class Store {
        text('HP:' + defenderConfig.startingHealth, x+60, 85);
        text('XP:' + defenderConfig.cost, x+60, 95);
        pop();
-       x += this.consts.ITEM_WIDTH;
+       x += this.config.consts.itemWidth;
     }
     pop();
   }
 
   reset() {
-    this.defenderConfigs = [];
-    this.selected = -1;
+    this.state = {};
+    this.state.defenderConfigs = [];
+    this.state.selected = -1;
   }
 }

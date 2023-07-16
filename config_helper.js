@@ -242,6 +242,34 @@ class ConfigHelper {
     }
   }
 
+  _expandMapConfig(expandedGameConfig) {
+    if (expandedGameConfig.map == undefined) {
+      expandedGameConfig.map = {};
+    }
+    expandedGameConfig.map.consts = {};
+    expandedGameConfig.map.consts.xPos = 100;
+    expandedGameConfig.map.consts.yPos = 0;
+    expandedGameConfig.map.consts.itemCount = 6;
+    expandedGameConfig.map.consts.itemWidth = 100;
+    expandedGameConfig.map.consts.itemHeight = 100;
+    expandedGameConfig.map.consts.itemImgWidth = 80;
+    expandedGameConfig.map.consts.itemImgHeight = 80;
+  }
+
+  _expandStoreConfig(expandedGameConfig) {
+    if (expandedGameConfig.store == undefined) {
+      expandedGameConfig.store = {};
+    }
+    expandedGameConfig.store.consts = {};
+    expandedGameConfig.store.consts.xPos = 100;
+    expandedGameConfig.store.consts.yPos = 0;
+    expandedGameConfig.store.consts.itemCount = 6;
+    expandedGameConfig.store.consts.itemWidth = 100;
+    expandedGameConfig.store.consts.itemHeight = 100;
+    expandedGameConfig.store.consts.itemImgWidth = 80;
+    expandedGameConfig.store.consts.itemImgHeight = 80;
+  }
+
   _expandLevelConfig(expandedGameConfig, rootDir, levelConfig) {
     levelConfig.consts = {};
     levelConfig.consts.defaultStartingMoney = 0;
@@ -296,6 +324,9 @@ class ConfigHelper {
     if (gameConfig.rootDir != undefined) {
       rootDir = gameConfig.rootDir;
     }
+
+    this._expandStoreConfig(gameConfig);
+    this._expandMapConfig(gameConfig);
 
     if (gameConfig.attackers == undefined) {
       gameConfig.attackers = {};
