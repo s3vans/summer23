@@ -5,8 +5,22 @@ class Store {
     this.reset();
   };
 
+  reset() {
+    this.state = {};
+    this.state.defenderConfigs = [];
+    this.state.selected = -1;
+  }
+
   addDefenderConfig(defenderConfig) {
     this.state.defenderConfigs.push(defenderConfig);
+  }
+
+  getSelected() {
+    return this.state.selected;
+  }
+
+  resetSelected() {
+    this.state.selected = -1;
   }
 
   _getSelectedStoreItemIdx(scaledMouseX, scaledMouseY) {
@@ -28,14 +42,6 @@ class Store {
     return -1;
   }
 
-  getSelected() {
-    return this.state.selected;
-  }
-
-  resetSelected() {
-    this.state.selected = -1;
-  }
-
   handleCharacterSelection(availableMoney, scaledMouseX, scaledMouseY) {
     let idx = this._getSelectedStoreItemIdx(scaledMouseX, scaledMouseY);
     if (idx != -1) {
@@ -52,7 +58,7 @@ class Store {
     return this.state.defenderConfigs[this.state.selected];
   }
 
-  drawCursor(gameState,scaledMouseX, scaledMouseY) {
+  drawCursor(gameState, scaledMouseX, scaledMouseY) {
     push();
     if (gameState == "NORMAL") {
       let x = this.config.consts.xPos;
@@ -82,7 +88,7 @@ class Store {
     translate(this.config.consts.xPos, this.config.consts.yPos);
     for (let i = 0; i < this.config.consts.itemCount; i++) {
        push();
-       strokeWeight(1); stroke(0); fill(255);
+       strokeWeight(1); stroke(0); fill(200);
        rect(this.config.consts.itemWidth*i, 0, this.config.consts.itemWidth,
             this.config.consts.itemHeight);
        pop();
@@ -105,11 +111,5 @@ class Store {
        x += this.config.consts.itemWidth;
     }
     pop();
-  }
-
-  reset() {
-    this.state = {};
-    this.state.defenderConfigs = [];
-    this.state.selected = -1;
   }
 }
