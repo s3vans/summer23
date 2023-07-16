@@ -9,20 +9,16 @@ class Store {
     this.state.defenderConfigs.push(defenderConfig);
   }
 
-  _getNumDefenderConfigs() {
-    return this.state.defenderConfigs.length;
-  }
-
-  _getSelectedStoreItemIdx() {
-    let mX = this.game._scaleMouse(mouseX);
-    let mY = this.game._scaleMouse(mouseY);
+  _getSelectedStoreItemIdx(scaledMouseX, scaledMouseY) {
+    let mX = scaledMouseX;
+    let mY = scaledMouseY;
     let x = this.config.consts.xPos;
     let y = this.config.consts.yPos;
     for (let i = 0; i < this.config.consts.itemCount; i++) {
       if (mX >= x+(this.config.consts.itemWidth*i) &&
           mX < x+(this.config.consts.itemWidth*(i+1))) {
         if (mY >= y && mY <= 120) {
-          if (i < this._getNumDefenderConfigs()) {
+          if (i < this.state.defenderConfigs.length) {
             return i;
           }
           return -1;
@@ -40,8 +36,8 @@ class Store {
     this.state.selected = -1;
   }
 
-  handleCharacterSelection(availableMoney) {
-    let idx = this._getSelectedStoreItemIdx();
+  handleCharacterSelection(availableMoney, scaledMouseX, scaledMouseY) {
+    let idx = this._getSelectedStoreItemIdx(scaledMouseX, scaledMouseY);
     if (idx != -1) {
       let cost = this.state.defenderConfigs[idx].cost
       if (availableMoney >= cost) {
@@ -56,17 +52,17 @@ class Store {
     return this.state.defenderConfigs[this.state.selected];
   }
 
-  drawCursor(gameState) {
+  drawCursor(gameState,scaledMouseX, scaledMouseY) {
     push();
     if (gameState == "NORMAL") {
       let x = this.config.consts.xPos;
       let y = this.config.consts.yPos;
       for (let i = 0; i < this.config.consts.itemCount; i++) {
-        if (this._mouseInRectangle(x, y, this.config.consts.itemWidth,
-            this.config.consts.itemHeight)) {
-          this.game._highlightRectangle(x, y, this.config.consts.itemWidth,
-                                        this.config.consts.itemHeight,
-                                        color(255, 255, 0, 100));
+        if (helper.mouseInRectangle(scaledMouseX, scaledMouseY, x, y,
+            this.config.consts.itemWidth, this.config.consts.itemHeight)) {
+          helper.highlightRectangle(x, y, this.config.consts.itemWidth,
+                                    this.config.consts.itemHeight,
+                                    color(255, 255, 0, 100));
         }
         x = x + this.config.consts.itemWidth;
       }
@@ -74,9 +70,9 @@ class Store {
       let xpos = this.config.consts.xPos +
           (this.config.consts.itemWidth*this.getSelected());
       let ypos = this.config.consts.yPos;
-      this.game._highlightRectangle(xpos, ypos, this.config.consts.itemWidth,
-                                    this.config.consts.itemHeight,
-                                    color(0, 255, 255, 100));
+      helper.highlightRectangle(xpos, ypos, this.config.consts.itemWidth,
+                                this.config.consts.itemHeight,
+                                color(0, 255, 255, 100));
     }
     pop();
   }

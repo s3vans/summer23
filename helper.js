@@ -1,6 +1,25 @@
 class Helper {
   constructor() { }
 
+  mouseInRectangle(scaledMouseX, scaledMouseY, x, y, width, height) {
+    let mX = scaledMouseX;
+    let mY = scaledMouseY;
+    if (mX < x || mX > x+width) {
+      return false;
+    }
+    if (mY < y || mY > y+height) {
+      return false;
+    }
+    return true;
+  }
+
+  highlightRectangle(x, y, width, height, color, transparency) {
+    push();
+    fill(color);
+    rect(x, y, width, height);
+    pop();
+  }
+
   removeFromArray(arr, elem) {
     const index = arr.indexOf(elem);
     if (index != -1) {

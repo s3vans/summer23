@@ -178,6 +178,8 @@ class Game {
 
   draw() {
     scale(this.state.scaleFactor);
+    let scaledMouseX = this._scaleMouse(mouseX);
+    let scaledMouseY = this._scaleMouse(mouseY);
     if (this.state.gameState == "GAMEOVER") {
       console.log("GAME OVER");
       push();
@@ -205,7 +207,7 @@ class Game {
     this._drawCollectibles();
     this._drawEffects();
     this.store.draw();
-    this._drawCursor();
+    this._drawCursor(scaledMouseX, scaledMouseY);
     this._drawOverlay();
   }
 
@@ -265,39 +267,21 @@ class Game {
   _drawEffects() {
   }
 
-  _mouseInRectangle(x, y, width, height) {
-    let mX = this._scaleMouse(mouseX);
-    let mY = this._scaleMouse(mouseY);
-    if (mX < x || mX > x+width) {
-      return false;
-    }
-    if (mY < y || mY > y+height) {
-      return false;
-    }
-    return true;
-  }
-
-  _highlightRectangle(x, y, width, height, color, transparency) {
-    push();
-    fill(color);
-    rect(x, y, width, height);
-    pop();
-  }
-
-  _drawCursor() {
-    this.store.drawCursor(this.state.gameState);
+  _drawCursor(scaledMouseX, scaledMouseY) {
+    this.store.drawCursor(this.state.gameState, scaledMouseX, scaledMouseY);
     push();
     let y = MAP_Y;
     for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
       let x = MAP_X;
       for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
-        if (this._mouseInRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT)) {
+        if (helper.mouseInRectangle(scaledMouseX, scaledMouseY, x, y,
+            MAP_CELL_WIDTH, MAP_CELL_HEIGHT)) {
           if (this.map_state[row][col] == undefined) {
-            this._highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
-                                     color(255, 255, 0, 100));
+            helper.highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
+                                      color(255, 255, 0, 100));
           } else {
-            this._highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
-                                     color(255, 0, 0, 100));
+            helper.highlightRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT,
+                                      color(255, 0, 0, 100));
           }
         }
         x = x + MAP_CELL_WIDTH;
@@ -322,13 +306,13 @@ class Game {
     pop();
   }
 
-
-  _getSelectedMapRowCol() {
+  _getSelectedMapRowCol(scaledMouseX, scaledMouseY) {
       let y = MAP_Y;
       for (let row = 0; row < MAP_CELL_ROW_COUNT; row++) {
         let x = MAP_X;
         for (let col = 0; col < MAP_CELL_COL_COUNT; col++) {
-          if (this._mouseInRectangle(x, y, MAP_CELL_WIDTH, MAP_CELL_HEIGHT)) {
+          if (helper.mouseInRectangle(scaledMouseX, scaledMouseY, x, y,
+              MAP_CELL_WIDTH, MAP_CELL_HEIGHT)) {
             return [row, col]
           }
           x = x + MAP_CELL_WIDTH;
@@ -364,7 +348,9 @@ class Game {
   }
 
   _handleCharacterPlacement() {
-    let [row, col] = this._getSelectedMapRowCol();
+    let mX = this._scaleMouse(mouseX);
+    let mY = this._scaleMouse(mouseY);
+    let [row, col] = this._getSelectedMapRowCol(mX, mY);
     if (row == -1) {
       return false;
     }
@@ -398,7 +384,10 @@ class Game {
         return;
       }
       let availableMoney = this.currentLevel.state.money;
-      if (this.store.handleCharacterSelection(availableMoney)) {
+      let scaledMouseX = this._scaleMouse(mouseX);
+      let scaledMouseY = this._scaleMouse(mouseY);
+      if (this.store.handleCharacterSelection(availableMoney, scaledMouseX,
+          scaledMouseY)) {
         this.state.gameState = "SELECTED";
         return;
       }
