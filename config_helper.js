@@ -323,6 +323,10 @@ class ConfigHelper {
     gameConfig.consts.yResolution = 600;
     gameConfig.consts.minScaleFactor = .5;
     gameConfig.consts.maxScaleFactor = 3;
+    gameConfig.consts.overlayX = 700;
+    gameConfig.consts.overlayY = 0;
+    gameConfig.consts.overlayWidth = 100;
+    gameConfig.consts.overlayHeight = 100;
 
     let rootDir = "";
     if (gameConfig.rootDir != undefined) {

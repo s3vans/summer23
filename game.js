@@ -9,11 +9,6 @@
 
 let attackerCnt = 0;
 
-const OVERLAY_X = 700;
-const OVERLAY_Y = 0;
-const OVERLAY_WIDTH = 100;
-const OVERLAY_HEIGHT = 100;
-
 class Game {
   constructor(expandedGameConfig) {
     this.config = expandedGameConfig;
@@ -122,13 +117,17 @@ class Game {
 
   // This draws all of the overlayed game info, such as XP.
   _drawOverlay() {
+    const overlayX = this.config.consts.overlayX;
+    const overlayY = this.config.consts.overlayY;
+    const overlayWidth = this.config.consts.overlayWidth;
+    const overlayHeight = this.config.consts.overlayHeight;
     push();
-    translate(OVERLAY_X, OVERLAY_Y);
+    translate(overlayX, overlayY);
     fill(0, 0, 0, 100);
-    rect(0, 0, OVERLAY_WIDTH, OVERLAY_HEIGHT);
+    rect(0, 0, overlayWidth, overlayHeight);
     pop();
     push();
-    translate(OVERLAY_X+20, OVERLAY_Y+30);
+    translate(overlayX+20, overlayY+30);
     fill(255); strokeWeight(1); stroke(255); textSize(16);
     text(this.levelName, 0, 0);
     text("XP: " + this.currentLevel.state.money, 0, 24);
