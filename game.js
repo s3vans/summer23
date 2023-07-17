@@ -14,7 +14,6 @@ const OVERLAY_Y = 0;
 const OVERLAY_WIDTH = 100;
 const OVERLAY_HEIGHT = 100;
 
-// All of the game config, state, and logic lives here.
 class Game {
   constructor(expandedGameConfig) {
     this.config = expandedGameConfig;
@@ -26,11 +25,11 @@ class Game {
   resetState() {
     this.state = {};
     this.state.scaleFactor = 1;
+    this._updateScaleFactor();
     this.state.gameState = "NORMAL";
     this.state.currentLevelIndex = 0;
     this.state.currentLevel = null;
     this.state.lastClickTime = 0;
-    this._updateScaleFactor();
   }
 
   loadLevel(levelIndex) {
@@ -44,8 +43,12 @@ class Game {
     this.currentLevel = new Level(this, levelConfig);
 
     this.store.addDefenderConfigs(levelConfig.defenders, gameConfig.defenders);
-    this.gameMap.addAttackerConfigs(levelConfig.attackers, gameConfig.attackers);
-    this.gameMap.addCollectibleConfigs(levelConfig.collectibles, gameConfig.collectibles);
+
+    this.gameMap.addAttackerConfigs(levelConfig.attackers,
+                                    gameConfig.attackers);
+
+    this.gameMap.addCollectibleConfigs(levelConfig.collectibles,
+                                       gameConfig.collectibles);
   }
 
   _updateScaleFactor() {
@@ -90,24 +93,26 @@ class Game {
     this.gameMap.update();
   }
 
-  draw() {
-    scale(this.state.scaleFactor);
-    const scaledMouseX = this._scaleMouse(mouseX);
-    const scaledMouseY = this._scaleMouse(mouseY);
-    if (this.state.gameState == "GAMEOVER") {
-      this._drawGameOver();
-      noLoop();
-      return;
-    }
-    this.currentLevel.draw();
-    this.gameMap.draw();
-    this.store.draw();
-    this._drawCursor(scaledMouseX, scaledMouseY);
-    this._drawOverlay();
-  }
-
   _scaleMouse(pos) {
     return pos / this.state.scaleFactor;
+  }
+
+  _drawGameOver() {
+    console.log("GAME OVER");
+    push();
+    const xRes = this.config.consts.xResolution;
+    const yRes = this.config.consts.yResolution;
+    translate(xRes/2, yRes/2);
+    stroke(0); fill(255);
+    rectMode(CENTER);
+    let goW = 400;
+    let goH = 90;
+    rect(0, 0, goW, goH);
+    rect(0, 0, goW-6, goH-6);
+    strokeWeight(1); stroke(0); fill(0);
+    textSize(24); textAlign(CENTER, CENTER);
+    text("G A M E     O V E R\n(っ◡︵◡ς)", 0, 0);
+    pop();
   }
 
   _drawCursor(scaledMouseX, scaledMouseY) {
@@ -130,36 +135,41 @@ class Game {
     pop();
   }
 
-  _drawGameOver() {
-    console.log("GAME OVER");
-    push();
-    const xRes = this.config.consts.xResolution;
-    const yRes = this.config.consts.yResolution;
-    translate(xRes/2, yRes/2);
-    stroke(0); fill(255);
-    rectMode(CENTER);
-    let goW = 400;
-    let goH = 90;
-    rect(0, 0, goW, goH);
-    rect(0, 0, goW-6, goH-6);
-    strokeWeight(1); stroke(0); fill(0);
-    textSize(24); textAlign(CENTER, CENTER);
-    text("G A M E     O V E R\n(っ◡︵◡ς)", 0, 0);
-    pop();
+  draw() {
+    scale(this.state.scaleFactor);
+    const scaledMouseX = this._scaleMouse(mouseX);
+    const scaledMouseY = this._scaleMouse(mouseY);
+    if (this.state.gameState == "GAMEOVER") {
+      this._drawGameOver();
+      noLoop();
+      return;
+    }
+    this.currentLevel.draw();
+    this.gameMap.draw();
+    this.store.draw();
+    this._drawCursor(scaledMouseX, scaledMouseY);
+    this._drawOverlay();
+  }
+
+  // Debounce mouse clicks within 30ms. We treat 'touch ended' as a mouse
+  // click, which resulted in two clicks without this debounce.
+  // Returns true if debounced, else false.
+  _debounceClick() {
+    const now = new Date().getTime();
+    if (now <= this.state.lastClickTime + 30) {
+      return true;
+    }
+    this.state.lastClickTime = now;
+    return false;
   }
 
   // In NORMAL and SELECTED states, we always handle collectible clicks,
   // followed by character selection changes. Only in SELECTED do we handle
   // placing a character on the map.
   mouseClicked() {
-    // Debounce mouse clicks within 30ms. We treat 'touch ended' as a mouse
-    // click, which resulted in two clicks without this debounce.
-    const now = new Date().getTime();
-    console.log(now, this.state.lastClickTime);
-    if (now <= this.state.lastClickTime + 30) {
+    if (this._debounceClick()) {
       return;
     }
-    this.state.lastClickTime = now;
 
     let scaledMouseX = this._scaleMouse(mouseX);
     let scaledMouseY = this._scaleMouse(mouseY);
