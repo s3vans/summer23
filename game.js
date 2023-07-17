@@ -29,6 +29,7 @@ class Game {
     this.state.gameState = "NORMAL";
     this.state.currentLevelIndex = 0;
     this.state.currentLevel = null;
+    this.state.lastClickTime = 0;
     this._updateScaleFactor();
   }
 
@@ -150,9 +151,16 @@ class Game {
   // In NORMAL and SELECTED states, we always handle collectible clicks,
   // followed by character selection changes. Only in SELECTED do we handle
   // placing a character on the map.
-  // FIXME: Letting off the mouse seems to count as a click which can cause
-  // mispacement of defenders after clicking on a collectibel.
   mouseClicked() {
+    // Debounce mouse clicks within 30ms. We treat 'touch ended' as a mouse
+    // click, which resulted in two clicks without this debounce.
+    const now = new Date().getTime();
+    console.log(now, this.state.lastClickTime);
+    if (now <= this.state.lastClickTime + 30) {
+      return;
+    }
+    this.state.lastClickTime = now;
+
     let scaledMouseX = this._scaleMouse(mouseX);
     let scaledMouseY = this._scaleMouse(mouseY);
     if ((this.state.gameState == "NORMAL") ||
