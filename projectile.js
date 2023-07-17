@@ -31,7 +31,7 @@ class Projectile {
       let attackersToTheRight = this.game.gameMap.state.attackersByRow[this.row]
           .filter(a => a.x_pos > this.x_pos);
       let attacker =
-          this.game._nextTo(this, attackersToTheRight, this.game.gameMap.config.consts.cellWidth);
+          helper.nextTo(this, attackersToTheRight, this.game.gameMap.config.consts.cellWidth);
       if (attacker != undefined) {
         attacker.hit(this.hp);
         helper.removeFromArray(this.game.gameMap.state.activeProjectiles, this);

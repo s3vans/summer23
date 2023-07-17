@@ -39,7 +39,7 @@ class Attacker {
     let defendersToTheLeft = this.game.gameMap.state.defendersByRow[this.row]
         .filter(a => a.x_pos < this.x_pos);
     let defender =
-        this.game._nextTo(this, defendersToTheLeft, this.game.gameMap.config.consts.cellWidth);
+        helper.nextTo(this, defendersToTheLeft, this.game.gameMap.config.consts.cellWidth);
     if (defender != undefined) {
       defender.hit();
       return;
@@ -48,8 +48,8 @@ class Attacker {
     // Stand back if next to another attacker.
     let attackersToTheLeft = this.game.gameMap.state.attackersByRow[this.row]
         .filter(a => a.x_pos < this.x_pos);
-    let other_attacker = this.game._nextTo(this, attackersToTheLeft,
-                                           this.game.gameMap.config.consts.enemeyQueueOffset);
+    let other_attacker = helper.nextTo(this, attackersToTheLeft,
+                                       this.game.gameMap.config.consts.enemeyQueueOffset);
 
     if (other_attacker != undefined) {
       return;

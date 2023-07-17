@@ -7,7 +7,7 @@ function preload() {
 
 function setup() {
   game.setup();
-  game.loadLevel(pokemonGameConfig, 0);
+  game.loadLevel(0);
 }
 
 function draw() {

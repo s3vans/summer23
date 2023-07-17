@@ -11,8 +11,9 @@ class Level {
   draw() {
     push();
     background(0);
-    const xRes = this.game.config.consts.xResolution;
-    const yRes = this.game.config.consts.yResolution;
+    let xRes = this.game.config.consts.xResolution;
+    let yRes = this.game.config.consts.yResolution;
+    console.log("DRAW LEVEL", xRes, yRes);
     image(this.state.img, 0, 0, xRes, yRes);
     pop();
   }

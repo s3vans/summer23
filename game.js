@@ -18,20 +18,33 @@ const OVERLAY_HEIGHT = 100;
 class Game {
   constructor(expandedGameConfig) {
     this.config = expandedGameConfig;
+    this.resetState();
+    this.store = new Store(this, expandedGameConfig.store);
+    this.gameMap = new GameMap(this, expandedGameConfig.gameMap);
+  }
 
-    // General state
+  resetState() {
     this.state = {};
-    this.state.canvas = null;
     this.state.scaleFactor = 1;
     this.state.gameState = "NORMAL";
-
-    // Game Level State
     this.state.currentLevelIndex = 0;
     this.state.currentLevel = null;
+    this._updateScaleFactor();
+  }
 
-    this.store = new Store(this, expandedGameConfig.store);
+  loadLevel(levelIndex) {
+    this.resetState();
+    this.store.reset();
+    this.gameMap.reset();
 
-    this.gameMap = new GameMap(this, expandedGameConfig.gameMap);
+    let gameConfig = this.config;
+    let levelConfig = gameConfig.levels[levelIndex];
+    this.currentLevelIndex = levelIndex;
+    this.currentLevel = new Level(this, levelConfig);
+
+    this.store.addDefenderConfigs(levelConfig.defenders, gameConfig.defenders);
+    this.gameMap.addAttackerConfigs(levelConfig.attackers, gameConfig.attackers);
+    this.gameMap.addCollectibleConfigs(levelConfig.collectibles, gameConfig.collectibles);
   }
 
   _updateScaleFactor() {
@@ -39,26 +52,18 @@ class Game {
     const yRes = this.config.consts.yResolution;
     const minScaleFactor = this.config.consts.minScaleFactor;
     const maxScaleFactor = this.config.consts.maxScaleFactor;
-    let xFactor = Math.max(windowWidth / xRes, minScaleFactor);
-    let yFactor = Math.max(windowHeight / yRes, minScaleFactor);
-    this.state.scaleFactor =
-        Math.min(maxScaleFactor, Math.min(yFactor, xFactor));
+
+    const xFactor = Math.max(windowWidth / xRes, minScaleFactor);
+    const yFactor = Math.max(windowHeight / yRes, minScaleFactor);
+    const smallerFactor = Math.min(yFactor, xFactor);
+    this.state.scaleFactor = Math.min(smallerFactor, maxScaleFactor);
   }
 
-  loadLevel(gameConfig, levelIndex) {
-    let newLevelConfig = gameConfig.levels[levelIndex];
-    this.currentLevelIndex = levelIndex;
-    this.currentLevel = new Level(this, newLevelConfig);
-
-    for (let uid of newLevelConfig.defenders) {
-      this.store.addDefenderConfig(gameConfig.defenders[uid]);
-    }
-    for (let uid of newLevelConfig.attackers) {
-      this.gameMap.addAttackerConfig(gameConfig.attackers[uid]);
-    }
-    for (let uid of newLevelConfig.collectibles) {
-      this.gameMap.addCollectibleConfig(gameConfig.collectibles[uid]);
-    }
+  _getScaledResolution() {
+    this._updateScaleFactor();
+    const scaledResX = this.config.consts.xResolution * this.state.scaleFactor;
+    const scaledResY = this.config.consts.yResolution * this.state.scaleFactor;
+    return [scaledResX, scaledResY];
   }
 
   _sendAttacker() {
@@ -72,30 +77,10 @@ class Game {
     this.gameMap.sendCollectible();
   }
 
-  // Return |other_character| from |characters| if |character| is within
-  // |distance| as measured between their centers, else return undefined.
-  //
-  // We use the center of the characters to avoid dealing with edges.
-  _nextTo(character, characters, distance) {
-    for (let other of characters) {
-      if (other == character) {
-        continue;
-      }
-      let C = (character.x_pos + (character.x_pos+character.width)) / 2;
-      let CO = (other.x_pos + (other.x_pos+other.width)) / 2;
-      if (Math.abs(C - CO) <= distance) {
-        return other;
-      }
-    }
-    return undefined;
-  }
-
   setup() {
-    this._updateScaleFactor();
-    const xRes = this.config.consts.xResolution;
-    const yRes = this.config.consts.yResolution;
-    this.state.canvas =
-        createCanvas(xRes*this.state.scaleFactor, yRes*this.state.scaleFactor);
+    const [scaledResX, scaledResY] = this._getScaledResolution();
+    createCanvas(scaledResX, scaledResY);
+
     setInterval(() => { this._sendAttacker(); }, 5000);
     setInterval(() => { this._sendCollectible(); }, 6000);
   }
@@ -106,26 +91,10 @@ class Game {
 
   draw() {
     scale(this.state.scaleFactor);
-    let scaledMouseX = this._scaleMouse(mouseX);
-    let scaledMouseY = this._scaleMouse(mouseY);
+    const scaledMouseX = this._scaleMouse(mouseX);
+    const scaledMouseY = this._scaleMouse(mouseY);
     if (this.state.gameState == "GAMEOVER") {
-      console.log("GAME OVER");
-      push();
-      const xRes = this.config.consts.xResolution;
-      const yRes = this.config.consts.yResolution;
-      translate(xRes/2, yRes/2);
-      stroke(0); fill(255);
-      rectMode(CENTER);
-      //let goW = 300;
-      //let goH = 70;
-      let goW = 400;
-      let goH = 90;
-      rect(0, 0, goW, goH);
-      rect(0, 0, goW-6, goH-6);
-      strokeWeight(1); stroke(0); fill(0);
-      textSize(24); textAlign(CENTER, CENTER);
-      text("G A M E     O V E R\n(っ◡︵◡ς)", 0, 0);
-      pop();
+      this._drawGameOver();
       noLoop();
       return;
     }
@@ -160,6 +129,24 @@ class Game {
     pop();
   }
 
+  _drawGameOver() {
+    console.log("GAME OVER");
+    push();
+    const xRes = this.config.consts.xResolution;
+    const yRes = this.config.consts.yResolution;
+    translate(xRes/2, yRes/2);
+    stroke(0); fill(255);
+    rectMode(CENTER);
+    let goW = 400;
+    let goH = 90;
+    rect(0, 0, goW, goH);
+    rect(0, 0, goW-6, goH-6);
+    strokeWeight(1); stroke(0); fill(0);
+    textSize(24); textAlign(CENTER, CENTER);
+    text("G A M E     O V E R\n(っ◡︵◡ς)", 0, 0);
+    pop();
+  }
+
   // In NORMAL and SELECTED states, we always handle collectible clicks,
   // followed by character selection changes. Only in SELECTED do we handle
   // placing a character on the map.
@@ -189,10 +176,7 @@ class Game {
   }
 
   windowResized() {
-    // TODO: Is there a resize for this.state.canvas?
-    this._updateScaleFactor();
-    const xRes = this.config.consts.xResolution;
-    const yRes = this.config.consts.yResolution;
-    resizeCanvas(xRes*this.state.scaleFactor, yRes*this.state.scaleFactor);
+    const [scaledResX, scaledResY] = this._getScaledResolution();
+    resizeCanvas(scaledResX, scaledResY);
   }
 }

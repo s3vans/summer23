@@ -11,8 +11,10 @@ class Store {
     this.state.selected = -1;
   }
 
-  addDefenderConfig(defenderConfig) {
-    this.state.defenderConfigs.push(defenderConfig);
+  addDefenderConfigs(levelDefenders, gameDefenders) {
+    for (let uid of levelDefenders) {
+      this.state.defenderConfigs.push(gameDefenders[uid]);
+    }
   }
 
   getSelected() {

@@ -30,12 +30,16 @@ class GameMap {
     this.state.collectibleConfigs = [];
   }
 
-  addAttackerConfig(attackerConfig) {
-    this.state.attackerConfigs.push(attackerConfig);
+  addAttackerConfigs(levelAttackers, gameAttackers) {
+    for (let uid of levelAttackers) {
+      this.state.attackerConfigs.push(gameAttackers[uid]);
+    }
   }
 
-  addCollectibleConfig(collectibleConfig) {
-    this.state.collectibleConfigs.push(collectibleConfig);
+  addCollectibleConfigs(levelCollectibles, gameCollectibles) {
+    for (let uid of levelCollectibles) {
+      this.state.collectibleConfigs.push(gameCollectibles[uid]);
+    }
   }
 
   sendAttacker() {

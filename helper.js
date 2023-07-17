@@ -20,6 +20,24 @@ class Helper {
     pop();
   }
 
+  // Return |other_character| from |characters| if |character| is within
+  // |distance| as measured between their centers, else return undefined.
+  //
+  // We use the center of the characters to avoid dealing with edges.
+  nextTo(character, characters, distance) {
+    for (let other of characters) {
+      if (other == character) {
+        continue;
+      }
+      let C = (character.x_pos + (character.x_pos+character.width)) / 2;
+      let CO = (other.x_pos + (other.x_pos+other.width)) / 2;
+      if (Math.abs(C - CO) <= distance) {
+        return other;
+      }
+    }
+    return undefined;
+  }
+
   removeFromArray(arr, elem) {
     const index = arr.indexOf(elem);
     if (index != -1) {
