@@ -47,7 +47,7 @@ class Animation {
     this.isDone = false;
   }
 
-  update(deltaT) {
+  update() {
     if (this.img == null) {
       return;
     }

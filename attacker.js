@@ -30,7 +30,7 @@ class Attacker {
   }
 
   update(deltaT) {
-    this.animation.update(deltaT);
+    this.animation.update();
 
     // Order is important here. If we check for attack after we check for
     // neighboring attacker, then we stop hitting.

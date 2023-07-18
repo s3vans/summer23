@@ -122,7 +122,7 @@ class GameMap {
     let defenderConfig = game.store.getSelectedDefenderConfig();
     let defenderUid = game.currentLevel.config.defenders[game.store.getSelected()];
     let defender = new Defender(game, row, col, defenderUid,
-                                defenderConfig.imgs.idle.img,
+                                defenderConfig.imgs.idle,
                                 defenderConfig.startingHealth,
                                 /*projectile_recharge=*/3000);
     this.state.map_state[row][col] = defender
@@ -159,25 +159,8 @@ class GameMap {
 
   // Draws all of the characters.
   _drawCharacters(deltaT) {
-    // FIXME: This is hacked together for drawing defenders. Attackers move and
-    // aren't aligned with the grids.
-    let y = this.config.consts.yPos;
-    for (let row = 0; row < this.config.consts.cellRowCount; row++) {
-      let x = this.config.consts.xPos;
-      for (let col = 0; col < this.config.consts.cellColCount; col++) {
-        let defender = this.state.map_state[row][col];
-        if (defender != undefined) {
-          image(defender.img, x, y, this.config.consts.cellImgWidth, this.config.consts.cellImgHeight,
-                defender.spriteX, defender.spriteY, this.config.consts.cellImgWidth,
-                this.config.consts.cellImgHeight);
-          push();
-          noStroke(); fill(255); textSize(10);
-          text('Health:' + defender.hp, x+this.config.consts.health_xoffset, y+this.config.consts.health_yoffset);
-          pop();
-        }
-        x = x + this.config.consts.cellWidth;
-      }
-      y = y + this.config.consts.cellHeight;
+    for (let defender of this.state.activeDefenders) {
+      defender.draw(deltaT);
     }
 
     // FIXME: Here's another hack for drawing the attackers.

@@ -28,12 +28,15 @@ class Game {
   }
 
   loadLevel(levelIndex) {
+    // TODO: Consider that we don't really want to reset all Game state.
     this.resetState();
+
     this.store.reset();
     this.gameMap.reset();
 
     let gameConfig = this.config;
     let levelConfig = gameConfig.levels[levelIndex];
+
     this.currentLevelIndex = levelIndex;
     this.currentLevel = new Level(this, levelConfig);
 
@@ -139,15 +142,24 @@ class Game {
     scale(this.state.scaleFactor);
     const scaledMouseX = this._scaleMouse(mouseX);
     const scaledMouseY = this._scaleMouse(mouseY);
+
     if (this.state.gameState == "GAMEOVER") {
       this._drawGameOver();
       noLoop();
       return;
     }
+
+    // Draws background.
     this.currentLevel.draw(deltaTime);
-    this.gameMap.draw(deltaTime);
+
+    // Draws the store at the top.
     this.store.draw(deltaTime);
+
+    // Draws characters, projectiles, collectibles, and effects.
+    this.gameMap.draw(deltaTime);
+
     this._drawCursor(scaledMouseX, scaledMouseY);
+
     this._drawOverlay();
   }
 
