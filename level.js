@@ -5,15 +5,20 @@ class Level {
     this.game = game;
     this.state = {};
     this.state.money = this.config.startingMoney;
-    this.state.img = this.config.imgs.background.img;
+    this.state.background =
+        loadAnimationFromConfig(this.config.imgs.background);
   }
 
-  draw() {
+  update(deltaT) {
+    this.state.background.update(deltaT);
+  }
+
+  draw(delta) {
     push();
     background(0);
     let xRes = this.game.config.consts.xResolution;
     let yRes = this.game.config.consts.yResolution;
-    image(this.state.img, 0, 0, xRes, yRes);
+    this.state.background.draw(0, 0, xRes, yRes);
     pop();
   }
 };

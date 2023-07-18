@@ -25,12 +25,12 @@ class Attacker {
     }
   }
 
-  draw() {
-    this.animation.draw(deltaTime, this.x_pos, this.y_pos, this.width, this.height);
+  draw(deltaT) {
+    this.animation.draw(this.x_pos, this.y_pos, this.width, this.height);
   }
 
-  update() {
-    this.animation.update();
+  update(deltaT) {
+    this.animation.update(deltaT);
 
     // Order is important here. If we check for attack after we check for
     // neighboring attacker, then we stop hitting.

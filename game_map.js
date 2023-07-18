@@ -134,14 +134,14 @@ class GameMap {
     return true;
   }
 
-  update() {
+  update(deltaT) {
     for (let attacker of this.state.activeAttackers) {
       // Check for GAME OVER condition.
       if (attacker.x_pos < this.config.consts.xPos - (this.config.consts.cellWidth / 2)) {
         game.state.gameState = "GAMEOVER";
         return;
       }
-      attacker.update();
+      attacker.update(deltaT);
     }
 
     for (let defender of this.state.activeDefenders) {
@@ -158,7 +158,7 @@ class GameMap {
   }
 
   // Draws all of the characters.
-  _drawCharacters() {
+  _drawCharacters(deltaT) {
     // FIXME: This is hacked together for drawing defenders. Attackers move and
     // aren't aligned with the grids.
     let y = this.config.consts.yPos;
@@ -182,7 +182,7 @@ class GameMap {
 
     // FIXME: Here's another hack for drawing the attackers.
     for (let attacker of this.state.activeAttackers) {
-      attacker.draw();
+      attacker.draw(deltaT);
       push();
       noStroke(); fill(255); textSize(10);
       text('HP:' + attacker.hp, attacker.x_pos+this.config.consts.health_xoffset,
@@ -232,8 +232,8 @@ class GameMap {
     pop();
   }
 
-  draw() {
-    this._drawCharacters();
+  draw(deltaT) {
+    this._drawCharacters(deltaT);
     this._drawProjectiles();
     this._drawCollectibles();
     this._drawEffects();

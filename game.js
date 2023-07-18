@@ -85,7 +85,8 @@ class Game {
   }
 
   update() {
-    this.gameMap.update();
+    this.currentLevel.draw(deltaTime);
+    this.gameMap.update(deltaTime);
   }
 
   _scaleMouse(pos) {
@@ -143,7 +144,7 @@ class Game {
       noLoop();
       return;
     }
-    this.currentLevel.draw();
+    this.currentLevel.draw(deltaTime);
     this.gameMap.draw();
     this.store.draw();
     this._drawCursor(scaledMouseX, scaledMouseY);

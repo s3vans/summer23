@@ -1,3 +1,4 @@
+// Assumes that animationConfig.img is already loaded.
 function loadAnimationFromConfig(animationConfig, defaultAnimationConfig) {
   let config = animationConfig;
   let defaultConfig = defaultAnimationConfig;
@@ -24,10 +25,6 @@ function loadAnimationFromConfig(animationConfig, defaultAnimationConfig) {
     return null;
   }
 
-  // NOTE: Because loading is asynchronous, the returned
-  // animation is initialized with a `null` |img| field.
-  // When loading is finished, a callback will either
-  // populate the |img| field or leave it as `null.
   return new Animation(animationConfig.img, frameHeight, fps, isLooping);
 }
 
@@ -50,7 +47,7 @@ class Animation {
     this.isDone = false;
   }
 
-  update(deltaTime) {
+  update(deltaT) {
     if (this.img == null) {
       return;
     }
@@ -77,7 +74,7 @@ class Animation {
     }
   }
 
-  draw(deltaTime, x, y, width, height) {
+  draw(x, y, width, height) {
     if (this.img == null) {
       return;
     }
