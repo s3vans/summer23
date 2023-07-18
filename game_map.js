@@ -145,15 +145,15 @@ class GameMap {
     }
 
     for (let defender of this.state.activeDefenders) {
-      defender.update();
+      defender.update(deltaT);
     }
 
     for (let collectible of this.state.activeCollectibles) {
-      collectible.update();
+      collectible.update(deltaT);
     }
 
     for (let projectile of this.state.activeProjectiles) {
-      projectile.update();
+      projectile.update(deltaT);
     }
   }
 
@@ -192,21 +192,21 @@ class GameMap {
   }
 
   // This draws all of the projectiles.
-  _drawProjectiles() {
+  _drawProjectiles(deltaT) {
     for (let projectile of this.state.activeProjectiles) {
       projectile.draw();
     }
   }
 
   // This draws all of the collectibles.
-  _drawCollectibles() {
+  _drawCollectibles(deltaT) {
     for (let collectible of this.state.activeCollectibles) {
       collectible.draw();
     }
   }
 
   // TODO: This draws all of the overlayed effects.
-  _drawEffects() {
+  _drawEffects(deltaT) {
   }
 
   drawCursor(scaledMouseX, scaledMouseY) {
@@ -234,8 +234,8 @@ class GameMap {
 
   draw(deltaT) {
     this._drawCharacters(deltaT);
-    this._drawProjectiles();
-    this._drawCollectibles();
-    this._drawEffects();
+    this._drawProjectiles(deltaT);
+    this._drawCollectibles(deltaT);
+    this._drawEffects(deltaT);
   }
 }

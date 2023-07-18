@@ -32,7 +32,7 @@ class Defender {
     }
   }
 
-  update() {
+  update(deltaT) {
     if (this.game.gameMap.state.attackersByRow[this.row].length > 0) {
       if (this.charge == this.recharge) {
         let defenderConfig = this.game.config.defenders[this.uid];

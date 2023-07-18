@@ -85,7 +85,7 @@ class Game {
   }
 
   update() {
-    this.currentLevel.draw(deltaTime);
+    this.currentLevel.update(deltaTime);
     this.gameMap.update(deltaTime);
   }
 
@@ -145,8 +145,8 @@ class Game {
       return;
     }
     this.currentLevel.draw(deltaTime);
-    this.gameMap.draw();
-    this.store.draw();
+    this.gameMap.draw(deltaTime);
+    this.store.draw(deltaTime);
     this._drawCursor(scaledMouseX, scaledMouseY);
     this._drawOverlay();
   }

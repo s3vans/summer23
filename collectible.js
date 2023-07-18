@@ -15,13 +15,13 @@ class Collectible {
     this.lifespan = lifespan;
   }
 
-  draw() {
+  draw(deltaT) {
     push();
     image(this.img, this.x_pos, this.y_pos, this.width, this.height);
     pop();
   }
 
-  update() {
+  update(deltaT) {
     if (this.state == "LANDED") {
       if (this.lifespan > 0) {
         this.lifespan -= 1;
