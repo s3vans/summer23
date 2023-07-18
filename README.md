@@ -2,7 +2,7 @@ The latest version of the game is hosted at:
 
 https://s3vans.github.io/summer23/
 
-Or to play it locally at https://localhost:8000...
+Or, to host it locally at https://localhost:8000, run:
 
 ```
 git clone https://github.com/s3vans/summer23.git
