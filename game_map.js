@@ -166,11 +166,6 @@ class GameMap {
     // FIXME: Here's another hack for drawing the attackers.
     for (let attacker of this.state.activeAttackers) {
       attacker.draw(deltaT);
-      push();
-      noStroke(); fill(255); textSize(10);
-      text('HP:' + attacker.hp, attacker.x_pos+this.config.consts.health_xoffset,
-           attacker.y_pos+this.config.consts.health_yoffset);
-      pop();
     }
   }
 

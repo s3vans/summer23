@@ -27,6 +27,11 @@ class Attacker {
 
   draw(deltaT) {
     this.animation.draw(this.x_pos, this.y_pos, this.width, this.height);
+      push();
+      noStroke(); fill(255); textSize(10);
+      text('Health:' + this.hp, this.x_pos+this.game.gameMap.config.consts.health_xoffset,
+           this.y_pos+this.game.gameMap.config.consts.health_yoffset);
+      pop();
   }
 
   update(deltaT) {
