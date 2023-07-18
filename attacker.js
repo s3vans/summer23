@@ -65,7 +65,7 @@ class Attacker {
     const gameMapEnemyQueueOffset =
         this.game.gameMap.config.consts.enemyQUeueOffset;
     let other_attacker =
-        helper.nextTo(this, attackersToTheLeft, gameMapEnemeyQueueOffset);
+        helper.nextTo(this, attackersToTheLeft, gameMapEnemyQueueOffset);
 
     if (other_attacker != undefined) {
       return;
