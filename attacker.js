@@ -10,7 +10,7 @@ class Attacker {
     }
     this.health = health;
     const gameMapPosY = this.game.gameMap.config.consts.yPos;
-    const gameMapCelgameMapCellWidthcellWidth;
+    const gameMapCellWidth = this.game.gameMap.config.consts.cellWidth;
     const gameMapCellHeight = this.game.gameMap.config.consts.cellHeight;
     // Initial x position is off the right side of the canvas.
     this.x_pos = game.config.consts.xResolution + gameMapCellWidth;
