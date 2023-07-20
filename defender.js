@@ -48,6 +48,9 @@ class Defender {
         let defenderConfig = this.game.config.defenders[this.uid];
         let projectileUid = defenderConfig.projectile;
         let projectileConfig = this.game.config.projectiles[projectileUid];
+        if (projectileConfig.mp3s['launching'].mp3 != undefined) {
+          projectileConfig.mp3s['launching'].mp3.play();
+        }
         let projectile = new Projectile(this.game, this.row, this.col,
                                         projectileConfig.imgs.flying.img,
                                         projectileConfig.damage,
