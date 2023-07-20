@@ -120,6 +120,10 @@ class GameMap {
       return false;
     }
     let defenderConfig = game.store.getSelectedDefenderConfig();
+    if (defenderConfig.mp3s.placed.mp3 != null) {
+      defenderConfig.mp3s.placed.mp3.playMode('sustain');
+      defenderConfig.mp3s.placed.mp3.play();
+    }
     let defenderUid = game.currentLevel.config.defenders[game.store.getSelected()];
     let defender = new Defender(game, row, col, defenderUid,
                                 defenderConfig.imgs.idle,
