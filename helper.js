@@ -99,6 +99,40 @@ class Helper {
           event => { reject(event); return null; });
     });
   }
+
+  // NOTE: This failed every way that I tried it. The loadMp3FromPath()
+  // function below works, so I'm abandoning this.
+  //
+  // Return a promise while we asynchronously load the p5.SoundFile at |path|
+  // if it is available, and return it via the resolve() callback, else return
+  // `null` via the reject() callback. Must be called from preload() so that
+  // p5js library is loaded.
+  asyncLoadSoundFromPath(path) {
+    return new Promise((resolve, reject) => {
+      try {
+        loadSound(
+            path,
+            mp3 => { resolve(mp3); return mp3; },
+            () => { reject('err'); return null; });
+        if (mp3.buffer == null) {
+          reject();
+        }
+     } catch (err) {
+       reject();
+     }
+    });
+  }
+
+  // If the mp3 file at |path| exists, load it in |mp3Config.mp3|. Must be
+  // called during preload() to work properly.
+  loadMp3FromPath(mp3Config, path) {
+    var http = new XMLHttpRequest();
+    http.open('HEAD', path, false);
+    http.send();
+    if (http.status == 200) {
+      mp3Config.mp3 = loadSound(path);
+    }
+  }
 }
 
 let helper = new Helper();

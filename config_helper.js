@@ -33,6 +33,27 @@ class ConfigHelper {
         });
   }
 
+  // NOTE: This failed every way that I tried it. It seemed to always return an
+  // error, even when the file existed, ut the asyncLoaSoundFromPath() function
+  // never actually failed. The entire page failed to load. The
+  // loadMp3FromPath() function worked, so I'm abandoning this.
+  _expandSoundConfig(soundConfig, defaultSoundConfig) {
+    let config = soundConfig;
+    let defaultConfig = defaultSoundConfig;
+
+    soundConfig.mp3 = null;
+    //soundConfig.mp3 = loadSound(soundConfig.path);
+    helper.asyncLoadSoundFromPath(soundConfig.path)
+        .then((mp3) => {
+          //console.log("Loaded " + path);
+          soundConfig.mp3 = mp3;
+        })
+        .catch(() => {
+          //console.log("Error loading " + soundConfig.path);
+          soundConfig.mp3 = null;
+        });
+  }
+
   _expandAttackerConfig(expandedGameConfig, rootDir, uid, attackerConfig) {
     attackerConfig.consts = {};
     attackerConfig.consts.defaultStartingHealth = 100;
@@ -85,7 +106,8 @@ class ConfigHelper {
     modes = ["placed", "injured", "died"];
     for (let mode of modes) {
       helper.expandAssetPath(attackerConfig.mp3s, mode, rootDir, uid, "mp3");
-      // TODO: Load the audio.
+      helper.loadMp3FromPath(attackerConfig.mp3s[mode],
+                             attackerConfig.mp3s[mode].path);
     }
   }
 
@@ -147,7 +169,8 @@ class ConfigHelper {
     modes = ["placed", "injured", "died"];
     for (let mode of modes) {
       helper.expandAssetPath(defenderConfig.mp3s, mode, rootDir, uid, "mp3");
-      // TODO: Load the audio.
+      helper.loadMp3FromPath(defenderConfig.mp3s[mode],
+                             defenderConfig.mp3s[mode].path);
     }
   }
 
@@ -188,11 +211,13 @@ class ConfigHelper {
     modes = ["launching", "hitting"];
     for (let mode of modes) {
       helper.expandAssetPath(projectileConfig.mp3s, mode, rootDir, uid, "mp3");
-      // TODO: Load the audio.
+      helper.loadMp3FromPath(projectileConfig.mp3s[mode],
+                             projectileConfig.mp3s[mode].path);
     }
   }
 
-  _expandCollectibleConfig(expandedGameConfig, rootDir, uid, collectibleConfig) {
+  _expandCollectibleConfig(expandedGameConfig, rootDir, uid,
+                           collectibleConfig) {
     collectibleConfig.consts = {};
     collectibleConfig.consts.defaultFallSpeed = 10;
     collectibleConfig.consts.defaultClickRadius = 50;
@@ -238,7 +263,8 @@ class ConfigHelper {
     modes = ["appeared", "landed", "collected"];
     for (let mode of modes) {
       helper.expandAssetPath(collectibleConfig.mp3s, mode, rootDir, uid, "mp3");
-      // TODO: Load the audio.
+      helper.loadMp3FromPath(collectibleConfig.mp3s[mode],
+                             collectibleConfig.mp3s[mode].path);
     }
   }
 
@@ -306,14 +332,15 @@ class ConfigHelper {
     this._expandAnimationConfig(levelConfig.imgs.background,
                                 defaultAnimationConfig);
 
-    // TODO: Load the audio.
     if (levelConfig.mp3s == undefined) {
       levelConfig.mp3s = {};
     }
-    helper.expandAssetPath(levelConfig.mp3s, "background", rootDir, uid, "mp3");
-    helper.expandAssetPath(levelConfig.mp3s, "start", rootDir, uid, "mp3");
-    helper.expandAssetPath(levelConfig.mp3s, "win", rootDir, uid, "mp3");
-    helper.expandAssetPath(levelConfig.mp3s, "lose", rootDir, uid, "mp3");
+    let modes = ["background", "start", "win", "lose"];
+    for (let mode of modes) {
+      helper.expandAssetPath(levelConfig.mp3s, mode, rootDir, uid, "mp3");
+      helper.loadMp3FromPath(levelConfig.mp3s[mode],
+                             levelConfig.mp3s[mode].path);
+    }
   }
 
   // Must be called from preload() so that p5js library is loaded.
@@ -354,15 +381,18 @@ class ConfigHelper {
     if (gameConfig.projectiles == undefined) {
       gameConfig.projectiles = {};
     }
-    for (let [uid, projectileConfig] of Object.entries(gameConfig.projectiles)) {
+    for (let [uid, projectileConfig] of
+        Object.entries(gameConfig.projectiles)) {
       this._expandProjectileConfig(gameConfig, rootDir, uid, projectileConfig);
     }
 
     if (gameConfig.collectibles == undefined) {
       gameConfig.collectibles = {};
     }
-    for (let [uid, collectibleConfig] of Object.entries(gameConfig.collectibles)) {
-      this._expandCollectibleConfig(gameConfig, rootDir, uid, collectibleConfig);
+    for (let [uid, collectibleConfig] of
+        Object.entries(gameConfig.collectibles)) {
+      this._expandCollectibleConfig(gameConfig, rootDir, uid,
+                                    collectibleConfig);
     }
 
     if (gameConfig.levels == undefined) {
