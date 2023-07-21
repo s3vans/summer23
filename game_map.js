@@ -70,7 +70,8 @@ class GameMap {
     let num = Math.floor(Math.random() * this.state.collectibleConfigs.length);
     let collectibleConfig = this.state.collectibleConfigs[num];
     this.state.activeCollectibles.push(
-        new Collectible(game, row, col, collectibleConfig.imgs.falling.img,
+        new Collectible(game, collectibleConfig, row, col,
+                        collectibleConfig.imgs.falling.img,
                         collectibleConfig.health, collectibleConfig.lifespan));
   }
 
@@ -89,6 +90,10 @@ class GameMap {
         }
         if ((Math.abs(center_x - mX) <= hit_distance) &&
             (Math.abs(center_y - mY) <= hit_distance)) {
+          let collectibleConfig = collectible.config;
+          if (collectibleConfig.mp3s.collected.mp3 != null) {
+            collectibleConfig.mp3s.collected.mp3.play();
+          }
           game.currentLevel.state.money += collectible.health;
           helper.removeFromArray(this.state.activeCollectibles, collectible);
           return true;
