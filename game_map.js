@@ -55,6 +55,9 @@ class GameMap {
                      attackerConfig.startingHealth);
     this.state.activeAttackers.push(attacker);
     this.state.attackersByRow[row].push(attacker);
+    if (attackerConfig.mp3s.placed.mp3 != null) {
+      attackerConfig.mp3s.placed.mp3.play();
+    }
   }
 
   sendCollectible() {
@@ -121,7 +124,6 @@ class GameMap {
     }
     let defenderConfig = game.store.getSelectedDefenderConfig();
     if (defenderConfig.mp3s.placed.mp3 != null) {
-      defenderConfig.mp3s.placed.mp3.playMode('sustain');
       defenderConfig.mp3s.placed.mp3.play();
     }
     let defenderUid = game.currentLevel.config.defenders[game.store.getSelected()];
