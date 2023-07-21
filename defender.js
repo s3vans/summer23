@@ -21,6 +21,7 @@ class Defender {
     this.width = gameMapCellWidth;
     this.height = gameMapCellHeight;
     let defenderConfig = this.game.config.defenders[this.uid];
+    this.config = defenderConfig;
     let projectileUid = defenderConfig.projectile;
     let projectileConfig = this.game.config.projectiles[projectileUid];
     this.recharge = projectileConfig.reloadTimeMs;
@@ -31,19 +32,23 @@ class Defender {
     this.spriteY = 0;
   }
 
-  hit() {
-    this.health -= 1;
+  hit(damage) {
+    if (damage != undefined) {
+      this.health -= damage;
+    } else {
+      this.health -= 1;
+    }
     if (this.health <= 0) {
       this.game.gameMap.state.map_state[this.row][this.col] = undefined;
       let defendersInRow = this.game.gameMap.state.defendersByRow[this.row]
       helper.removeFromArray(defendersInRow, this);
       helper.removeFromArray(this.game.gameMap.state.activeDefenders, this);
-      if (projectileConfig.mp3s['died'].mp3 != undefined) {
-        projectileConfig.mp3s['died'].mp3.play();
+      if (this.config.mp3s['died'].mp3 != undefined) {
+        this.config.mp3s['died'].mp3.play();
       }
     } else {
-      if (projectileConfig.mp3s['injured'].mp3 != undefined) {
-        projectileConfig.mp3s['injured'].mp3.play();
+      if (this.config.mp3s['injured'].mp3 != undefined) {
+        this.config.mp3s['injured'].mp3.play();
       }
     }
   }
