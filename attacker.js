@@ -30,6 +30,13 @@ class Attacker {
       let attackersInRow = this.game.gameMap.state.attackersByRow[this.row];
       helper.removeFromArray(attackersInRow, this);
       helper.removeFromArray(this.game.gameMap.state.activeAttackers, this);
+      if (this.config.mp3s['died'].mp3 != undefined) {
+        this.config.mp3s['died'].mp3.play();
+      }
+    } else {
+      if (this.config.mp3s['injured'].mp3 != undefined) {
+        this.config.mp3s['injured'].mp3.play();
+      }
     }
   }
 
