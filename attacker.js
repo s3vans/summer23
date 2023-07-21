@@ -63,7 +63,7 @@ class Attacker {
     let attackersToTheLeft = this.game.gameMap.state.attackersByRow[this.row]
         .filter(a => a.x_pos < this.x_pos);
     const gameMapEnemyQueueOffset =
-        this.game.gameMap.config.consts.enemyQUeueOffset;
+        this.game.config.gameMap.consts.enemyQueueOffset;
     let other_attacker =
         helper.nextTo(this, attackersToTheLeft, gameMapEnemyQueueOffset);
 
