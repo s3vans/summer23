@@ -33,11 +33,7 @@ class Defender {
   }
 
   hit(damage) {
-    if (damage != undefined) {
-      this.health -= damage;
-    } else {
-      this.health -= 1;
-    }
+    this.health -= damage;
     if (this.health <= 0) {
       this.game.gameMap.state.map_state[this.row][this.col] = undefined;
       let defendersInRow = this.game.gameMap.state.defendersByRow[this.row]

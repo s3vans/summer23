@@ -51,7 +51,7 @@ class GameMap {
     let num = Math.floor(Math.random() * this.state.attackerConfigs.length);
     let attackerConfig = this.state.attackerConfigs[num];
     let attacker =
-        new Attacker(game, row, attackerConfig.imgs.idle,
+        new Attacker(game, attackerConfig, row, attackerConfig.imgs.idle,
                      attackerConfig.startingHealth);
     this.state.activeAttackers.push(attacker);
     this.state.attackersByRow[row].push(attacker);

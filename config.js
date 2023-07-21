@@ -159,8 +159,8 @@ let pokemonGameConfig = {
   "attackers": {
     "evee": {
       "startingHealth": 200,
-      "damage": 10,
-      "reloadTimeMs": 10,
+      "damage": 50,
+      "reloadTimeMs": 100,
       "imgs": {
         "idle": {
           "frameHeight": 100,

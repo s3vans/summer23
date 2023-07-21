@@ -1,8 +1,9 @@
 
 // Rudimentary attacker instance.
 class Attacker {
-  constructor(game, row, imgConfig, health) {
+  constructor(game, attackerConfig, row, imgConfig, health) {
     this.game = game;
+    this.config = attackerConfig;
     this.row = row;
     this.animation = null;
     if (imgConfig.img != null) {
@@ -18,6 +19,8 @@ class Attacker {
     this.speed = 1;
     this.width = gameMapCellWidth;
     this.height = gameMapCellHeight;
+    this.recharge = this.config.reloadTimeMs;
+    this.charge = this.recharge;
   }
 
   hit(damage) {
@@ -45,6 +48,11 @@ class Attacker {
   update(deltaT) {
     this.animation.update();
 
+    if (this.charge < this.recharge) {
+      this.charge++;
+      return;
+    }
+
     // Order is important here. If we check for attack after we check for
     // neighboring attacker, then we stop hitting.
 
@@ -54,8 +62,9 @@ class Attacker {
     const gameMapCellWidth = this.game.gameMap.config.consts.cellWidth;
     let defender =
         helper.nextTo(this, defendersToTheLeft, gameMapCellWidth);
-    if (defender != undefined) {
-      defender.hit();
+    if (defender != undefined && this.charge == this.recharge) {
+      defender.hit(this.config.damage);
+      this.charge = 0;
       return;
     }
 
