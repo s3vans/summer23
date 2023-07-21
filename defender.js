@@ -38,6 +38,13 @@ class Defender {
       let defendersInRow = this.game.gameMap.state.defendersByRow[this.row]
       helper.removeFromArray(defendersInRow, this);
       helper.removeFromArray(this.game.gameMap.state.activeDefenders, this);
+      if (projectileConfig.mp3s['died'].mp3 != undefined) {
+        projectileConfig.mp3s['died'].mp3.play();
+      }
+    } else {
+      if (projectileConfig.mp3s['injured'].mp3 != undefined) {
+        projectileConfig.mp3s['injured'].mp3.play();
+      }
     }
   }
 
