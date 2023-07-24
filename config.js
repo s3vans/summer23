@@ -132,14 +132,14 @@ let pokemonGameConfig = {
   },
   "defenders": {
     "pikachu": {
-      "startingHealth": 600,
+      "startingHealth": 200,
       "cost": 150,
       "restockTimeMs": 200,
       "projectile": "bolt",
     },
     "bulbasaur": {
-      "startingHealth": 200,
-      "cost": 250,
+      "startingHealth": 50,
+      "cost": 50,
       "restockTime": 200,
       "projectile": "bolt",
     },
@@ -159,8 +159,8 @@ let pokemonGameConfig = {
   "attackers": {
     "evee": {
       "startingHealth": 200,
-      "damage": 50,
-      "reloadTimeMs": 100,
+      "damage": 40,
+      "reloadTimeMs": 150,
       "imgs": {
         "idle": {
           "frameHeight": 100,
