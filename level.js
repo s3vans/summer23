@@ -7,9 +7,17 @@ class Level {
     this.state.money = this.config.startingMoney;
     this.state.background =
         loadAnimationFromConfig(this.config.imgs.background);
+    this.state.firstUpdate = true;
   }
 
   update(deltaT) {
+    if (this.state.firstUpdate) {
+      if (this.config.mp3s.start.mp3 != undefined) {
+        // FIXME: This doesn't play until the first Defender is placed.
+        //this.config.mp3s.start.mp3.play();
+      }
+      this.state.firstUpdate = false;
+    }
     this.state.background.update(deltaT);
   }
 

@@ -98,6 +98,9 @@ class Game {
 
   _drawGameOver() {
     console.log("GAME OVER");
+    if (this.currentLevel.config.mp3s.lose.mp3 != undefined) {
+      this.currentLevel.config.mp3s.lose.mp3.play();
+    }
     push();
     const xRes = this.config.consts.xResolution;
     const yRes = this.config.consts.yResolution;
