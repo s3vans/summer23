@@ -98,11 +98,22 @@ class Store {
     let x = 0;
     for (let defenderConfig of this.state.defenderConfigs) {
        if (defenderConfig.imgs.idle.img != undefined) {
-         image(defenderConfig.imgs.idle.img, x+10, 0,
+         push();
+         let img = defenderConfig.imgs.idle.img.get();
+         if (this.game.currentLevel.state.money < defenderConfig.cost) {
+           img.filter(GRAY);
+         }
+         image(img, x+10, 0,
                this.config.consts.itemImgWidth,
                this.config.consts.itemImgHeight, 0, 0,
                this.config.consts.itemImgWidth,
                this.config.consts.itemImgHeight);
+         if (this.game.currentLevel.state.money < defenderConfig.cost) {
+           helper.highlightRectangle(x, 0, this.config.consts.itemWidth,
+                                this.config.consts.itemHeight,
+                                color(0, 0, 0, 50));
+         }
+         pop();
        }
        push();
        noStroke(); fill(0); textSize(10);
