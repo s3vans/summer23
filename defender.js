@@ -60,7 +60,7 @@ class Defender {
           projectileConfig.mp3s['launching'].mp3.play();
         }
         let projectile = new Projectile(this.game, this.row, this.col,
-                                        projectileConfig.imgs.flying.img,
+                                        projectileConfig.imgs.flying,
                                         projectileConfig.damage,
                                         projectileConfig.speed);
         this.game.gameMap.state.activeProjectiles.push(projectile);

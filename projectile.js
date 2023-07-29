@@ -1,13 +1,15 @@
 
 class Projectile {
-  constructor(game, row, col, img, hp, speed) {
+  constructor(game, row, col, imgConfig, hp, speed) {
     this.game = game;
     this.state = "FLYING";
     this.row = row;
     this.col = col;
-    this.height = this.game.gameMap.config.consts.cellHeight / 2;
-    this.width = this.game.gameMap.config.consts.cellWidth / 2;
-    this.img = img;
+    this.height = this.game.gameMap.config.consts.cellHeight;
+    this.width = this.game.gameMap.config.consts.cellWidth;
+    if (imgConfig.img != null) {
+      this.animation = loadAnimationFromConfig(imgConfig);
+    }
     this.x_pos = this.game.gameMap.config.consts.xPos + (col * this.game.gameMap.config.consts.cellWidth);
     this.y_pos = this.game.gameMap.config.consts.yPos + (row * this.game.gameMap.config.consts.cellHeight);
     this.speed = speed;
@@ -16,16 +18,14 @@ class Projectile {
 
   draw() {
     push();
-    if (this.img != null) {
-      image(this.img, this.x_pos, this.y_pos, this.width, this.height);
-    }
-    else {
-      circle(this.x_pos, this.y_pos, this.width);
-    }
+    this.animation.draw(this.x_pos, this.y_pos, this.width, this.height);
+      //image(this.img, this.x_pos, this.y_pos, this.width, this.height);
     pop();
   }
 
   update() {
+    this.animation.update();
+    //this.img.update();
     if (this.state == "FLYING") {
       // Handle hits first.
       let attackersToTheRight = this.game.gameMap.state.attackersByRow[this.row]
