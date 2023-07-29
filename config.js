@@ -129,6 +129,11 @@ let pokemonGameConfig = {
       "reloadTimeMs": 300,
       "speed": 10,
     },
+    "ember": {
+      "damage": 45,
+      "reloadTimeMs": 250,
+      "speed": 5,
+    },
   },
   "defenders": {
     "pikachu": {
@@ -147,7 +152,7 @@ let pokemonGameConfig = {
       "startingHealth": 300,
       "cost": 350,
       "restockTime": 200,
-      "projectile": "bolt",
+      "projectile": "ember",
     },
     "meowth": {
       "startingHealth": 400,
@@ -158,6 +163,16 @@ let pokemonGameConfig = {
   },
   "attackers": {
     "evee": {
+      "startingHealth": 200,
+      "damage": 40,
+      "reloadTimeMs": 150,
+      "imgs": {
+        "idle": {
+          "frameHeight": 100,
+        }
+      },
+    },
+    "diglet": {
       "startingHealth": 200,
       "damage": 40,
       "reloadTimeMs": 150,
@@ -186,6 +201,7 @@ let pokemonGameConfig = {
       ],
       "attackers": [
           "evee",
+          "diglet",
       ],
       "collectibles": [
           "raspberries",
