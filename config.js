@@ -134,6 +134,11 @@ let pokemonGameConfig = {
       "reloadTimeMs": 250,
       "speed": 5,
     },
+    "energyball": {
+      "damage": 10,
+      "reloadTimeMs": 200,
+      "speed": 10,
+    },
   },
   "defenders": {
     "pikachu": {
@@ -146,7 +151,7 @@ let pokemonGameConfig = {
       "startingHealth": 50,
       "cost": 50,
       "restockTime": 200,
-      "projectile": "bolt",
+      "projectile": "energyball",
     },
     "charmander": {
       "startingHealth": 300,
