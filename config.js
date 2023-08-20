@@ -165,6 +165,12 @@ let pokemonGameConfig = {
       "restockTime": 200,
       "projectile": "bolt",
     },
+    "squirtle": {
+      "startingHealth": 255,
+      "cost": 150,
+      "restockTime": 200,
+      "projectile": "bolt",
+    },
   },
   "attackers": {
     "evee": {
@@ -203,6 +209,7 @@ let pokemonGameConfig = {
           "bulbasaur",
           "charmander",
           "meowth",
+          "squirtle",
       ],
       "attackers": [
           "evee",
