@@ -25,6 +25,7 @@ class Game {
     this.state.currentLevelIndex = 0;
     this.state.currentLevel = null;
     this.state.lastClickTime = 0;
+    this.state.attackerRow = -1;
   }
 
   loadLevel(levelIndex) {
@@ -73,6 +74,10 @@ class Game {
       return;
     }
     this.gameMap.sendAttacker();
+  }
+
+  _sendThisAttacker() {
+    this.gameMap.senThisdAttacker();
   }
 
   _sendCollectible() {
@@ -206,6 +211,25 @@ class Game {
       }
     }
     return;
+  }
+ 
+  keyPressed() {
+    let key = keyCode;
+    let keyNum = key - 48; // '0' is keyCode 48, '9' is keyCode 57.
+    if (keyNum < 0 || keyNum > 9) { 
+      return;
+    }
+    if (keyNum == 0) {
+      this.gameMap.sendCollectible();
+      return;
+    }
+    if (this.state.attackerRow == -1) {
+      this.state.attackerRow = keyNum;
+    }
+    else {
+      this.gameMap.sendThisAttacker(this.state.attackerRow-1, keyNum-1);
+      this.state.attackerRow = -1;
+    }
   }
 
   windowResized() {

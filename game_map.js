@@ -60,6 +60,31 @@ class GameMap {
     }
   }
 
+  sendThisAttacker(row, num) {
+    if (this.state.attackerConfigs.length == 0) {
+      console.log("no attackers defined for this level.");
+      return;
+    }
+    if (row >= this.config.consts.cellRowCount) {
+      console.log("No row exists for number: ", row);
+      return;
+    }
+    if (num >= this.state.attackerConfigs.length) {
+      console.log("No attacker exists for number: ", num);
+      return;
+    }
+    
+    let attackerConfig = this.state.attackerConfigs[num];
+    let attacker =
+        new Attacker(game, attackerConfig, row, attackerConfig.imgs.idle,
+                     attackerConfig.startingHealth);
+    this.state.activeAttackers.push(attacker);
+    this.state.attackersByRow[row].push(attacker);
+    if (attackerConfig.mp3s.placed.mp3 != null) {
+      attackerConfig.mp3s.placed.mp3.play();
+    }
+  }
+
   sendCollectible() {
     if (this.state.collectibleConfigs.length == 0) {
       console.log("No collectibles defined for this level.");

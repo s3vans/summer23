@@ -23,6 +23,10 @@ function windowResized() {
   game.windowResized();
 }
 
+function keyPressed() {
+  game.keyPressed();
+}
+
 function touchEnded() {
   mouseClicked();
   return false;
