@@ -9,7 +9,7 @@ git clone https://github.com/s3vans/summer23.git
 cd summer23
 
 # Start a webserver with either:
-python -m SimpleHTTPWebserver   # python2.7
+python -m SimpleHTTPServer      # python2.7
 # OR:
 python -m http.server           # python3
 ```
