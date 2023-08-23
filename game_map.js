@@ -199,7 +199,6 @@ class GameMap {
       defender.draw(deltaT);
     }
 
-    // FIXME: Here's another hack for drawing the attackers.
     for (let attacker of this.state.activeAttackers) {
       attacker.draw(deltaT);
     }
