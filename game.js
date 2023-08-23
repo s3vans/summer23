@@ -1,9 +1,5 @@
-// TODO: Implement character states.
 // TODO: Implement visual effects.
-// TODO: Add sounds.
 // TODO: Allow attackers to be scheduled via config.
-// TODO: Unify common character/object traits into parent class.
-// TODO: Replace many hard coded vals with default vals overriden by config.
 // FIXME: Collectibles fall to top-left of target square.
 
 let attackerCnt = 0;
