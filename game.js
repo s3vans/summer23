@@ -1,4 +1,3 @@
-// TODO: Make timing frame independent.
 // TODO: Implement character states.
 // TODO: Implement visual effects.
 // TODO: Add sounds.
@@ -92,9 +91,9 @@ class Game {
     setInterval(() => { this._sendCollectible(); }, 6000);
   }
 
-  update() {
-    this.currentLevel.update(deltaTime);
-    this.gameMap.update(deltaTime);
+  update(deltaT) {
+    this.currentLevel.update(deltaT);
+    this.gameMap.update(deltaT);
   }
 
   _scaleMouse(pos) {
@@ -146,7 +145,7 @@ class Game {
     pop();
   }
 
-  draw() {
+  draw(deltaT) {
     scale(this.state.scaleFactor);
     const scaledMouseX = this._scaleMouse(mouseX);
     const scaledMouseY = this._scaleMouse(mouseY);
@@ -158,13 +157,13 @@ class Game {
     }
 
     // Draws background.
-    this.currentLevel.draw(deltaTime);
+    this.currentLevel.draw(deltaT);
 
     // Draws the store at the top.
-    this.store.draw(deltaTime);
+    this.store.draw(deltaT);
 
     // Draws characters, projectiles, collectibles, and effects.
-    this.gameMap.draw(deltaTime);
+    this.gameMap.draw(deltaT);
 
     this._drawCursor(scaledMouseX, scaledMouseY);
 

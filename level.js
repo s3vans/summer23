@@ -21,7 +21,7 @@ class Level {
     this.state.background.update(deltaT);
   }
 
-  draw(delta) {
+  draw(deltaT) {
     push();
     background(0);
     let xRes = this.game.config.consts.xResolution;

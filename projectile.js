@@ -16,16 +16,15 @@ class Projectile {
     this.hp = hp;
   }
 
-  draw() {
+  draw(deltaT) {
     push();
     this.animation.draw(this.x_pos, this.y_pos, this.width, this.height);
       //image(this.img, this.x_pos, this.y_pos, this.width, this.height);
     pop();
   }
 
-  update() {
+  update(deltaT) {
     this.animation.update();
-    //this.img.update();
     if (this.state == "FLYING") {
       // Handle hits first.
       let attackersToTheRight = this.game.gameMap.state.attackersByRow[this.row]
@@ -38,7 +37,8 @@ class Projectile {
         return;
       }
       if (this.x_pos < game.config.consts.xResolution + this.game.gameMap.config.consts.cellWidth) {
-        this.x_pos += this.speed;
+        let distance = this.speed * (deltaT / this.game.config.consts.speedRateMs);
+        this.x_pos += distance;
       } else {
         // Remove it once offscreen.
         helper.removeFromArray(this.game.gameMap.state.activeProjectiles, this);

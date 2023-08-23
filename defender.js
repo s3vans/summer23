@@ -68,7 +68,8 @@ class Defender {
       }
     }
     if (this.charge < this.recharge) {
-      this.charge++;
+      let charge = deltaT / this.game.config.consts.chargeRateMs;
+      this.charge = Math.min(this.charge + charge, this.recharge);
     }
   }
 

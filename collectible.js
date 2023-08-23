@@ -30,13 +30,16 @@ class Collectible {
   update(deltaT) {
     if (this.state == "LANDED") {
       if (this.lifespan > 0) {
-        this.lifespan -= 1;
+        let age = deltaT / this.game.config.consts.ageRateMs;
+        this.lifespan -= age;
+        Math.max(this.lifespan, 0);
       } else {
         helper.removeFromArray(this.game.gameMap.state.activeCollectibles, this);
       }
     }
     if (this.y_pos < this.target_y_pos) {
-      this.y_pos += this.speed;
+      let distance = this.speed * (deltaT / this.game.config.consts.speedRateMs);
+      this.y_pos += distance;
     } else {
       this.state = "LANDED";
       if (this.config.mp3s.landed.mp3 != null) {

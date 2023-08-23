@@ -85,7 +85,7 @@ class Store {
     pop();
   }
 
-  draw() {
+  draw(deltaT) {
     push();
     translate(this.config.consts.xPos, this.config.consts.yPos);
     for (let i = 0; i < this.config.consts.itemCount; i++) {

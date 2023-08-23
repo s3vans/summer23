@@ -208,14 +208,14 @@ class GameMap {
   // This draws all of the projectiles.
   _drawProjectiles(deltaT) {
     for (let projectile of this.state.activeProjectiles) {
-      projectile.draw();
+      projectile.draw(deltaT);
     }
   }
 
   // This draws all of the collectibles.
   _drawCollectibles(deltaT) {
     for (let collectible of this.state.activeCollectibles) {
-      collectible.draw();
+      collectible.draw(deltaT);
     }
   }
 

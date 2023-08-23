@@ -56,7 +56,8 @@ class Attacker {
     this.animation.update();
 
     if (this.charge < this.recharge) {
-      this.charge++;
+      let charge = deltaT / this.game.config.consts.chargeRateMs;
+      this.charge = Math.min(this.charge + charge, this.recharge);
       return;
     }
 
@@ -88,6 +89,7 @@ class Attacker {
     }
 
     // Move left at speed.
-    this.x_pos -= this.speed;
+    let distance = this.speed * (deltaT / this.game.config.consts.speedRateMs);
+    this.x_pos -= distance;
   }
 }

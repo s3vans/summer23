@@ -11,8 +11,9 @@ function setup() {
 }
 
 function draw() {
-  game.update();
-  game.draw();
+  let deltaT = deltaTime;
+  game.update(deltaT);
+  game.draw(deltaT);
 }
 
 function mouseClicked() {

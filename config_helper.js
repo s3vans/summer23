@@ -354,6 +354,9 @@ class ConfigHelper {
     gameConfig.consts.overlayY = 0;
     gameConfig.consts.overlayWidth = 100;
     gameConfig.consts.overlayHeight = 100;
+    gameConfig.consts.ageRateMs = 30;    // Time to decrease lifespan by 1.
+    gameConfig.consts.chargeRateMs = 30; // Time to increase charge by 1.
+    gameConfig.consts.speedRateMs = 30;  // Time to move by 1px.
 
     let rootDir = "";
     if (gameConfig.rootDir != undefined) {
