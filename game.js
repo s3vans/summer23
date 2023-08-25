@@ -21,6 +21,9 @@ class Game {
     this.state.currentLevel = null;
     this.state.lastClickTime = 0;
     this.state.attackerRow = -1;
+    this.state.sequenceNum = 0;
+    this.state.lastEventTime = Date.now();
+    this.state.waitTime = 0;
   }
 
   loadLevel(levelIndex) {
@@ -71,10 +74,6 @@ class Game {
     this.gameMap.sendAttacker();
   }
 
-  _sendThisAttacker() {
-    this.gameMap.senThisdAttacker();
-  }
-
   _sendCollectible() {
     this.gameMap.sendCollectible();
   }
@@ -83,11 +82,35 @@ class Game {
     const [scaledResX, scaledResY] = this._getScaledResolution();
     createCanvas(scaledResX, scaledResY);
 
-    setInterval(() => { this._sendAttacker(); }, 5000);
+    //setInterval(() => { this._sendAttacker(); }, 5000);
     setInterval(() => { this._sendCollectible(); }, 6000);
   }
 
   update(deltaT) {
+    let now = Date.now();
+    let elapsed = now - this.state.lastEventTime;
+    if (elapsed > this.state.waitTime) {
+      let sequence = this.config.levels[this.state.currentLevelIndex].sequence;
+      while (this.state.sequenceNum < sequence.length) {
+        let [ command, arg1, arg2 ] = sequence[this.state.sequenceNum];
+        console.log("Read command", command, arg1, arg2);
+        if (command == "wait") {
+          let duration = arg1;
+          console.log("Waiting for", duration, "milliseconds");
+          this.state.lastEventTime = now;
+          this.state.waitTime = duration;
+          this.state.sequenceNum++;
+          break;
+        }
+        else if (command == "attack") {
+          let attackerId = arg1;
+          let attackerRow = arg2;
+          console.log("Attacking with", attackerId, "in row", attackerRow);
+          this.gameMap.sendThisAttacker(attackerRow, attackerId);
+          this.state.sequenceNum++;
+        }
+      }
+    }
     this.currentLevel.update(deltaT);
     this.gameMap.update(deltaT);
   }

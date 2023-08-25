@@ -134,17 +134,20 @@ let pokemonGameConfig = {
       "collectibles": [
           "raspberries",
       ],
-      // TODO: Consider alternative that lists enemies of what type and max
-      // duration between respawns, then use randomness to distribute.  Maybe
-      // make sequences recordable in level design mode.
       "sequence": [
-        {
-          //message(/*duration*/=3000, "Level #1 - First Wave..."),
-          //wait(2500),
-          //attack("evee", /*row=*/-1),
-          //randomWaitUpTo(2500),
-          //attack("evee", /*row=*/2),
-        }
+          [ "attack", 0, /*row=*/2 ],
+          [ "wait", 10000 ],
+          [ "attack", 0, /*row=*/0 ],
+          [ "wait", 5000 ],
+          [ "attack", 0, /*row=*/4 ],
+          [ "wait", 2500 ],
+          [ "attack", 0, /*row=*/3 ],
+          [ "wait", 1000 ],
+          [ "attack", 0, /*row=*/2 ],
+          [ "wait", 500 ],
+          [ "attack", 0, /*row=*/1 ],
+          [ "wait", 500 ],
+          [ "attack", 0, /*row=*/2 ],
       ],
     },
   ],
