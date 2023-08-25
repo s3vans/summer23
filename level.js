@@ -14,7 +14,11 @@ class Level {
     if (this.state.firstUpdate) {
       if (this.config.mp3s.start.mp3 != undefined) {
         // FIXME: This doesn't play until the first Defender is placed.
-        //this.config.mp3s.start.mp3.play();
+        this.config.mp3s.start.mp3.play();
+      }
+      if (this.config.mp3s.background.mp3 != undefined) {
+        this.config.mp3s.background.mp3.setVolume(0.10);
+        this.config.mp3s.background.mp3.play();
       }
       this.state.firstUpdate = false;
     }
