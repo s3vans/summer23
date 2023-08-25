@@ -119,7 +119,7 @@ class GameMap {
           if (collectibleConfig.mp3s.collected.mp3 != null) {
             collectibleConfig.mp3s.collected.mp3.play();
           }
-          game.currentLevel.state.money += collectible.health;
+          game.state.currentLevel.state.money += collectible.health;
           helper.removeFromArray(this.state.activeCollectibles, collectible);
           return true;
         }
@@ -156,7 +156,7 @@ class GameMap {
     if (defenderConfig.mp3s.placed.mp3 != null) {
       defenderConfig.mp3s.placed.mp3.play();
     }
-    let defenderUid = game.currentLevel.config.defenders[game.store.getSelected()];
+    let defenderUid = game.state.currentLevel.config.defenders[game.store.getSelected()];
     let defender = new Defender(game, row, col, defenderUid,
                                 defenderConfig.imgs.idle,
                                 defenderConfig.startingHealth,
@@ -164,7 +164,7 @@ class GameMap {
     this.state.map_state[row][col] = defender
     this.state.activeDefenders.push(defender);
     this.state.defendersByRow[row].push(defender);
-    game.currentLevel.state.money -= defenderConfig.cost;
+    game.state.currentLevel.state.money -= defenderConfig.cost;
     game.state.gameState = "NORMAL";
     game.store.resetSelected();
     return true;
@@ -173,7 +173,8 @@ class GameMap {
   update(deltaT) {
     for (let attacker of this.state.activeAttackers) {
       // Check for GAME OVER condition.
-      if (attacker.x_pos < this.config.consts.xPos - (this.config.consts.cellWidth / 2)) {
+      let edge = this.config.consts.xPos - (this.config.consts.cellWidth / 2);
+      if (attacker.x_pos < edge) {
         game.state.gameState = "GAMEOVER";
         return;
       }

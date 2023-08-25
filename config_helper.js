@@ -305,8 +305,8 @@ class ConfigHelper {
     levelConfig.consts.defaultStartingMoney = 0;
     levelConfig.consts.defaultFrameHeight =
         expandedGameConfig.consts.yResolution;
-    levelConfig.consts.defaultFps = 1;
-    levelConfig.consts.defaultIsLooping = false;
+    levelConfig.consts.defaultFps = 6;
+    levelConfig.consts.defaultIsLooping = true;
 
     let uid = helper.getField("uid", levelConfig);
     if (uid == null) {

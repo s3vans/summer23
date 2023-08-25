@@ -36,8 +36,8 @@ class Game {
     let gameConfig = this.config;
     let levelConfig = gameConfig.levels[levelIndex];
 
-    this.currentLevelIndex = levelIndex;
-    this.currentLevel = new Level(this, levelConfig);
+    this.state.currentLevelIndex = levelIndex;
+    this.state.currentLevel = new Level(this, levelConfig);
 
     this.store.addDefenderConfigs(levelConfig.defenders, gameConfig.defenders);
 
@@ -87,10 +87,10 @@ class Game {
   }
 
   update(deltaT) {
+    let sequence = this.config.levels[this.state.currentLevelIndex].sequence;
     let now = Date.now();
     let elapsed = now - this.state.lastEventTime;
     if (elapsed > this.state.waitTime) {
-      let sequence = this.config.levels[this.state.currentLevelIndex].sequence;
       while (this.state.sequenceNum < sequence.length) {
         let [ command, arg1, arg2 ] = sequence[this.state.sequenceNum];
         console.log("Read command", command, arg1, arg2);
@@ -111,7 +111,25 @@ class Game {
         }
       }
     }
-    this.currentLevel.update(deltaT);
+    if (this.state.gameState != "WIN" && this.state.gameState != "LOSE") {
+      if (this.state.sequenceNum == sequence.length) {
+        if (this.gameMap.state.activeAttackers.length == 0) {
+          this.state.gameState = "WIN";
+          setTimeout(
+              () => {
+                if (this.state.currentLevel.config.mp3s.win.mp3 != undefined) {
+                  this.state.currentLevel.config.mp3s.win.mp3.play();
+                }
+                setTimeout(
+                    () => {
+                      this.loadLevel(this.state.currentLevelIndex+1);
+                    }, 3000);
+              }, 3000);
+	  return;
+        }
+      }
+    }
+    this.state.currentLevel.update(deltaT);
     this.gameMap.update(deltaT);
   }
 
@@ -121,8 +139,8 @@ class Game {
 
   _drawGameOver() {
     console.log("GAME OVER");
-    if (this.currentLevel.config.mp3s.lose.mp3 != undefined) {
-      this.currentLevel.config.mp3s.lose.mp3.play();
+    if (this.state.currentLevel.config.mp3s.lose.mp3 != undefined) {
+      this.state.currentLevel.config.mp3s.lose.mp3.play();
     }
     push();
     const xRes = this.config.consts.xResolution;
@@ -160,7 +178,7 @@ class Game {
     translate(overlayX+20, overlayY+30);
     fill(255); strokeWeight(1); stroke(255); textSize(16);
     text(this.levelName, 0, 0);
-    text("XP: " + this.currentLevel.state.money, 0, 24);
+    text("XP: " + this.state.currentLevel.state.money, 0, 24);
     pop();
   }
 
@@ -176,7 +194,7 @@ class Game {
     }
 
     // Draws background.
-    this.currentLevel.draw(deltaT);
+    this.state.currentLevel.draw(deltaT);
 
     // Draws the store at the top.
     this.store.draw(deltaT);
@@ -216,7 +234,7 @@ class Game {
       if (this.gameMap.handleCollectibleClick(scaledMouseX, scaledMouseY)) {
         return;
       }
-      let availableMoney = this.currentLevel.state.money;
+      let availableMoney = this.state.currentLevel.state.money;
       if (this.store.handleCharacterSelection(availableMoney, scaledMouseX,
           scaledMouseY)) {
         this.state.gameState = "SELECTED";
@@ -230,11 +248,11 @@ class Game {
     }
     return;
   }
- 
+
   keyPressed() {
     let key = keyCode;
     let keyNum = key - 48; // '0' is keyCode 48, '9' is keyCode 57.
-    if (keyNum < 0 || keyNum > 9) { 
+    if (keyNum < 0 || keyNum > 9) {
       return;
     }
     if (keyNum == 0) {
