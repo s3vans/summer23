@@ -83,6 +83,12 @@ class GameMap {
       console.log("No attacker exists for number: ", num);
       return;
     }
+    if (row == -1) {
+      row = Math.floor(Math.random() * this.config.consts.cellRowCount);
+    }
+    if (num == -1) {
+      num = Math.floor(Math.random() * this.state.attackerConfigs.length);
+    }
     
     let attackerConfig = this.state.attackerConfigs[num];
     let attacker =

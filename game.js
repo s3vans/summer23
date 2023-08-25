@@ -118,8 +118,8 @@ class Game {
           let attackerId = arg1;
           let attackerRow = arg2;
           let attackerIndex = this._getAttackerIndex(attackerId);
-          if (attackerIndex == -1) {
-            console.log("Invalid attacker id:", attackerId);
+          if (attackerRow < 0) {
+            console.log("Invalid row:", attackerRow);
             break;
           }
           console.log("Attacking with", attackerId, "in row", attackerRow);
