@@ -78,6 +78,18 @@ class Game {
     this.gameMap.sendCollectible();
   }
 
+  _getAttackerIndex(uid) {
+    let index = 0;
+    let attackersArray = this.state.currentLevel.config.attackers;
+    for (let i = 0; i < attackersArray.length; i++) {
+      if (attackersArray[i] == uid) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+
   setup() {
     const [scaledResX, scaledResY] = this._getScaledResolution();
     createCanvas(scaledResX, scaledResY);
@@ -105,8 +117,13 @@ class Game {
         else if (command == "attack") {
           let attackerId = arg1;
           let attackerRow = arg2;
+          let attackerIndex = this._getAttackerIndex(attackerId);
+          if (attackerIndex == -1) {
+            console.log("Invalid attacker id:", attackerId);
+            break;
+          }
           console.log("Attacking with", attackerId, "in row", attackerRow);
-          this.gameMap.sendThisAttacker(attackerRow, attackerId);
+          this.gameMap.sendThisAttacker(attackerRow-1, attackerIndex);
           this.state.sequenceNum++;
         }
       }

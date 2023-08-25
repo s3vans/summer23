@@ -36,6 +36,16 @@ class GameMap {
     }
   }
 
+  getAttackerIndex(uid) {
+    let index = 0;
+    for (let i = 0; i < this.state.attackerConfigs.length; i++) {
+      if (this.state.attackerConfigs[i].id == uid) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   addCollectibleConfigs(levelCollectibles, gameCollectibles) {
     for (let uid of levelCollectibles) {
       this.state.collectibleConfigs.push(gameCollectibles[uid]);
