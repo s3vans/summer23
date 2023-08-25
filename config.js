@@ -109,6 +109,16 @@ let pokemonGameConfig = {
         }
       }
     },
+    "ditto": {
+      "startingHealth": 200,
+      "damage": 40,
+      "reloadTimeMs": 150,
+      "imgs": {
+        "idle": {
+          "frameHeight": 100,
+        }
+      }
+    },
   },
   "collectibles": {
     "raspberries": {
@@ -130,6 +140,7 @@ let pokemonGameConfig = {
       "attackers": [
           "evee",
           "diglet",
+          "ditto",
       ],
       "collectibles": [
           "raspberries",
