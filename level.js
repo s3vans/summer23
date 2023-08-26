@@ -18,7 +18,7 @@ class Level {
       }
       if (this.config.mp3s.background.mp3 != undefined) {
         this.config.mp3s.background.mp3.setVolume(0.10);
-        this.config.mp3s.background.mp3.play();
+        this.config.mp3s.background.mp3.loop();
       }
       this.state.firstUpdate = false;
     }
@@ -32,5 +32,11 @@ class Level {
     let yRes = this.game.config.consts.yResolution;
     this.state.background.draw(0, 0, xRes, yRes);
     pop();
+  }
+
+  stop() {
+    if (this.config.mp3s.background.mp3 != undefined) {
+      this.config.mp3s.background.mp3.stop();
+    }
   }
 };

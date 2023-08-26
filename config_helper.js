@@ -337,6 +337,7 @@ class ConfigHelper {
     }
     let modes = ["background", "start", "win", "lose"];
     for (let mode of modes) {
+      console.log(levelConfig.uid, mode, levelConfig.mp3s);
       helper.expandAssetPath(levelConfig.mp3s, mode, rootDir, uid, "mp3");
       helper.loadMp3FromPath(levelConfig.mp3s[mode],
                              levelConfig.mp3s[mode].path);

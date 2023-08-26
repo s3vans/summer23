@@ -35,6 +35,9 @@ class Game {
 
   loadLevel(levelIndex) {
     // TODO: Consider that we don't really want to reset all Game state.
+    if (this.state.currentLevel != null) {
+      this.state.currentLevel.stop();
+    }
     this.resetState();
 
     this.store.reset();
