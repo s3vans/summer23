@@ -36,16 +36,6 @@ class GameMap {
     }
   }
 
-  getAttackerIndex(uid) {
-    let index = 0;
-    for (let i = 0; i < this.state.attackerConfigs.length; i++) {
-      if (this.state.attackerConfigs[i].id == uid) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
   addCollectibleConfigs(levelCollectibles, gameCollectibles) {
     for (let uid of levelCollectibles) {
       this.state.collectibleConfigs.push(gameCollectibles[uid]);
@@ -72,7 +62,7 @@ class GameMap {
 
   sendThisAttacker(row, num) {
     if (this.state.attackerConfigs.length == 0) {
-      console.log("no attackers defined for this level.");
+      console.log("No attackers defined for this level.");
       return;
     }
     if (row >= this.config.consts.cellRowCount) {
@@ -114,6 +104,40 @@ class GameMap {
         new Collectible(game, collectibleConfig, row, col,
                         collectibleConfig.imgs.falling.img,
                         collectibleConfig.health, collectibleConfig.lifespan));
+  }
+
+  sendThisCollectible(row, col, num) {
+    if (this.state.collectibleConfigs.length == 0) {
+      console.log("No collectibles defined for this level.");
+      return;
+    }
+    if (row >= this.config.consts.cellRowCount) {
+      console.log("No row exists for number: ", row);
+      return;
+    }
+    if (col >= this.config.consts.cellColCount) {
+      console.log("No col exists for number: ", col);
+      return;
+    }
+    if (num >= this.state.collectibleConfigs.length) {
+      console.log("No attacker exists for number: ", num);
+      return;
+    }
+    if (row == -1) {
+      row = Math.floor(Math.random() * this.config.consts.cellRowCount);
+    }
+    if (col == -1) {
+      col = Math.floor(Math.random() * this.config.consts.cellColCount);
+    }
+    if (num == -1) {
+      num = Math.floor(Math.random() * this.state.collectibleConfigs.length);
+    }
+    let collectibleConfig = this.state.collectibleConfigs[num];
+    this.state.activeCollectibles.push(
+        new Collectible(game, collectibleConfig, row, col,
+                        collectibleConfig.imgs.falling.img,
+                        collectibleConfig.health, collectibleConfig.lifespan));
+   console.log("HAH", row, col, num);
   }
 
   handleCollectibleClick(scaledMouseX, scaledMouseY) {

@@ -26,6 +26,13 @@ class Game {
     this.state.waitTime = 0;
   }
 
+  debug(...args) {
+    const DEBUG = 1;
+    if (DEBUG) {
+      console.log(...args);
+    }
+  }
+
   loadLevel(levelIndex) {
     // TODO: Consider that we don't really want to reset all Game state.
     this.resetState();
@@ -78,11 +85,10 @@ class Game {
     this.gameMap.sendCollectible();
   }
 
-  _getAttackerIndex(uid) {
+  _getIndex(arr, uid) {
     let index = 0;
-    let attackersArray = this.state.currentLevel.config.attackers;
-    for (let i = 0; i < attackersArray.length; i++) {
-      if (attackersArray[i] == uid) {
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] == uid) {
         return i;
       }
     }
@@ -104,11 +110,11 @@ class Game {
     let elapsed = now - this.state.lastEventTime;
     if (elapsed > this.state.waitTime) {
       while (this.state.sequenceNum < sequence.length) {
-        let [ command, arg1, arg2 ] = sequence[this.state.sequenceNum];
-        console.log("Read command", command, arg1, arg2);
+        let [ command, arg1, arg2, arg3 ] = sequence[this.state.sequenceNum];
+        this.debug("Read command", command, arg1, arg2, arg3);
         if (command == "wait") {
           let duration = arg1;
-          console.log("Waiting for", duration, "milliseconds");
+          this.debug("Waiting for", duration, "milliseconds");
           this.state.lastEventTime = now;
           this.state.waitTime = duration;
           this.state.sequenceNum++;
@@ -117,14 +123,33 @@ class Game {
         else if (command == "attack") {
           let attackerId = arg1;
           let attackerRow = arg2;
-          let attackerIndex = this._getAttackerIndex(attackerId);
-          if (attackerRow < 0) {
-            console.log("Invalid row:", attackerRow);
-            break;
-          }
-          console.log("Attacking with", attackerId, "in row", attackerRow);
+          let attackerArr = this.state.currentLevel.config.attackers;
+          let attackerIndex =
+            this._getIndex(attackerArr, attackerId);
+          this.debug("Attacking with", attackerId, "in row", attackerRow);
           this.gameMap.sendThisAttacker(attackerRow-1, attackerIndex);
           this.state.sequenceNum++;
+        }
+        else if (command == "drop") {
+          let collectibleId = arg1;
+          let collectibleRow = arg2;
+          let collectibleCol = arg3;
+          let collectibleArr = this.state.currentLevel.config.collectibles;
+          let collectibleIndex =
+            this._getIndex(collectibleArr, collectibleId);
+          this.debug("Dropping", collectibleId, "in row", collectibleRow,
+                     "and col", collectibleCol);
+          this.gameMap.sendThisCollectible(collectibleRow-1, collectibleCol-1,
+                                           collectibleIndex);
+          this.state.sequenceNum++;
+          continue;
+        }
+        else if (command == "money") {
+          let money = arg1;
+          this.debug("Setting money", money);
+          this.state.currentLevel.state.money = money;
+          this.state.sequenceNum++;
+          continue;
         }
       }
     }

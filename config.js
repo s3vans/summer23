@@ -146,8 +146,15 @@ let pokemonGameConfig = {
           "raspberries",
       ],
       "sequence": [
+          // 0 => any, rows 1-5, cols 1-7
+          [ "drop", "raspberries", /*row=*/0, /*col=*/0 ],
+          [ "drop", "any", 0, 0 ],
+          [ "drop", "raspberries", 0, 0 ],
+          [ "drop", "raspberries", 0, 0 ],
+          [ "drop", "raspberries", 0, 0 ],
           [ "attack", "any", /*row=*/0 ],
           [ "wait", 10000 ],
+          [ "money", 2000],
           [ "attack", "any", /*row=*/0 ],
           [ "wait", 5000 ],
           [ "attack", "any", /*row=*/0 ],
