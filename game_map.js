@@ -137,7 +137,6 @@ class GameMap {
         new Collectible(game, collectibleConfig, row, col,
                         collectibleConfig.imgs.falling.img,
                         collectibleConfig.health, collectibleConfig.lifespan));
-   console.log("HAH", row, col, num);
   }
 
   handleCollectibleClick(scaledMouseX, scaledMouseY) {

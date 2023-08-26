@@ -27,7 +27,7 @@ class Game {
   }
 
   debug(...args) {
-    const DEBUG = 1;
+    const DEBUG = 0;
     if (DEBUG) {
       console.log(...args);
     }
