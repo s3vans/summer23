@@ -55,6 +55,16 @@ let pokemonGameConfig = {
       "reloadTimeMs": 200,
       "speed": 10,
     },
+    "bubble": {
+      "damage": 10,
+      "reloadTimeMs": 200,
+      "speed": 10,
+    },
+    "scratch": {
+      "damage": 10,
+      "reloadTimeMs": 200,
+      "speed": 10,
+    },
   },
   "defenders": {
     "pikachu": {
@@ -79,13 +89,13 @@ let pokemonGameConfig = {
       "startingHealth": 400,
       "cost": 450,
       "restockTime": 200,
-      "projectile": "bolt",
+      "projectile": "scratch",
     },
     "squirtle": {
       "startingHealth": 255,
       "cost": 150,
       "restockTime": 200,
-      "projectile": "bolt",
+      "projectile": "bubble",
     },
   },
   "attackers": {
@@ -119,6 +129,26 @@ let pokemonGameConfig = {
         }
       }
     },
+    "mewtwo": {
+      "startingHealth": 200,
+      "damage": 40,
+      "reloadTimeMs": 150,
+      "imgs": {
+        "idle": {
+          "frameHeight": 100,
+        }
+      }
+    },
+    "team_rocket": {
+      "startingHealth": 500,
+      "damage": 40,
+      "reloadTimeMs": 150,
+      "imgs": {
+        "idle": {
+          "frameHeight": 100,
+        }
+      }
+    },
   },
   "collectibles": {
     "raspberries": {
@@ -141,6 +171,8 @@ let pokemonGameConfig = {
           "evee",
           "diglet",
           "ditto",
+          "mewtwo",
+          "team_rocket",
       ],
       "collectibles": [
           "raspberries",
