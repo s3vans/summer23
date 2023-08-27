@@ -236,6 +236,11 @@ let pokemonGameConfig = {
     {
       "uid": "level3",
       "startingMoney": 1250,
+      "mp3s": {
+        "background": {
+          "path": "level3_background.ogg",
+        }
+      },
       "defenders": [
           "pikachu",
           "bulbasaur",
