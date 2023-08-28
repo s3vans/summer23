@@ -49,9 +49,20 @@ class Defender {
     }
   }
 
+  _isAttackerVisibleYet(row) {
+    let arr = this.game.gameMap.state.attackersByRow[row]
+    // Filter out enemies that aren't >= our position and 50px from map edge.
+    // HACK: hard-coded value of 50px.
+    let filter_arr =
+        arr.filter(a =>
+            (a.x_pos >= this.x_pos) &&
+            (a.x_pos < this.game.config.consts.xResolution-100));
+    return filter_arr.length > 0;
+  }
+
   update(deltaT) {
     this.animation.update();
-    if (this.game.gameMap.state.attackersByRow[this.row].length > 0) {
+    if (this._isAttackerVisibleYet(this.row)) {
       if (this.charge == this.recharge) {
         let defenderConfig = this.game.config.defenders[this.uid];
         let projectileUid = defenderConfig.projectile;
