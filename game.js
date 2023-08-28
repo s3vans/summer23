@@ -7,16 +7,17 @@ let attackerCnt = 0;
 class Game {
   constructor(expandedGameConfig) {
     this.config = expandedGameConfig;
+    this.state = {};
+    this.state.firstUpdate = true;
     this.resetState();
+    this.state.gameState = "MENU";
     this.store = new Store(this, expandedGameConfig.store);
     this.gameMap = new GameMap(this, expandedGameConfig.gameMap);
   }
 
   resetState() {
-    this.state = {};
     this.state.scaleFactor = 1;
     this._updateScaleFactor();
-    this.state.gameState = "NORMAL";
     this.state.currentLevelIndex = 0;
     this.state.currentLevel = null;
     this.state.lastClickTime = 0;
@@ -24,6 +25,13 @@ class Game {
     this.state.sequenceNum = 0;
     this.state.lastEventTime = Date.now();
     this.state.waitTime = 0;
+    // HACK: It seems to be important that these are loaded in the 2nd
+    // resetState() called as part of loadLevel(). If i only do them in the
+    // Game constructor, the menu image doesn't load. I am not sure if the
+    // second call happens after preload is complete, but that might explain
+    // it. For now I will just rely on this.
+    this.state.menu = loadAnimationFromConfig(this.config.imgs.menu);
+    this.state.win_screen = loadAnimationFromConfig(this.config.imgs.win_screen);
   }
 
   debug(...args) {
@@ -108,6 +116,23 @@ class Game {
   }
 
   update(deltaT) {
+    if (this.state.firstUpdate) {
+      if (this.state.gameState == "MENU") {
+        this.config.mp3s.menu.mp3.play();
+      }
+      this.state.firstUpdate = false;
+    }
+
+    if (this.state.gameState == "WIN") {
+      this.state.win_screen.update(deltaT);
+      return;
+    }
+
+    if (this.state.gameState == "MENU") {
+      this.state.menu.update(deltaT);
+      return;
+    }
+
     let sequence = this.config.levels[this.state.currentLevelIndex].sequence;
     let now = Date.now();
     let elapsed = now - this.state.lastEventTime;
@@ -156,10 +181,10 @@ class Game {
         }
       }
     }
-    if (this.state.gameState != "WIN" && this.state.gameState != "LOSE") {
+    if (this.state.gameState != "NEXT" && this.state.gameState != "LOSE") {
       if (this.state.sequenceNum == sequence.length) {
         if (this.gameMap.state.activeAttackers.length == 0) {
-          this.state.gameState = "WIN";
+          this.state.gameState = "NEXT";
           setTimeout(
               () => {
                 if (this.state.currentLevel.config.mp3s.win.mp3 != undefined) {
@@ -167,10 +192,21 @@ class Game {
                 }
                 setTimeout(
                     () => {
-                      this.loadLevel(this.state.currentLevelIndex+1);
+                      let currIdx = this.state.currentLevelIndex;
+                      if (currIdx+1 == this.config.levels.length) {
+                        this.state.gameState = "WIN";
+                        if (this.state.currentLevel != null) {
+                          this.state.currentLevel.stop();
+                        }
+                        this.config.mp3s.win_screen.mp3.play();
+                      }
+                      else {
+                        this.loadLevel(currIdx+1);
+                        this.state.gameState = "NORMAL";
+                      }
                     }, 3000);
               }, 3000);
-	  return;
+          return;
         }
       }
     }
@@ -180,6 +216,36 @@ class Game {
 
   _scaleMouse(pos) {
     return pos / this.state.scaleFactor;
+  }
+
+  _drawWinScreen() {
+    push();
+    background(0);
+    let xRes = this.config.consts.xResolution;
+    let yRes = this.config.consts.yResolution;
+    this.state.win_screen.draw(0, 0, xRes, yRes);
+    textFont("Helvetica");
+    textSize(100);
+    textAlign(CENTER, CENTER);
+    text("YOU WIN!!!", xRes/2, yRes/2-55);
+    textSize(25);
+    text("C O N G L A T U L A T I O N S  ! ! !", xRes/2, yRes/2+100);
+    pop();
+  }
+
+  _drawMenuScreen() {
+    push();
+    background(0);
+    let xRes = this.config.consts.xResolution;
+    let yRes = this.config.consts.yResolution;
+    this.state.menu.draw(0, 0, xRes, yRes);
+    textFont("Helvetica");
+    textSize(100);
+    textAlign(CENTER, CENTER);
+    text("PIKACHU\nVS\nTEAM ROCKET\n", xRes/2, yRes/2-55);
+    textSize(25);
+    text("CLICK   TO   START", xRes/2, yRes/2+100);
+    pop();
   }
 
   _drawGameOver() {
@@ -232,6 +298,14 @@ class Game {
     const scaledMouseX = this._scaleMouse(mouseX);
     const scaledMouseY = this._scaleMouse(mouseY);
 
+    if (this.state.gameState == "WIN") {
+      this._drawWinScreen();
+      return;
+    }
+    if (this.state.gameState == "MENU") {
+      this._drawMenuScreen();
+      return;
+    }
     if (this.state.gameState == "GAMEOVER") {
       this._drawGameOver();
       noLoop();
@@ -270,6 +344,16 @@ class Game {
   mouseClicked() {
     if (this._debounceClick()) {
       return;
+    }
+
+    if (this.state.gameState == "WIN") {
+      this.config.mp3s.win_screen.mp3.stop();
+      // TODO: Reset game.
+      return;
+    }
+    if (this.state.gameState == "MENU") {
+      this.state.gameState = "NORMAL";
+      this.config.mp3s.menu.mp3.stop();
     }
 
     let scaledMouseX = this._scaleMouse(mouseX);

@@ -34,7 +34,7 @@ class ConfigHelper {
   }
 
   // NOTE: This failed every way that I tried it. It seemed to always return an
-  // error, even when the file existed, ut the asyncLoaSoundFromPath() function
+  // error, even when the file existed, but the asyncLoaSoundFromPath() function
   // never actually failed. The entire page failed to load. The
   // loadMp3FromPath() function worked, so I'm abandoning this.
   _expandSoundConfig(soundConfig, defaultSoundConfig) {
@@ -337,7 +337,6 @@ class ConfigHelper {
     }
     let modes = ["background", "start", "win", "lose"];
     for (let mode of modes) {
-      console.log(levelConfig.uid, mode, levelConfig.mp3s);
       helper.expandAssetPath(levelConfig.mp3s, mode, rootDir, uid, "mp3");
       helper.loadMp3FromPath(levelConfig.mp3s[mode],
                              levelConfig.mp3s[mode].path);
@@ -358,11 +357,37 @@ class ConfigHelper {
     gameConfig.consts.ageRateMs = 30;    // Time to decrease lifespan by 1.
     gameConfig.consts.chargeRateMs = 30; // Time to increase charge by 1.
     gameConfig.consts.speedRateMs = 30;  // Time to move by 1px.
+    gameConfig.consts.defaultFrameHeight = gameConfig.consts.yResolution;
+    gameConfig.consts.defaultFps = 6;
+    gameConfig.consts.defaultIsLooping = true;
 
     let rootDir = "";
     if (gameConfig.rootDir != undefined) {
       rootDir = gameConfig.rootDir;
     }
+
+    if (gameConfig.imgs == undefined) {
+      gameConfig.imgs = {};
+    }
+    let defaultAnimationConfig = {
+      "frameHeight": gameConfig.consts.defaultFrameHeight,
+      "fps": gameConfig.consts.defaultFps,
+      "isLooping": gameConfig.consts.defaultIsLooping,
+    }
+    helper.expandAssetPath(gameConfig.imgs, "menu", rootDir, "game", "png");
+    helper.expandAssetPath(gameConfig.imgs, "win_screen", rootDir, "game", "png");
+    // NOTE: loadAnimationFromConfig() updates the |img| value asynchronously
+    // after the image loads or fails to load.
+    this._expandAnimationConfig(gameConfig.imgs.menu, defaultAnimationConfig);
+    this._expandAnimationConfig(gameConfig.imgs.win_screen, defaultAnimationConfig);
+
+    if (gameConfig.mp3s == undefined) {
+      gameConfig.mp3s = {};
+    }
+    helper.expandAssetPath(gameConfig.mp3s, "menu", rootDir, "game", "mp3");
+    helper.loadMp3FromPath(gameConfig.mp3s.menu, gameConfig.mp3s.menu.path);
+    helper.expandAssetPath(gameConfig.mp3s, "win_screen", rootDir, "game", "mp3");
+    helper.loadMp3FromPath(gameConfig.mp3s.win_screen, gameConfig.mp3s.win_screen.path);
 
     this._expandStoreConfig(gameConfig);
     // Note: Some configs below use consts from this config. Order matters.
