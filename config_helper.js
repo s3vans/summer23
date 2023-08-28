@@ -388,6 +388,8 @@ class ConfigHelper {
     helper.loadMp3FromPath(gameConfig.mp3s.menu, gameConfig.mp3s.menu.path);
     helper.expandAssetPath(gameConfig.mp3s, "win_screen", rootDir, "game", "mp3");
     helper.loadMp3FromPath(gameConfig.mp3s.win_screen, gameConfig.mp3s.win_screen.path);
+    helper.expandAssetPath(gameConfig.mp3s, "credits", rootDir, "game", "mp3");
+    helper.loadMp3FromPath(gameConfig.mp3s.credits, gameConfig.mp3s.credits.path);
 
     this._expandStoreConfig(gameConfig);
     // Note: Some configs below use consts from this config. Order matters.

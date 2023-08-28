@@ -203,8 +203,15 @@ class Game {
                         if (this.state.currentLevel != null) {
                           this.state.currentLevel.stop();
                         }
-                        helper.overrideVolume(this.config.mp3s.win_screen);
+                        this.config.mp3s.win_screen.mp3.setVolume(5);
+                        setTimeout(
+                            () => {
+                                this.config.mp3s.credits.mp3.setVolume(100); // HACK: Hardcoded
+                                helper.overrideVolume(this.config.mp3s.win_screen);
+                            }, 20000);
                         this.config.mp3s.win_screen.mp3.play();
+                        this.config.mp3s.credits.mp3.setVolume(80); // HACK: Hardcoded
+                        this.config.mp3s.credits.mp3.play();
                       }
                       else {
                         this.loadLevel(currIdx+1);
@@ -383,6 +390,7 @@ class Game {
 
     if (this.state.gameState == "WIN") {
       this.config.mp3s.win_screen.mp3.stop();
+      this.config.mp3s.credits.mp3.stop();
       // Reset game to first level and MENU screen.
       this.loadLevel(0);
       this.state.gameState = "MENU";

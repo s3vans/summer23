@@ -39,6 +39,11 @@
 //
 let pokemonGameConfig = {
   "rootDir": "assets/pokemon",
+  "mp3s": {
+    "credits": {
+      "path": "game_credits.ogg",
+    },
+  },
   "projectiles": {
     "bolt": {
       "damage": 50,
@@ -239,7 +244,7 @@ let pokemonGameConfig = {
       "mp3s": {
         "background": {
           "path": "level3_background.ogg",
-        }
+        },
       },
       "defenders": [
           "pikachu",
