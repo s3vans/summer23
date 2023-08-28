@@ -359,10 +359,18 @@ class Game {
     let scaledMouseX = this._scaleMouse(mouseX);
     let scaledMouseY = this._scaleMouse(mouseY);
     if ((this.state.gameState == "NORMAL") ||
-        (this.state.gameState == "SELECTED")) {
+        (this.state.gameState == "SELECTED") ||
+        (this.state.gameState == "NEXT")) {
+      // NOTE: We let players click on collectibles because it's satisfying
+      // but when in state "NEXT", we don't allow other changes that would
+      // manipulate the gameState and break the next-level logic. That's why
+      // there is a separate conditional check below.
       if (this.gameMap.handleCollectibleClick(scaledMouseX, scaledMouseY)) {
         return;
       }
+    }
+    if ((this.state.gameState == "NORMAL") ||
+        (this.state.gameState == "SELECTED")) {
       let availableMoney = this.state.currentLevel.state.money;
       if (this.store.handleCharacterSelection(availableMoney, scaledMouseX,
           scaledMouseY)) {
