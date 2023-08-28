@@ -1,6 +1,4 @@
 // TODO: Implement visual effects.
-// TODO: Allow attackers to be scheduled via config.
-// FIXME: Collectibles fall to top-left of target square.
 
 let attackerCnt = 0;
 

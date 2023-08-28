@@ -8,11 +8,15 @@ class Collectible {
     this.height = this.game.gameMap.config.consts.cellHeight / 2;
     this.width = this.game.gameMap.config.consts.cellWidth / 2;
     this.img = img;
+    // HACK: Hard-coded offset value.
+    const offsetMax = 15; // Left or Right
+    // Get a +/- offset in interval [-offsetMax, offsetMax]
+    const offset = offsetMax - Math.floor(Math.random() * offsetMax*2);
     this.x_pos = this.game.gameMap.config.consts.xPos +
-        (col * this.game.gameMap.config.consts.cellWidth);
-    this.y_pos = 0 - this.game.gameMap.config.consts.cellHeight;
+        (col * this.game.gameMap.config.consts.cellWidth) + offset;
+    this.y_pos = 0 - this.game.gameMap.config.consts.cellHeight + offset;
     this.target_y_pos = this.game.gameMap.config.consts.yPos +
-        (row * this.game.gameMap.config.consts.cellHeight);
+        (row * this.game.gameMap.config.consts.cellHeight) + offset;
     this.speed = 1;
     this.health = health;
     this.lifespan = lifespan;
