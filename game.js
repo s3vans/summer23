@@ -346,6 +346,12 @@ class Game {
       return;
     }
 
+    // Without this check, the game was crashing while processing clicks before
+    // the first level was loaded.
+    if ((this.state == undefined) || (this.state.currentLevel == null)) {
+      return;
+    }
+
     if (this.state.gameState == "WIN") {
       this.config.mp3s.win_screen.mp3.stop();
       // TODO: Reset game.
