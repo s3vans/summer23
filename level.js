@@ -13,11 +13,12 @@ class Level {
   update(deltaT) {
     if (this.state.firstUpdate) {
       if (this.config.mp3s.start.mp3 != undefined) {
-        // FIXME: This doesn't play until the first Defender is placed.
+        helper.overrideVolume(this.config.mp3s.start);
         this.config.mp3s.start.mp3.play();
       }
       if (this.config.mp3s.background.mp3 != undefined) {
         this.config.mp3s.background.mp3.setVolume(0.10);
+        helper.overrideVolume(this.config.mp3s.background);
         this.config.mp3s.background.mp3.loop();
       }
       this.state.firstUpdate = false;

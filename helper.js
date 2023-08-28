@@ -133,6 +133,14 @@ class Helper {
       mp3Config.mp3 = loadSound(path);
     }
   }
+
+  // Used before playing to override hardcoded defaults
+  // Only used for subset of level.js and game.js sounds now.
+  overrideVolume(mp3Config) {
+    if (mp3Config.volume != undefined) {
+      mp3Config.mp3.setVolume(mp3Config.volume);
+    }
+  }
 }
 
 let helper = new Helper();

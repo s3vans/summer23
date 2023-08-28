@@ -116,6 +116,7 @@ class Game {
   update(deltaT) {
     if (this.state.firstUpdate) {
       if (this.state.gameState == "MENU") {
+        helper.overrideVolume(this.config.mp3s.menu);
         this.config.mp3s.menu.mp3.play();
       }
       this.state.firstUpdate = false;
@@ -196,6 +197,7 @@ class Game {
                         if (this.state.currentLevel != null) {
                           this.state.currentLevel.stop();
                         }
+                        helper.overrideVolume(this.config.mp3s.win_screen);
                         this.config.mp3s.win_screen.mp3.play();
                       }
                       else {

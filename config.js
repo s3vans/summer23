@@ -310,7 +310,8 @@ let pokemonGameConfig = {
       "mp3s": {
         "background": {
           "path": "level5_background.ogg",
-        }
+            "volume": 100,
+        },
       },
       "defenders": [
           "pikachu",
