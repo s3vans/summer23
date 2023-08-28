@@ -315,11 +315,11 @@ class Game {
     // Draws background.
     this.state.currentLevel.draw(deltaT);
 
-    // Draws the store at the top.
-    this.store.draw(deltaT);
-
     // Draws characters, projectiles, collectibles, and effects.
     this.gameMap.draw(deltaT);
+
+    // Draws the store on top of anything from the gameMap.
+    this.store.draw(deltaT);
 
     this._drawCursor(scaledMouseX, scaledMouseY);
 
