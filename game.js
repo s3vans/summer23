@@ -7,8 +7,9 @@ class Game {
     this.config = expandedGameConfig;
     this.state = {};
     this.state.firstUpdate = true;
+    this.state.lastClickTime = 0;
     this.resetState();
-    this.state.gameState = "MENU";
+    this.state.gameState = "PREGAME";
     this.store = new Store(this, expandedGameConfig.store);
     this.gameMap = new GameMap(this, expandedGameConfig.gameMap);
   }
@@ -18,7 +19,7 @@ class Game {
     this._updateScaleFactor();
     this.state.currentLevelIndex = 0;
     this.state.currentLevel = null;
-    this.state.lastClickTime = 0;
+    //this.state.lastClickTime = 0; // We don't reset this b/c it breaks debouncing.
     this.state.attackerRow = -1;
     this.state.sequenceNum = 0;
     this.state.lastEventTime = Date.now();
@@ -114,6 +115,11 @@ class Game {
   }
 
   update(deltaT) {
+    // Added a PREGAME state because sound can't play until first click.
+    if (this.state.gameState == "PREGAME") {
+      return;
+    }
+
     if (this.state.firstUpdate) {
       if (this.state.gameState == "MENU") {
         helper.overrideVolume(this.config.mp3s.menu);
@@ -220,9 +226,10 @@ class Game {
 
   _drawWinScreen() {
     push();
-    background(0);
     let xRes = this.config.consts.xResolution;
     let yRes = this.config.consts.yResolution;
+    background(0);
+    strokeWeight(1); stroke(0); fill(0);
     this.state.win_screen.draw(0, 0, xRes, yRes);
     textFont("Helvetica");
     textSize(100);
@@ -235,9 +242,10 @@ class Game {
 
   _drawMenuScreen() {
     push();
-    background(0);
     let xRes = this.config.consts.xResolution;
     let yRes = this.config.consts.yResolution;
+    background(0);
+    strokeWeight(1); stroke(0); fill(0);
     this.state.menu.draw(0, 0, xRes, yRes);
     textFont("Helvetica");
     textSize(100);
@@ -298,6 +306,21 @@ class Game {
     const scaledMouseX = this._scaleMouse(mouseX);
     const scaledMouseY = this._scaleMouse(mouseY);
 
+    // Added a PREGAME state because sound can't play until first click.
+    if (this.state.gameState == "PREGAME") {
+      let xRes = this.config.consts.xResolution;
+      let yRes = this.config.consts.yResolution;
+      push();
+      background(0);
+      textFont("Helvetica");
+      textAlign(CENTER, CENTER);
+      strokeWeight(1); stroke(255); fill(255);
+      textSize(25);
+      text('Click to start...', xRes/2, yRes/2);
+      pop();
+      return;
+    }
+
     if (this.state.gameState == "WIN") {
       this._drawWinScreen();
       return;
@@ -352,14 +375,26 @@ class Game {
       return;
     }
 
+    // Added a PREGAME state because sound can't play until first click.
+    if (this.state.gameState == "PREGAME") {
+      this.state.gameState = "MENU";
+      return;
+    }
+
     if (this.state.gameState == "WIN") {
       this.config.mp3s.win_screen.mp3.stop();
-      // TODO: Reset game.
+      // Reset game to first level and MENU screen.
+      this.loadLevel(0);
+      this.state.gameState = "MENU";
+      // HACK to play the MENU song from this entry point.
+      helper.overrideVolume(this.config.mp3s.menu);
+      this.config.mp3s.menu.mp3.play();
       return;
     }
     if (this.state.gameState == "MENU") {
       this.state.gameState = "NORMAL";
       this.config.mp3s.menu.mp3.stop();
+      return;
     }
 
     let scaledMouseX = this._scaleMouse(mouseX);
