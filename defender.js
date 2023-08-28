@@ -65,9 +65,6 @@ class Defender {
 
   update(deltaT) {
     this.animation.update();
-    for (let a of this.game.gameMap.state.attackersByRow[this.row]) {
-      console.log("row", this.row, a.x_pos-this.x_pos);
-    }
     if (this._isAttackerVisibleYet(this.row)) {
       if (this.charge == this.recharge) {
         let defenderConfig = this.game.config.defenders[this.uid];

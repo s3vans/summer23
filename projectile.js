@@ -27,10 +27,14 @@ class Projectile {
     this.animation.update();
     if (this.state == "FLYING") {
       // Handle hits first.
+      // HACK: We give a 10px benefit so that projectiles can hit attackers in
+      // the same space as the defender despite floating point errors. See also
+      // Attacker.
+      const nextToBuffer = 10;
       let attackersToTheRight = this.game.gameMap.state.attackersByRow[this.row]
-          .filter(a => a.x_pos > this.x_pos);
+          .filter(a => a.x_pos >= this.x_pos - nextToBuffer);
       let attacker =
-          helper.nextTo(this, attackersToTheRight, this.game.gameMap.config.consts.cellWidth);
+          helper.nextTo(this, attackersToTheRight, this.game.gameMap.config.consts.cellWidth + nextToBuffer);
       if (attacker != undefined) {
         attacker.hit(this.hp);
         helper.removeFromArray(this.game.gameMap.state.activeProjectiles, this);

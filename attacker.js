@@ -65,11 +65,14 @@ class Attacker {
     // neighboring attacker, then we stop hitting.
 
     // Check for attack condition.
+    // HACK: Add a buffer so attackers/defendres can fight in the same space,
+    // +/- the nextToBuffer offset. See also Projectile.
+    const nextToBuffer = 10;
     let defendersToTheLeft = this.game.gameMap.state.defendersByRow[this.row]
-        .filter(a => a.x_pos < this.x_pos);
+        .filter(a => a.x_pos <= this.x_pos + nextToBuffer);
     const gameMapCellWidth = this.game.gameMap.config.consts.cellWidth;
     let defender =
-        helper.nextTo(this, defendersToTheLeft, gameMapCellWidth);
+        helper.nextTo(this, defendersToTheLeft, gameMapCellWidth + nextToBuffer);
     if (defender != undefined && this.charge == this.recharge) {
       defender.hit(this.config.damage);
       this.charge = 0;
