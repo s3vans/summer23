@@ -47,27 +47,27 @@ let pokemonGameConfig = {
   "projectiles": {
     "bolt": {
       "damage": 50,
-      "reloadTimeMs": 300,
+      "reloadTimeMs": 200,
       "speed": 10,
     },
     "ember": {
       "damage": 45,
-      "reloadTimeMs": 250,
+      "reloadTimeMs": 200,
       "speed": 5,
     },
     "energyball": {
       "damage": 10,
-      "reloadTimeMs": 200,
+      "reloadTimeMs": 10,
       "speed": 10,
     },
     "bubble": {
-      "damage": 10,
-      "reloadTimeMs": 200,
-      "speed": 10,
+      "damage": 30,
+      "reloadTimeMs": 30,
+      "speed": 5,
     },
     "scratch": {
-      "damage": 10,
-      "reloadTimeMs": 200,
+      "damage": 75,
+      "reloadTimeMs": 100,
       "speed": 10,
     },
   },
@@ -315,7 +315,7 @@ let pokemonGameConfig = {
       "mp3s": {
         "background": {
           "path": "level5_background.ogg",
-            "volume": 100,
+            "volume": 20,
         },
       },
       "defenders": [
