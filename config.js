@@ -50,24 +50,24 @@ let pokemonGameConfig = {
       "reloadTimeMs": 200,
       "speed": 10,
     },
-    "ember": {
-      "damage": 45,
-      "reloadTimeMs": 200,
-      "speed": 5,
-    },
     "energyball": {
-      "damage": 10,
-      "reloadTimeMs": 10,
+      "damage": 75,
+      "reloadTimeMs": 200,
       "speed": 10,
     },
+    "ember": {
+      "damage": 45,
+      "reloadTimeMs": 150,
+      "speed": 5,
+    },
     "bubble": {
-      "damage": 30,
+      "damage": 35,
       "reloadTimeMs": 30,
       "speed": 5,
     },
     "scratch": {
-      "damage": 75,
-      "reloadTimeMs": 100,
+      "damage": 150,
+      "reloadTimeMs": 150,
       "speed": 10,
     },
   },
@@ -86,7 +86,7 @@ let pokemonGameConfig = {
     },
     "charmander": {
       "startingHealth": 300,
-      "cost": 350,
+      "cost": 300,
       "restockTime": 200,
       "projectile": "ember",
     },
@@ -98,7 +98,7 @@ let pokemonGameConfig = {
     },
     "squirtle": {
       "startingHealth": 255,
-      "cost": 150,
+      "cost": 200,
       "restockTime": 200,
       "projectile": "bubble",
     },
@@ -107,52 +107,27 @@ let pokemonGameConfig = {
     "evee": {
       "startingHealth": 200,
       "damage": 40,
-      "reloadTimeMs": 150,
-      "imgs": {
-        "idle": {
-          "frameHeight": 100,
-        }
-      },
+      "reloadTimeMs": 100,
     },
     "diglet": {
-      "startingHealth": 200,
-      "damage": 40,
+      "startingHealth": 215,
+      "damage": 50,
       "reloadTimeMs": 150,
-      "imgs": {
-        "idle": {
-          "frameHeight": 100,
-        }
-      }
     },
     "ditto": {
-      "startingHealth": 200,
-      "damage": 40,
-      "reloadTimeMs": 150,
-      "imgs": {
-        "idle": {
-          "frameHeight": 100,
-        }
-      }
+      "startingHealth": 215,
+      "damage": 15,
+      "reloadTimeMs": 75,
     },
     "mewtwo": {
-      "startingHealth": 200,
-      "damage": 40,
-      "reloadTimeMs": 150,
-      "imgs": {
-        "idle": {
-          "frameHeight": 100,
-        }
-      }
+      "startingHealth": 290,
+      "damage": 60,
+      "reloadTimeMs": 100,
     },
     "team_rocket": {
-      "startingHealth": 500,
-      "damage": 40,
-      "reloadTimeMs": 150,
-      "imgs": {
-        "idle": {
-          "frameHeight": 100,
-        }
-      }
+      "startingHealth": 600,
+      "damage": 250,
+      "reloadTimeMs": 200,
     },
   },
   "collectibles": {
@@ -164,13 +139,167 @@ let pokemonGameConfig = {
   "levels": [
     {
       "uid": "level1",
-      "startingMoney": 1250,
+      "startingMoney": 450,
+      "defenders": [
+          "pikachu",
+      ],
+      "attackers": [
+          "evee",
+      ],
+      "collectibles": [
+          "raspberries",
+      ],
+      "sequence": [
+          // 0 => any, rows 1-5, cols 1-7
+          [ "wait", 4000 ],
+          [ "attack", "evee", 1 ],
+          [ "wait", 5000 ],
+          [ "attack", "evee", 3 ],
+          [ "wait", 5000 ],
+          [ "attack", "evee", 4 ],
+          [ "attack", "evee", 5 ],
+          [ "wait", 15000 ],
+          [ "attack", "evee", 4 ],
+          [ "attack", "evee", 5 ],
+          [ "wait", 20000 ],
+          [ "attack", "evee", 1 ],
+      ],
+    },
+    {
+      "uid": "level2",
+      "startingMoney": 150,
+      "defenders": [
+          "pikachu",
+          "bulbasaur",
+      ],
+      "attackers": [
+          "evee",
+          "diglet",
+      ],
+      "collectibles": [
+          "raspberries",
+      ],
+      "sequence": [
+          [ "attack", "evee", /*row=*/3 ],
+          [ "wait", 10000 ],
+
+          [ "attack", "diglet", /*row=*/2 ],
+          [ "attack", "diglet", /*row=*/4 ],
+          [ "wait", 10000 ],
+
+          [ "attack", "evee", /*row=*/1 ],
+          [ "attack", "evee", /*row=*/5 ],
+          [ "wait", 10000 ],
+  
+
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "wait", 1000 ],
+          [ "attack", "any", /*row=*/3 ],
+      ],
+    },
+    {
+      "uid": "level3",
+      "startingMoney": 250,
+      "mp3s": {
+        "background": {
+          "path": "level3_background.ogg",
+        },
+      },
       "defenders": [
           "pikachu",
           "bulbasaur",
           "charmander",
-          "meowth",
+      ],
+      "attackers": [
+          "evee",
+          "diglet",
+          "ditto",
+      ],
+      "collectibles": [
+          "raspberries",
+      ],
+      "sequence": [
+          [ "wait", 10000 ],
+
+          [ "attack", "ditto", /*row=*/1 ],
+          [ "wait", 3000 ],
+          [ "attack", "ditto", /*row=*/1 ],
+          [ "wait", 3000 ],
+          [ "attack", "ditto", /*row=*/2 ],
+          [ "wait", 3000 ],
+          [ "attack", "ditto", /*row=*/3 ],
+          [ "wait", 7000],
+
+          [ "attack", "ditto", /*row=*/3 ],
+          [ "attack", "ditto", /*row=*/1 ],
+          [ "wait", 3000 ],
+          [ "attack", "ditto", /*row=*/2 ],
+          [ "wait", 3000 ],
+          [ "attack", "ditto", /*row=*/3 ],
+          [ "wait", 30000 ],
+
+          [ "attack", "evee", /*row=*/4 ],
+          [ "wait", 500],
+          [ "attack", "evee", /*row=*/5 ],
+          [ "wait", 20000 ],
+
+          [ "attack", "diglet", /*row=*/0 ],
+      ],
+    },
+    {
+      "uid": "level4",
+      "startingMoney": 150,
+      "defenders": [
+          "pikachu",
+          "bulbasaur",
+          "charmander",
           "squirtle",
+      ],
+      "attackers": [
+          "evee",
+          "diglet",
+          "ditto",
+          "mewtwo",
+      ],
+      "collectibles": [
+          "raspberries",
+      ],
+      "sequence": [
+          [ "attack", "mewtwo", /*row=*/3 ],
+          [ "wait", 10000],
+          [ "attack", "mewtwo", /*row=*/3 ],
+          [ "wait", 5000],
+          [ "attack", "mewtwo", /*row=*/3 ],
+          [ "wait", 5000],
+          [ "attack", "any", /*row=*/1 ],
+          [ "wait", 5000 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "wait", 2500 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "wait", 1000 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "wait", 500 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "wait", 500 ],
+          [ "attack", "any", /*row=*/0 ],
+      ],
+    },
+    {
+      "uid": "level5",
+      "startingMoney": 2250,
+      "mp3s": {
+        "background": {
+          "path": "level5_background.ogg",
+          "volume": 10,
+        },
+      },
+      "defenders": [
+          "pikachu",
+          "bulbasaur",
+          "charmander",
+          "squirtle",
+          "meowth",
       ],
       "attackers": [
           "evee",
@@ -183,169 +312,75 @@ let pokemonGameConfig = {
           "raspberries",
       ],
       "sequence": [
-          // 0 => any, rows 1-5, cols 1-7
-          [ "drop", "raspberries", /*row=*/0, /*col=*/0 ],
-          [ "drop", "any", 0, 0 ],
-          [ "drop", "raspberries", 0, 0 ],
-          [ "drop", "raspberries", 0, 0 ],
-          [ "drop", "raspberries", 0, 0 ],
-          [ "attack", "any", /*row=*/0 ],
           [ "wait", 10000 ],
-          [ "money", 2000],
-          [ "attack", "any", /*row=*/0 ],
-          [ "wait", 5000 ],
-          [ "attack", "any", /*row=*/0 ],
-          [ "wait", 2500 ],
-          [ "attack", "any", /*row=*/0 ],
+
+          [ "attack", "mewtwo", /*row=*/1 ],
+          [ "attack", "mewtwo", /*row=*/2 ],
+          [ "attack", "mewtwo", /*row=*/3 ],
+          [ "attack", "mewtwo", /*row=*/4 ],
+          [ "attack", "mewtwo", /*row=*/5 ],
+          [ "wait", 2000 ],
+          [ "attack", "mewtwo", /*row=*/1 ],
+          [ "attack", "mewtwo", /*row=*/2 ],
+          [ "attack", "mewtwo", /*row=*/3 ],
+          [ "attack", "mewtwo", /*row=*/4 ],
+          [ "attack", "mewtwo", /*row=*/5 ],
+          [ "wait", 2000 ],
+          [ "attack", "mewtwo", /*row=*/1 ],
+          [ "attack", "mewtwo", /*row=*/2 ],
+          [ "attack", "mewtwo", /*row=*/3 ],
+          [ "attack", "mewtwo", /*row=*/4 ],
+          [ "attack", "mewtwo", /*row=*/5 ],
           [ "wait", 1000 ],
-          [ "attack", "any", /*row=*/0 ],
-          [ "wait", 500 ],
-          [ "attack", "any", /*row=*/0 ],
-          [ "wait", 500 ],
-          [ "attack", "any", /*row=*/0 ],
-      ],
-    },
-    {
-      "uid": "level2",
-      "startingMoney": 1250,
-      "defenders": [
-          "pikachu",
-          "bulbasaur",
-          "charmander",
-          "meowth",
-          "squirtle",
-      ],
-      "attackers": [
-          "evee",
-          "diglet",
-      ],
-      "collectibles": [
-          "raspberries",
-      ],
-      "sequence": [
-          [ "attack", "evee", /*row=*/3 ],
+          [ "attack", "mewtwo", /*row=*/1 ],
+          [ "attack", "mewtwo", /*row=*/2 ],
+          [ "attack", "mewtwo", /*row=*/3 ],
+          [ "attack", "mewtwo", /*row=*/4 ],
+          [ "attack", "mewtwo", /*row=*/5 ],
+          [ "wait", 1000 ],
+          [ "attack", "ditto", /*row=*/1 ],
+          [ "attack", "ditto", /*row=*/2 ],
+          [ "attack", "ditto", /*row=*/3 ],
+          [ "attack", "ditto", /*row=*/4 ],
+          [ "attack", "ditto", /*row=*/5 ],
           [ "wait", 10000 ],
-          [ "attack", "evee", /*row=*/1 ],
-          [ "wait", 5000 ],
-          [ "attack", "evee", /*row=*/3 ],
-          [ "wait", 2500 ],
-          [ "attack", "evee", /*row=*/4 ],
-          [ "wait", 1000 ],
-          [ "attack", "evee", /*row=*/3 ],
-          [ "wait", 500 ],
-          [ "attack", "evee", /*row=*/2 ],
-          [ "wait", 500 ],
-          [ "attack", "evee", /*row=*/1 ],
-      ],
-    },
-    {
-      "uid": "level3",
-      "startingMoney": 1250,
-      "mp3s": {
-        "background": {
-          "path": "level3_background.ogg",
-        },
-      },
-      "defenders": [
-          "pikachu",
-          "bulbasaur",
-          "charmander",
-          "meowth",
-          "squirtle",
-      ],
-      "attackers": [
-          "evee",
-          "diglet",
-      ],
-      "collectibles": [
-          "raspberries",
-      ],
-      "sequence": [
-          [ "attack", "evee", /*row=*/3 ],
+
+          [ "attack", "mewtwo", /*row=*/1 ],
+          [ "attack", "mewtwo", /*row=*/2 ],
+          [ "attack", "mewtwo", /*row=*/3 ],
+          [ "attack", "mewtwo", /*row=*/4 ],
+          [ "attack", "mewtwo", /*row=*/5 ],
+          [ "wait", 2000 ],
+          [ "attack", "mewtwo", /*row=*/1 ],
+          [ "attack", "mewtwo", /*row=*/2 ],
+          [ "attack", "team_rocket", /*row=*/3 ],
+          [ "attack", "mewtwo", /*row=*/4 ],
+          [ "attack", "mewtwo", /*row=*/5 ],
+          [ "wait", 2000 ],
+          [ "attack", "mewtwo", /*row=*/1 ],
+          [ "attack", "mewtwo", /*row=*/2 ],
+          [ "attack", "mewtwo", /*row=*/3 ],
+          [ "attack", "mewtwo", /*row=*/4 ],
+          [ "attack", "mewtwo", /*row=*/5 ],
           [ "wait", 10000 ],
-          [ "attack", "evee", /*row=*/1 ],
-          [ "wait", 5000 ],
-          [ "attack", "evee", /*row=*/3 ],
-          [ "wait", 2500 ],
-          [ "attack", "evee", /*row=*/4 ],
-          [ "wait", 1000 ],
-          [ "attack", "evee", /*row=*/3 ],
-          [ "wait", 500 ],
-          [ "attack", "evee", /*row=*/2 ],
-          [ "wait", 500 ],
-          [ "attack", "evee", /*row=*/1 ],
-      ],
-    },
-    {
-      "uid": "level4",
-      "startingMoney": 1250,
-      "defenders": [
-          "pikachu",
-          "bulbasaur",
-          "charmander",
-          "meowth",
-          "squirtle",
-      ],
-      "attackers": [
-          "evee",
-          "diglet",
-      ],
-      "collectibles": [
-          "raspberries",
-      ],
-      "sequence": [
-          [ "attack", "evee", /*row=*/3 ],
-          [ "wait", 10000 ],
-          [ "attack", "evee", /*row=*/1 ],
-          [ "wait", 5000 ],
-          [ "attack", "evee", /*row=*/3 ],
-          [ "wait", 2500 ],
-          [ "attack", "evee", /*row=*/4 ],
-          [ "wait", 1000 ],
-          [ "attack", "evee", /*row=*/3 ],
-          [ "wait", 500 ],
-          [ "attack", "evee", /*row=*/2 ],
-          [ "wait", 500 ],
-          [ "attack", "evee", /*row=*/1 ],
-      ],
-    },
-    {
-      "uid": "level5",
-      "startingMoney": 1250,
-      "mp3s": {
-        "background": {
-          "path": "level5_background.ogg",
-            "volume": 20,
-        },
-      },
-      "defenders": [
-          "pikachu",
-          "bulbasaur",
-          "charmander",
-          "meowth",
-          "squirtle",
-      ],
-      "attackers": [
-          "evee",
-          "diglet",
-      ],
-      "collectibles": [
-          "raspberries",
-      ],
-      "sequence": [
-          [ "attack", "evee", /*row=*/3 ],
-          [ "wait", 10000 ],
-          [ "attack", "evee", /*row=*/1 ],
-          [ "wait", 5000 ],
-          [ "attack", "evee", /*row=*/3 ],
-          [ "wait", 2500 ],
-          [ "attack", "evee", /*row=*/4 ],
-          [ "wait", 1000 ],
-          [ "attack", "evee", /*row=*/3 ],
-          [ "wait", 500 ],
-          [ "attack", "evee", /*row=*/2 ],
-          [ "wait", 500 ],
-          [ "attack", "evee", /*row=*/1 ],
+
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "attack", "any", /*row=*/0 ],
+          [ "wait", 2000 ],
+
       ],
     },
   ],
