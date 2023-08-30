@@ -133,6 +133,10 @@ class Game {
       return;
     }
 
+    if (this.state.gameState == "GAMEOVER") {
+      return;
+    }
+
     if (this.state.gameState == "MENU") {
       this.state.menu.update(deltaT);
       return;
@@ -264,23 +268,21 @@ class Game {
   }
 
   _drawGameOver() {
-    console.log("GAME OVER");
-    if (this.state.currentLevel.config.mp3s.lose.mp3 != undefined) {
-      this.state.currentLevel.config.mp3s.lose.mp3.play();
-    }
     push();
     const xRes = this.config.consts.xResolution;
     const yRes = this.config.consts.yResolution;
+    background(0);
     translate(xRes/2, yRes/2);
     stroke(0); fill(255);
     rectMode(CENTER);
-    let goW = 400;
-    let goH = 90;
+    let goW = 410;
+    let goH = 100;
     rect(0, 0, goW, goH);
     rect(0, 0, goW-6, goH-6);
     strokeWeight(1); stroke(0); fill(0);
+    textFont("Courier New");
     textSize(24); textAlign(CENTER, CENTER);
-    text("G A M E     O V E R\n(っ◡︵◡ς)", 0, 0);
+    text("G A M E     O V E R\n(っ◡︵◡ς)\nClick  to  restart  level", 0, 0);
     pop();
   }
 
@@ -338,7 +340,6 @@ class Game {
     }
     if (this.state.gameState == "GAMEOVER") {
       this._drawGameOver();
-      noLoop();
       return;
     }
 

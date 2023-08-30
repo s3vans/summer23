@@ -214,6 +214,11 @@ class GameMap {
       // Check for GAME OVER condition.
       let edge = this.config.consts.xPos - (this.config.consts.cellWidth / 2);
       if (attacker.x_pos < edge) {
+        // HACK: Here and a lot of places use global `game` directy. :-O
+        if (game.state.currentLevel.config.mp3s.lose.mp3 != undefined) {
+          game.state.currentLevel.config.mp3s.lose.mp3.play();
+        }
+        console.log("GAME OVER");
         game.state.gameState = "GAMEOVER";
         return;
       }
