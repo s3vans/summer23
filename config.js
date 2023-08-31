@@ -291,7 +291,7 @@ let pokemonGameConfig = {
       "mp3s": {
         "background": {
           "path": "level5_background.ogg",
-          "volume": 10,
+          "volume": .8,
         },
       },
       "defenders": [
