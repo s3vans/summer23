@@ -8,6 +8,27 @@ Kieran wants to customize it with a Pokemon theme.
 
 Finn wants to customize it with an Among Us theme.
 
+## Update as of August 31, 2023
+
+All of the major features are complete, if not hacked together.  Kieran
+designed the levels, but it hasn't been play-tested and they probably need
+quite a bit of tweaking to make them consistently fun to play through, but
+overall it was a fun project and we accomplished a lot.
+
+I'm really proud of Kieran's art work, his vision and ideas for game features
+(many of which were more clever than my ability to implement them), his ability
+to beta test and identify bugs, and his ability to comment on the code and spot
+some mistakes as I was making them or before I could.
+
+We didn't get to make version for Finn's game as planned, but in theory we
+could support an entirely different game with just config changes if Finn makes
+the level and character art and sounds.
+
+We'll see what other bugs crop up, but given that this is our second attempt to
+make this game and we actually built all the pieces, I'm excited to see how
+much we can improve on it in future iterations.
+
+
 ## Update as of July 7, 2023
 
 The MVP feature are arguably done but in a very rudimentary way.  I took a lot
@@ -45,16 +66,16 @@ There are some things I'm currenty wondering about:
 ## Key Features
 
 A **level** consists of:
-  * A timer
+  * ~~A timer~~ (there is an in-game elapsed timer, but it's not displayed)
   * ~~A background image~~
-  * A background music track
+  * ~~A background music track~~
   * ~~A starting amount of XP used by the player to purchase defenders~~
   * ~~A set of defenders~~
   * ~~A set of attackers~~
-  * A distribution or timing sequence for attackers to arrive
+  * ~~A distribution or timing sequence for attackers to arrive~~
   * ~~A menu to purchase and place defenders~~
-  * A frequency of XP rewards that drop
-  * A timed sequence of events, such as announcing the next wave
+  * ~~A frequency of XP rewards that drop~~ (Collectibles)
+  * ~~A timed sequence of events, such as announcing the next wave~~
 
 The **layout** of a level incudes:
   * A dedicated area to display game info, such as:
@@ -101,4 +122,3 @@ Interaction considerations:
   * In rare cases, the user can click on a defender to launch a special attack
   * The main game can be suspended for other menu screens or cut scenes
 
-   
