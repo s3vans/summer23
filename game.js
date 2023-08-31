@@ -8,6 +8,11 @@ class Game {
     this.state = {};
     this.state.firstUpdate = true;
     this.state.lastClickTime = 0;
+    // Next three variables track in game elapsed time, used to send
+    // collectibles at a stable interval.
+    this.state.lastFrameTime = 0;
+    this.state.elapsedTime = 0;
+    this.state.lastCollectibleTime = 0;
     this.resetState();
     this.state.gameState = "PREGAME";
     this.store = new Store(this, expandedGameConfig.store);
@@ -111,10 +116,45 @@ class Game {
     createCanvas(scaledResX, scaledResY);
 
     //setInterval(() => { this._sendAttacker(); }, 5000);
-    setInterval(() => { this._sendCollectible(); }, 6000);
+
+    // Send a collectible ~6s of elapsed time during game play.  Note that the
+    // interval timer fires frequently, but the send is triggered base on the
+    // in game elapsed time.
+    // setInterval() doesn't pause when navigating to another tab, but the
+    // draw() loop (based on RequestNextFrame()) does pause.
+    // https://www.reddit.com/r/p5js/comments/10p0oe8/code_only_runs_when_browser_tab_is_focused/?rdt=56261
+    setInterval(() => { 
+        if (this.state.gameState != "NORMAL" && this.state.gameState != "SELECTED") {
+          return;
+        }
+        if (this.state.elapsedTime > this.state.lastCollectibleTime + 6000) {
+          this._sendCollectible();
+          this.state.lastCollectibleTime = this.state.elapsedTime;
+        }
+    }, 100);
+  }
+
+  // A low pass filter to catch long gaps caused by navigating away from the
+  // tab. I found that deltaT would be large for multiple frames after
+  // restoring the tab, so I filter on that too.
+  _ignoreVeryLongFrames(deltaT) {
+    let now = new Date();
+    let last_time = this.state.lastFrameTime;
+    let elapsed = now - last_time;
+    this.state.lastFrameTime = now;
+    if (elapsed > 100 || deltaT > 100) {
+      console.log("Elapsed", this.state.elapsedTime);
+      return true;
+    }
+    this.state.elapsedTime += elapsed;
+    return false;
   }
 
   update(deltaT) {
+    if (this._ignoreVeryLongFrames(deltaT)) {
+      return;
+    }
+
     // Added a PREGAME state because sound can't play until first click.
     if (this.state.gameState == "PREGAME") {
       return;
