@@ -383,6 +383,12 @@ class Game {
       return;
     }
 
+    if (this.state.gameState  == "GAMEOVER") {
+      let currIdx = this.state.currentLevelIndex;
+      this.loadLevel(currIdx);
+      this.state.gameState = "NORMAL";
+    }
+
     // Added a PREGAME state because sound can't play until first click.
     if (this.state.gameState == "PREGAME") {
       this.state.gameState = "MENU";
@@ -438,6 +444,20 @@ class Game {
 
   keyPressed() {
     let key = keyCode;
+    if (key == 80 && this.state.gameState == "NORMAL") { // 'p'
+      let currIdx = this.state.currentLevelIndex;
+      if (currIdx > 0) {
+         this.loadLevel(currIdx-1);
+         this.state.gameState = "NORMAL";
+      }
+    }
+    else if (key == 78 && this.state.gameState == "NORMAL") { // 'n'
+      let currIdx = this.state.currentLevelIndex;
+      if (currIdx < this.config.levels.length-1) {
+         this.loadLevel(currIdx+1);
+         this.state.gameState = "NORMAL";
+      }
+    }
     let keyNum = key - 48; // '0' is keyCode 48, '9' is keyCode 57.
     if (keyNum < 0 || keyNum > 9) {
       return;
