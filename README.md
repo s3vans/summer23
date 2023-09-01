@@ -72,10 +72,14 @@ defenders selected.
 
 Roughly...
 
-* ~2000 lines of code
-* ~400 lines of config
+* ~250 commits over ~2.5 months
+* ~2000 lines of questionable code
+* ~400 lines of game config
 * ~30 animated images
 * ~60 sound files
+* ~42 days of activity
+
+![Activity](screenshots/activity.png)
 
 ## Run it on your local computer
 
