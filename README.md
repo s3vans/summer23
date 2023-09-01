@@ -66,6 +66,6 @@ https://editor.p5js.org/sevans/full/y5qZa0vpI
 
 **Debugging and problem solving:** 5w1p3r, s3vans
 
-**Beta testers:** h1gh-f1nn, m0m
+**Beta testers:** hy-f1nn, m0m
 
 **Distractions:** tr1st4n, r00fus
