@@ -66,7 +66,7 @@ class Defender {
   update(deltaT) {
     this.animation.update();
     if (this._isAttackerVisibleYet(this.row)) {
-      if (this.charge == this.recharge) {
+      if (this.charge >= this.recharge) {
         let defenderConfig = this.game.config.defenders[this.uid];
         let projectileUid = defenderConfig.projectile;
         let projectileConfig = this.game.config.projectiles[projectileUid];

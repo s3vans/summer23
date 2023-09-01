@@ -5,7 +5,7 @@
 This is a Pokemon-themed castle-defender game modeled after "Plants vs.
 Zombies".
 
-It conists of 5 levels in which various attackers move in from the right with
+It consists of 5 levels in which various attackers attack from the right with
 the goal of reaching the left side of the screen. The player starts the level
 with an amount of XP displayed in the top-right of the screen. The player can
 click on falling collectibles to increase their XP. The player spends XP to buy
@@ -13,9 +13,10 @@ and place defenders in the way of the attackers. The defenders launch
 projectiles of various strengths. The attackers can hit the defender only when
 next to them. Defenders and attackers have HP that represents their health.
 
-## Keyboard shortcuts
+## Keyboard shortcuts / hacks
 
-There are some hidden key combinations helpful for touring the game:
+The game can be played on a touch screen but there are some keyboard shortcuts
+that might be useful for exploring the game.
 
 ```
  +-----+-------------------------------------------------------------+
@@ -24,6 +25,10 @@ There are some hidden key combinations helpful for touring the game:
  |  p  |  Load previous level.                                       |
  +-----+-------------------------------------------------------------+
  |  n  |  Load next level.                                           |
+ +-----+-------------------------------------------------------------+
+ |  op |  Make all defender O.P. (Over-Powered)                      |
+ +-----+-------------------------------------------------------------+
+ |  m  |  Get rich quick.                                            |
  +-----+-------------------------------------------------------------+
  |  0  |  Drop a collectible.                                        |
  +-----+-------------------------------------------------------------+

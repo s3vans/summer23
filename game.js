@@ -13,6 +13,7 @@ class Game {
     this.state.lastFrameTime = 0;
     this.state.elapsedTime = 0;
     this.state.lastCollectibleTime = 0;
+    this.state.overpower_ready = false;
     this.resetState();
     this.state.gameState = "PREGAME";
     this.store = new Store(this, expandedGameConfig.store);
@@ -484,11 +485,35 @@ class Game {
 
   keyPressed() {
     let key = keyCode;
-    if (key == 80 && this.state.gameState == "NORMAL") { // 'p'
+    if (this.state.gameState == "NORMAL") {
+
+      if (this.state.overpower_ready) {
+        // Look for the 'p' of 'o''p' (OverPowered)
+        if (key == 80) { // 'p'
+          for (let d of this.gameMap.state.activeDefenders) {
+            d.recharge = 1;
+          }
+          return;
+        }
+        // Any other key, resets it.
+        this.state.overpower_ready = false;
+      }
+    }
+    // Handle the 'o' of 'o''p' (OverPowered)
+    if (key == 79) { // 'o'
+      this.state.overpower_ready = true;
+    }
+
+    if (key == 77 && this.state.gameState == "NORMAL") { // 'm'
+      this.state.currentLevel.state.money = 50000;
+      return;
+    }
+    else if (key == 80 && this.state.gameState == "NORMAL") { // 'p'
       let currIdx = this.state.currentLevelIndex;
       if (currIdx > 0) {
          this.loadLevel(currIdx-1);
          this.state.gameState = "NORMAL";
+         return;
       }
     }
     else if (key == 78 && this.state.gameState == "NORMAL") { // 'n'
@@ -496,6 +521,7 @@ class Game {
       if (currIdx < this.config.levels.length-1) {
          this.loadLevel(currIdx+1);
          this.state.gameState = "NORMAL";
+         return;
       }
     }
     let keyNum = key - 48; // '0' is keyCode 48, '9' is keyCode 57.
