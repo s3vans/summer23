@@ -21,7 +21,7 @@ The latest version of the game is hosted at:
 
 https://s3vans.github.io/summer23/
 
-!!![Click here to play](https://s3vans.github.io/summer23)
+### [CLICK HERE TO PLAY](https://s3vans.github.io/summer23)
 
 ## Keyboard shortcuts / hacks
 
@@ -52,21 +52,21 @@ defenders selected.
 
 ## Screenshots
 
-![MainScreen](screenshots/main_screen.jpg)
+![MainScreen](screenshots/main_screen.png)
 
-![Level1](screenshots/level1.jpg)
+![Level1](screenshots/level1.png)
 
-![Level2](screenshots/level2.jpg)
+![Level2](screenshots/level2.png)
 
-![Level3](screenshots/level3.jpg)
+![Level3](screenshots/level3.png)
 
-![Level4](screenshots/level4.jpg)
+![Level4](screenshots/level4.png)
 
-![Level5](screenshots/level5.jpg)
+![Level5](screenshots/level5.png)
 
-![Code](screenshots/code.jpg)
+![Code](screenshots/code.png)
 
-![Config](screenshots/config.jpg)
+![Config](screenshots/config.png)
 
 ## Stats
 
