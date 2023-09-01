@@ -144,7 +144,6 @@ class Game {
     let elapsed = now - last_time;
     this.state.lastFrameTime = now;
     if (elapsed > 100 || deltaT > 100) {
-      console.log("Elapsed", this.state.elapsedTime);
       return true;
     }
     this.state.elapsedTime += elapsed;
