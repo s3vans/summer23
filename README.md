@@ -13,7 +13,7 @@ and place defenders in the way of the attackers. The defenders launch
 projectiles of various strengths. The attackers can hit the defender only when
 next to them. Defenders and attackers have HP that represents their health.
 
-The game can be played on a device with a touch screen or mouse.
+The game is meant to be played on a device with a touch screen or mouse.
 
 ## Play the game
 
@@ -21,9 +21,12 @@ The latest version of the game is hosted at:
 
 https://s3vans.github.io/summer23/
 
+!!![Click here to play](https://s3vans.github.io/summer23)
+
 ## Keyboard shortcuts / hacks
 
-Here are some keyboard shortcuts that might be useful for exploring the game,
+The game is meant to be played on a device with a touch screen or mouse, but
+here are some keyboard shortcuts that might be useful for exploring the game,
 especially if you are having trouble beating a level.
 
 Note: These only work when you are in the middle of a level and have no
@@ -46,6 +49,33 @@ defenders selected.
  | 1-9 |  Number keys NM => On row N, send attacker M. (rows: 1-5)   |
  +-----+-------------------------------------------------------------+
 ```
+
+## Screenshots
+
+![MainScreen](screenshots/main_screen.jpg)
+
+![Level1](screenshots/level1.jpg)
+
+![Level2](screenshots/level2.jpg)
+
+![Level3](screenshots/level3.jpg)
+
+![Level4](screenshots/level4.jpg)
+
+![Level5](screenshots/level5.jpg)
+
+![Code](screenshots/code.jpg)
+
+![Config](screenshots/config.jpg)
+
+## Stats
+
+Roughly...
+
+* ~2000 lines of code
+* ~400 lines of config
+* ~30 animated images
+* ~60 sound files
 
 ## Run it on your local computer
 
@@ -78,8 +108,10 @@ https://editor.p5js.org/sevans/full/y5qZa0vpI
 
 **Debugging and problem solving:** 5w1p3r, s3vans
 
-**Beta testers:** hy-f1nn, m0m
+**Beta testers:** hyph1nn, m0m
 
 **Distractions:** tr1st4n, r00fus
 
 **Inspiration:** PvZ, Pokemon, Nintendo, Zelda, Minecraft, Waynes World
+
+**Resources:** p5js.org, thecodingtrain.org
