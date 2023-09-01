@@ -119,4 +119,4 @@ https://editor.p5js.org/sevans/full/y5qZa0vpI
 **Inspiration:** PvZ, Pokemon, Nintendo, Zelda, Minecraft, Waynes World
 
 **Resources:** [p5js.org](https://p5js.org),
-[thecodingtrain.org](https://thecodingtrain.org)
+[thecodingtrain.com](https://thecodingtrain.com)
