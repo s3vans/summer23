@@ -2,16 +2,18 @@
 
 ## Overview
 
-This is a Pokemon-themed castle-defender game modeled after "Plants vs.
-Zombies".
+This is a Pokemon-themed game modeled after "Plants vs. Zombies."
 
-It consists of 5 levels in which various attackers attack from the right with
-the goal of reaching the left side of the screen. The player starts the level
-with an amount of XP displayed in the top-right of the screen. The player can
-click on falling collectibles to increase their XP. The player spends XP to buy
-and place defenders in the way of the attackers. The defenders launch
-projectiles of various strengths. The attackers can hit the defender only when
-next to them. Defenders and attackers have HP that represents their health.
+It consists of 5 levels in which various attackers approach from the right side
+with the goal of reaching the left side of the screen.
+
+The player spends XP to buy and place defenders in the path of the attackers.
+The player starts the level with an amount of XP, displayed in the top-right of
+the screen. The player can click on falling collectibles to increase their XP.
+
+Defenders and attackers have HP that represents their health. The defenders
+launch projectiles of various strengths that drain the HP of any attacker they
+hit. The attackers can hit the defender only when next to them.
 
 The game is meant to be played on a device with a touch screen or mouse.
 
@@ -40,9 +42,9 @@ defenders selected.
  +-----+-------------------------------------------------------------+
  |  n  |  Load next level.                                           |
  +-----+-------------------------------------------------------------+
- |  op |  Make all defender O.P. (Over-Powered)                      |
+ |  op |  Make all placed defenders O.P. (Over-Powered)              |
  +-----+-------------------------------------------------------------+
- |  m  |  Get rich quick.                                            |
+ |  m  |  Get rich quick. (Sets money to $50,000.)                   |
  +-----+-------------------------------------------------------------+
  |  0  |  Drop a single collectible.                                 |
  +-----+-------------------------------------------------------------+
@@ -72,11 +74,11 @@ defenders selected.
 
 Roughly...
 
-* ~250 commits over ~2.5 months
 * ~2000 lines of questionable code
 * ~400 lines of game config
 * ~30 animated images
 * ~60 sound files
+* ~250 commits over ~2.5 months
 * ~42 days of activity
 
 ![Activity](screenshots/activity.png)
